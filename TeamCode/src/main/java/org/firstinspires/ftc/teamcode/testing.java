@@ -24,8 +24,10 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 
+import org.opencv.core.Core;
+import org.opencv.core.CvType;
 import org.opencv.core.Mat;
-import org.opencv.core.Point;
+import org.opencv.core.MatOfPoint;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -33,6 +35,9 @@ import org.openftc.easyopencv.OpenCvCameraFactory;
 import org.openftc.easyopencv.OpenCvCameraRotation;
 import org.openftc.easyopencv.OpenCvInternalCamera;
 import org.openftc.easyopencv.OpenCvPipeline;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Autonomous
 public class testing extends LinearOpMode
@@ -184,7 +189,7 @@ public class testing extends LinearOpMode
          * by forgetting to call mat.release(), and it also reduces memory pressure by not
          * constantly allocating and freeing large chunks of memory.
          */
-
+        // https://answers.opencv.org/question/200861/drawing-a-rectangle-around-a-color-as-shown/
         @Override
         public Mat processFrame(Mat input)
         {
@@ -196,18 +201,19 @@ public class testing extends LinearOpMode
              * it to another Mat.
              */
 
-            /*
-             * Draw a simple box around the middle 1/2 of the entire frame
-             */
-            Imgproc.rectangle(
-                    input,
-                    new Point(
-                            input.cols()/4,
-                            input.rows()/4),
-                    new Point(
-                            input.cols()*(3f/4f),
-                            input.rows()*(3f/4f)),
-                    new Scalar(0, 255, 0), 4);
+
+            Mat hsvFrame = new Mat(input.rows(), input.cols(), CvType.CV_8U, new Scalar(3));
+            Mat stoneMask = new Mat(hsvFrame.rows(), hsvFrame.cols(), CvType.CV_8U, new Scalar(3));
+
+            Imgproc.cvtColor(input, hsvFrame, Imgproc.COLOR_RGB2HSV);
+
+            // In BGR format
+            Scalar lowerBlue = new Scalar( 255, 0, 0 );
+            Scalar higherBlue = new Scalar( 255, 0, 0 );
+
+            Core.inRange(hsvFrame, lowerBlue, higherBlue, stoneMask);
+            Imgproc.findContours(stoneMask, hsvFrame, Imgproc.RETR_EXTERNAL, Imgproc.CHAIN_APPROX_SIMPLE);
+
 
             /**
              * NOTE: to see how to get data from your pipeline to your OpMode as well as how

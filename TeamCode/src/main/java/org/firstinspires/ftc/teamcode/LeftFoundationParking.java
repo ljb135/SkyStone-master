@@ -30,11 +30,11 @@ public class LeftFoundationParking extends LinearOpMode {
     private Servo Erectus = null;
     private Servo frontGrab = null;
     private Servo foundation = null;
-    double timeout = 5;
-    int FLPosition = 0;
-    int FRPosition = 0;
-    int BLPosition = 0;
-    int BRPosition = 0;
+    private double timeout = 5;
+    private int FLPosition = 0;
+    private int FRPosition = 0;
+    private int BLPosition = 0;
+    private int BRPosition = 0;
 
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
@@ -100,7 +100,7 @@ public class LeftFoundationParking extends LinearOpMode {
         sleep(500);
 
         telemetry.addData("Stage 4", true); //rotate left
-        moverobot(-600,600,0.3);
+        moverobot(-950,950,0.3);
         sleep(500);
 
         telemetry.addData("Stage 5", true); //drive forward to edge
@@ -108,7 +108,7 @@ public class LeftFoundationParking extends LinearOpMode {
         sleep(500);
 
         telemetry.addData("Stage 6", true); //rotate left
-        moverobot(-600,600,0.3);
+        moverobot(-950,950,0.3);
         sleep(500);
 
         telemetry.addData("Stage 7", true); //drive forward to edge
@@ -116,7 +116,7 @@ public class LeftFoundationParking extends LinearOpMode {
         sleep(500);
 
         telemetry.addData("Stage 8", true); //rotate left
-        moverobot(-600,600,0.3);
+        moverobot(-950,950,0.3);
         sleep(500);
 
         telemetry.addData("Stage 9", true); //drive forward to near middle
@@ -124,7 +124,7 @@ public class LeftFoundationParking extends LinearOpMode {
         sleep(500);
 
         telemetry.addData("Stage 10", true); //rotate left
-        moverobot(610,-610,0.3);
+        moverobot(950,-950,0.3);
         sleep(500);
 
         telemetry.addData("Stage 11", true); //drive foundation in

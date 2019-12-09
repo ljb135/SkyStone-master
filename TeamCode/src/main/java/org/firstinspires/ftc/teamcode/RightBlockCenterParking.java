@@ -30,11 +30,11 @@ public class RightBlockCenterParking extends LinearOpMode {
     private Servo Erectus = null;
     private Servo frontGrab = null;
     private Servo foundation = null;
-    double timeout = 5;
-    int FLPosition = 0;
-    int FRPosition = 0;
-    int BLPosition = 0;
-    int BRPosition = 0;
+    private double timeout = 5;
+    private int FLPosition = 0;
+    private int FRPosition = 0;
+    private int BLPosition = 0;
+    private int BRPosition = 0;
 
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
@@ -93,7 +93,7 @@ public class RightBlockCenterParking extends LinearOpMode {
         sleep(500);
 
         telemetry.addData("Stage 3", true); //rotate left
-        moverobot(-550,550,0.3);
+        moverobot(-950,950,0.3);
         sleep(500);
 
         telemetry.addData("Stage 4", true); //drive past bridge

@@ -66,12 +66,12 @@ public class Manual extends LinearOpMode {
     private Servo Erectus = null;
     private Servo frontGrab = null;
     private Servo foundation = null;
-    double FL = 0;
-    double FR = 0;
-    double BL = 0;
-    double BR = 0;
-    boolean grab = false;
-    boolean drag = false;
+    private double FL = 0;
+    private double FR = 0;
+    private double BL = 0;
+    private double BR = 0;
+    private boolean grab = false;
+    private boolean drag = false;
 
     @Override
     public void runOpMode() {

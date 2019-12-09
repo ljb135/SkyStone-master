@@ -1,187 +1,221 @@
+/*
+ * Copyright (c) 2019 OpenFTC Team
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy
+ * of this software and associated documentation files (the "Software"), to deal
+ * in the Software without restriction, including without limitation the rights
+ * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+ * copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all
+ * copies or substantial portions of the Software.
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+ * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+ * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+ * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+ * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+ * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+ * SOFTWARE.
+ */
+
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.Servo;
-import com.qualcomm.robotcore.util.ElapsedTime;
 
-/**
- * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
- * the autonomous or the teleop period of an FTC match. The names of OpModes appear on the menu
- * of the FTC Driver Station. When an selection is made from the menu, the corresponding OpMode
- * class is instantiated on the Robot Controller and executed.
- *
- * This particular OpMode just executes a basic Tank Drive Teleop for a two wheeled robot
- * It includes all the skeletal structure that all linear OpModes contain.
- *
- * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
- */
+import org.opencv.core.Mat;
+import org.opencv.core.Point;
+import org.opencv.core.Scalar;
+import org.opencv.imgproc.Imgproc;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
+import org.openftc.easyopencv.OpenCvInternalCamera;
+import org.openftc.easyopencv.OpenCvPipeline;
 
-@Autonomous(name="testing", group="Linear Opmode")
-public class testing extends LinearOpMode {
-    private ElapsedTime runtime = new ElapsedTime();
-    private DcMotor FRDrive = null;
-    private DcMotor FLDrive = null;
-    private DcMotor BRDrive = null;
-    private DcMotor BLDrive = null;
-    double timeout = 5;
-    int FLPosition = 0;
-    int FRPosition = 0;
-    int BLPosition = 0;
-    int BRPosition = 0;
-    boolean grab = true;
-    boolean drag = false;
+@Autonomous
+public class testing extends LinearOpMode
+{
+    OpenCvCamera phoneCam;
 
-    public void runOpMode() {
-        telemetry.addData("Status", "Initialized");
-        telemetry.update();
+    @Override
+    public void runOpMode()
+    {
+        /*
+         * Instantiate an OpenCvCamera object for the camera we'll be using.
+         * In this sample, we're using the phone's internal camera. We pass it a
+         * CameraDirection enum indicating whether to use the front or back facing
+         * camera, as well as the view that we wish to use for camera monitor (on
+         * the RC phone). If no camera monitor is desired, use the alternate
+         * single-parameter constructor instead (commented out below)
+         */
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
 
-        // Initialize the hardware variables. Note that the strings used here as parameters
-        // to 'get' must correspond to the names assigned during the robot configuration
-        // step (using the FTC Robot Controller app on the phone).
-        FRDrive  = hardwareMap.get(DcMotor.class, "front_right");
-        FLDrive = hardwareMap.get(DcMotor.class, "front_left");
-        BRDrive  = hardwareMap.get(DcMotor.class, "back_right");
-        BLDrive  = hardwareMap.get(DcMotor.class, "back_left");
+        // OR...  Do Not Activate the Camera Monitor View
+        //phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK);
 
-        // Most robots need the motor on one side to be reversed to drive forward
-        // Reverse the motor that runs backwards when connected directly to the battery
+        /*
+         * Open the connection to the camera device
+         */
+        phoneCam.openCameraDevice();
 
-        FRDrive.setDirection(DcMotor.Direction.REVERSE);
-        FLDrive.setDirection(DcMotor.Direction.FORWARD);
-        BRDrive.setDirection(DcMotor.Direction.REVERSE);
-        BLDrive.setDirection(DcMotor.Direction.FORWARD);
+        /*
+         * Specify the image processing pipeline we wish to invoke upon receipt
+         * of a frame from the camera. Note that switching pipelines on-the-fly
+         * (while a streaming session is in flight) *IS* supported.
+         */
+        phoneCam.setPipeline(new SamplePipeline());
 
-        // Wait for the game to start (driver presses PLAY)
+        /*
+         * Tell the camera to start streaming images to us! Note that you must make sure
+         * the resolution you specify is supported by the camera. If it is not, an exception
+         * will be thrown.
+         *
+         * Also, we specify the rotation that the camera is used in. This is so that the image
+         * from the camera sensor can be rotated such that it is always displayed with the image upright.
+         * For a front facing camera, rotation is defined assuming the user is looking at the screen.
+         * For a rear facing camera or a webcam, rotation is defined assuming the camera is facing
+         * away from the user.
+         */
+        phoneCam.startStreaming(1280, 720, OpenCvCameraRotation.UPRIGHT);
+
+        /*
+         * Wait for the user to press start on the Driver Station
+         */
         waitForStart();
-//        runtime.reset();
 
-//        frontGrab.setPosition(0.85);
-        sleep(500);
-//        Erectus.setPosition(0.5);
-//        foundation.setPosition(0.45);
+        while (opModeIsActive())
+        {
+            /*
+             * Send some stats to the telemetry
+             */
+            telemetry.addData("Frame Count", phoneCam.getFrameCount());
+            telemetry.addData("FPS", String.format("%.2f", phoneCam.getFps()));
+            telemetry.addData("Total frame time ms", phoneCam.getTotalFrameTimeMs());
+            telemetry.addData("Pipeline time ms", phoneCam.getPipelineTimeMs());
+            telemetry.addData("Overhead time ms", phoneCam.getOverheadTimeMs());
+            telemetry.addData("Theoretical max FPS", phoneCam.getCurrentPipelineMaxFps());
+            telemetry.update();
 
-        telemetry.addData("Position", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)FRDrive.getCurrentPosition(), (float)FLDrive.getCurrentPosition(), (float)BRDrive.getCurrentPosition(), (float)BLDrive.getCurrentPosition());
-        telemetry.update();
-
-        FLDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        FRDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        BLDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        BRDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
-        FLDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        FRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        BLDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        BRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-
-        telemetry.addData("Stage 1", true); //back up into foundation
-        moverobot(-2000,-2000,0.3);
-        //sleep(1000);
-
-        telemetry.addData("Stage 2", true); //drive foundation forward
-        moverobot(1650,1650,0.3);
-        //sleep(1000);
-
-
-        telemetry.addData("Stage 3", true); //give space to rotate
-        moverobot(100,100,0.3);
-        //sleep(1000);
-
-        telemetry.addData("Stage 4", true); //rotate left
-        moverobot(-600,600,0.3);
-        //sleep(1000);
-
-        telemetry.addData("Stage 5", true); //drive forward to edge
-        moverobot(1700,1700,0.3);
-        //sleep(1000);
-
-        telemetry.addData("Stage 6", true); //rotate left
-        moverobot(-600,600,0.3);
-        //sleep(1000);
-
-        telemetry.addData("Stage 7", true); //drive forward to edge
-        moverobot(1700,1700,0.3);
-        //sleep(1000);
-
-        telemetry.addData("Stage 8", true); //rotate left
-        moverobot(-600,600,0.3);
-        //sleep(1000);
-
-        telemetry.addData("Stage 9", true); //drive forward to near middle
-        moverobot(1700,1700,0.3);
-        //sleep(1000);
-
-        telemetry.addData("Stage 10", true); //rotate left
-        moverobot(-600,600,0.3);
-        //sleep(1000);
-
-        telemetry.addData("Stage 11", true); //drive foundation in
-        moverobot(-1000,-1000,0.3);
-    }
-
-    private int convertotick(double inches){
-        int ticks = 710;
-        double pi = Math.PI;
-        int newtick;
-        int rotationlength = (int)pi * 4;
-        ticks = ticks / rotationlength;
-        newtick =  (int)inches*ticks;
-        return newtick;
-    }
-
-    private void moverobot(int left, int right, double power){
-        if(opModeIsActive()){
-//            FLDrive.setTargetPosition(left);
-//            FRDrive.setTargetPosition(right);
-//            BLDrive.setTargetPosition(left);
-//            BRDrive.setTargetPosition(right);
-
-            FLPosition += left;
-            FRPosition += right;
-            BLPosition += left;
-            BRPosition += right;
-            FLDrive.setTargetPosition(FLPosition);
-            FRDrive.setTargetPosition(FRPosition);
-            BLDrive.setTargetPosition(BLPosition);
-            BRDrive.setTargetPosition(BRPosition);
-
-            FLDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            FRDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            BLDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            BRDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-            FLDrive.setTargetPosition(FLPosition);
-            FRDrive.setTargetPosition(FRPosition);
-            BLDrive.setTargetPosition(BLPosition);
-            BRDrive.setTargetPosition(BRPosition);
-
-            runtime.reset();
-
-            while(FRDrive.getPower() != power || FLDrive.getPower() != power || BLDrive.getPower() != power || BRDrive.getPower() != power){
-                FLDrive.setPower(power);
-                FRDrive.setPower(power);
-                BLDrive.setPower(power);
-                BRDrive.setPower(power);
+            /*
+             * NOTE: stopping the stream from the camera early (before the end of the OpMode
+             * when it will be automatically stopped for you) *IS* supported. The "if" statement
+             * below will stop streaming from the camera when the "A" button on gamepad 1 is pressed.
+             */
+            if(gamepad1.a)
+            {
+                /*
+                 * IMPORTANT NOTE: calling stopStreaming() will indeed stop the stream of images
+                 * from the camera (and, by extension, stop calling your vision pipeline). HOWEVER,
+                 * if the reason you wish to stop the stream early is to switch use of the camera
+                 * over to, say, Vuforia or TFOD, you will also need to call closeCameraDevice()
+                 * (commented out below), because according to the Android Camera API documentation:
+                 *         "Your application should only have one Camera object active at a time for
+                 *          a particular hardware camera."
+                 *
+                 * NB: calling closeCameraDevice() will internally call stopStreaming() if applicable,
+                 * but it doesn't hurt to call it anyway, if for no other reason than clarity.
+                 *
+                 * NB2: if you are stopping the camera stream to simply save some processing power
+                 * (or battery power) for a short while when you do not need your vision pipeline,
+                 * it is recommended to NOT call closeCameraDevice() as you will then need to re-open
+                 * it the next time you wish to activate your vision pipeline, which can take a bit of
+                 * time. Of course, this comment is irrelevant in light of the use case described in
+                 * the above "important note".
+                 */
+                phoneCam.stopStreaming();
+                //webcam.closeCameraDevice();
             }
 
-            while (opModeIsActive() && (runtime.seconds() < timeout) && (FLDrive.isBusy() && FRDrive.isBusy() && BLDrive.isBusy() && BRDrive.isBusy())) {
-                telemetry.addData("Position", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)FRDrive.getCurrentPosition(), (float)FLDrive.getCurrentPosition(), (float)BRDrive.getCurrentPosition(), (float)BLDrive.getCurrentPosition());
-                telemetry.addData("Target Position", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)FRDrive.getTargetPosition(), (float)FLDrive.getTargetPosition(), (float)BRDrive.getTargetPosition(), (float)BLDrive.getTargetPosition());
-                telemetry.addData("Power", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)FRDrive.getPower(), (float)FLDrive.getPower(), (float)BRDrive.getPower(), (float)BLDrive.getPower());
-                telemetry.update();
+            /*
+             * The viewport (if one was specified in the constructor) can also be dynamically "paused"
+             * and "resumed". The primary use case of this is to reduce CPU, memory, and power load
+             * when you need your vision pipeline running, but do not require a live preview on the
+             * robot controller screen. For instance, this could be useful if you wish to see the live
+             * camera preview as you are initializing your robot, but you no longer require the live
+             * preview after you have finished your initialization process; pausing the viewport does
+             * not stop running your pipeline.
+             *
+             * The "if" statements below will pause the viewport if the "X" button on gamepad1 is pressed,
+             * and resume the viewport if the "Y" button on gamepad1 is pressed.
+             */
+            else if(gamepad1.x)
+            {
+                phoneCam.pauseViewport();
+            }
+            else if(gamepad1.y)
+            {
+                phoneCam.resumeViewport();
             }
 
-            FRDrive.setPower(0);
-            FLDrive.setPower(0);
-            BLDrive.setPower(0);
-            BRDrive.setPower(0);
+            /*
+             * For the purposes of this sample, throttle ourselves to 10Hz loop to avoid burning
+             * excess CPU cycles for no reason. (By default, telemetry is only sent to the DS at 4Hz
+             * anyway). Of course in a real OpMode you will likely not want to do this.
+             */
+            sleep(100);
+        }
+    }
 
-            FLDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            FRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            BLDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            BRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    /*
+     * An example image processing pipeline to be run upon receipt of each frame from the camera.
+     * Note that the processFrame() method is called serially from the frame worker thread -
+     * that is, a new camera frame will not come in while you're still processing a previous one.
+     * In other words, the processFrame() method will never be called multiple times simultaneously.
+     *
+     * However, the rendering of your processed image to the viewport is done in parallel to the
+     * frame worker thread. That is, the amount of time it takes to render the image to the
+     * viewport does NOT impact the amount of frames per second that your pipeline can process.
+     *
+     * IMPORTANT NOTE: this pipeline is NOT invoked on your OpMode thread. It is invoked on the
+     * frame worker thread. This should not be a problem in the vast majority of cases. However,
+     * if you're doing something weird where you do need it synchronized with your OpMode thread,
+     * then you will need to account for that accordingly.
+     */
+    class SamplePipeline extends OpenCvPipeline
+    {
+        /*
+         * NOTE: if you wish to use additional Mat objects in your processing pipeline, it is
+         * highly recommended to declare them here as instance variables and re-use them for
+         * each invocation of processFrame(), rather than declaring them as new local variables
+         * each time through processFrame(). This removes the danger of causing a memory leak
+         * by forgetting to call mat.release(), and it also reduces memory pressure by not
+         * constantly allocating and freeing large chunks of memory.
+         */
+
+        @Override
+        public Mat processFrame(Mat input)
+        {
+            /*
+             * IMPORTANT NOTE: the input Mat that is passed in as a parameter to this method
+             * will only dereference to the same image for the duration of this particular
+             * invocation of this method. That is, if for some reason you'd like to save a copy
+             * of this particular frame for later use, you will need to either clone it or copy
+             * it to another Mat.
+             */
+
+            /*
+             * Draw a simple box around the middle 1/2 of the entire frame
+             */
+            Imgproc.rectangle(
+                    input,
+                    new Point(
+                            input.cols()/4,
+                            input.rows()/4),
+                    new Point(
+                            input.cols()*(3f/4f),
+                            input.rows()*(3f/4f)),
+                    new Scalar(0, 255, 0), 4);
+
+            /**
+             * NOTE: to see how to get data from your pipeline to your OpMode as well as how
+             * to change which stage of the pipeline is rendered to the viewport when it is
+             * tapped, please see {@link PipelineStageSwitchingExample}
+             */
+
+            return input;
         }
     }
 }

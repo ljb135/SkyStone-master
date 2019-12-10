@@ -70,7 +70,7 @@ public class RightCenterParking extends LinearOpMode {
 
         frontGrab.setPosition(0.85);
         sleep(500);
-        Erectus.setPosition(0.5);
+        Erectus.setPosition(0.6);
         foundation.setPosition(0.45);
 
         telemetry.addData("Position", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)FRDrive.getCurrentPosition(), (float)FLDrive.getCurrentPosition(), (float)BRDrive.getCurrentPosition(), (float)BLDrive.getCurrentPosition());

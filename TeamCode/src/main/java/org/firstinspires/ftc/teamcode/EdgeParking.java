@@ -30,11 +30,11 @@ public class EdgeParking extends LinearOpMode {
     private Servo Erectus = null;
     private Servo frontGrab = null;
     private Servo foundation = null;
-    double timeout = 5;
-    int FLPosition = 0;
-    int FRPosition = 0;
-    int BLPosition = 0;
-    int BRPosition = 0;
+    private double timeout = 5;
+    private int FLPosition = 0;
+    private int FRPosition = 0;
+    private int BLPosition = 0;
+    private int BRPosition = 0;
 
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
@@ -70,7 +70,7 @@ public class EdgeParking extends LinearOpMode {
 
         frontGrab.setPosition(0.85);
         sleep(500);
-        Erectus.setPosition(0.5);
+        Erectus.setPosition(0.6);
         foundation.setPosition(0.45);
 
         telemetry.addData("Position", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)FRDrive.getCurrentPosition(), (float)FLDrive.getCurrentPosition(), (float)BRDrive.getCurrentPosition(), (float)BLDrive.getCurrentPosition());

@@ -72,6 +72,7 @@ public class Manual extends LinearOpMode {
     private double BR = 0;
     private boolean grab = false;
     private boolean drag = false;
+    private boolean raised = false;
 
     @Override
     public void runOpMode() {
@@ -108,7 +109,7 @@ public class Manual extends LinearOpMode {
 
         frontGrab.setPosition(0.85);
         sleep(500);
-        Erectus.setPosition(0.5);
+        Erectus.setPosition(0.6);
         foundation.setPosition(0.45);
 
         // run until the end of the match (driver presses STOP)
@@ -126,10 +127,10 @@ public class Manual extends LinearOpMode {
 
             if(abs(gamepad1.left_stick_y) >= threshold || abs(gamepad1.left_stick_x) >= threshold)
             {
-                FR = Range.clip((-gamepad1.left_stick_y + gamepad1.left_stick_x)/2, -1.0, 1.0);
-                FL = Range.clip((-gamepad1.left_stick_y - gamepad1.left_stick_x)/2, -1.0, 1.0);
-                BR = Range.clip((-gamepad1.left_stick_y - gamepad1.left_stick_x)/2, -1.0, 1.0);
-                BL = Range.clip((-gamepad1.left_stick_y + gamepad1.left_stick_x)/2, -1.0, 1.0);
+                FR = Range.clip((-gamepad1.left_stick_y - gamepad1.left_stick_x)/2, -1.0, 1.0);
+                FL = Range.clip((-gamepad1.left_stick_y + gamepad1.left_stick_x)/2, -1.0, 1.0);
+                BR = Range.clip((-gamepad1.left_stick_y + gamepad1.left_stick_x)/2, -1.0, 1.0);
+                BL = Range.clip((-gamepad1.left_stick_y - gamepad1.left_stick_x)/2, -1.0, 1.0);
             }
             if(abs(gamepad1.right_stick_x) > threshold)
             {
@@ -178,10 +179,28 @@ public class Manual extends LinearOpMode {
 
             if(gamepad2.y){
                 frontGrab.setPosition(0.85);
+                sleep(250);
+                Erectus.setPosition(0.6);
+                raised = false;
                 while(Lift.getCurrentPosition() > 80){
                     Lift.setPower(-1);
                 }
                 Lift.setPower(0);
+            }
+
+            if(gamepad2.x && !raised){
+                frontGrab.setPosition(0);
+                sleep(250);
+                Erectus.setPosition(1);
+                raised = true;
+                sleep(250);
+            }
+            else if(gamepad2.x){
+                frontGrab.setPosition(0.85);
+                sleep(250);
+                Erectus.setPosition(0.6);
+                raised = false;
+                sleep(250);
             }
 
             // Show the elapsed game time and wheel power.

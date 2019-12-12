@@ -66,13 +66,14 @@ public class Manual extends LinearOpMode {
     private Servo Erectus = null;
     private Servo frontGrab = null;
     private Servo foundation = null;
+    private Servo capstone = null;
     private double FL = 0;
     private double FR = 0;
     private double BL = 0;
     private double BR = 0;
     private boolean grab = false;
     private boolean drag = false;
-    private boolean raised = false;
+    private boolean raise = false;
 
     @Override
     public void runOpMode() {
@@ -90,6 +91,7 @@ public class Manual extends LinearOpMode {
         Erectus = hardwareMap.get(Servo.class, "erectus");
         frontGrab = hardwareMap.get(Servo.class, "front_grab");
         foundation = hardwareMap.get(Servo.class, "foundation");
+        capstone = hardwareMap.get(Servo.class, "capstone");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -102,6 +104,7 @@ public class Manual extends LinearOpMode {
         Erectus.setDirection(Servo.Direction.FORWARD);
         frontGrab.setDirection(Servo.Direction.FORWARD);
         foundation.setDirection(Servo.Direction.REVERSE);
+        capstone.setDirection(Servo.Direction.FORWARD);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
@@ -111,6 +114,7 @@ public class Manual extends LinearOpMode {
         sleep(500);
         Erectus.setPosition(0.6);
         foundation.setPosition(0.45);
+        capstone.setPosition(0.7);
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -181,26 +185,32 @@ public class Manual extends LinearOpMode {
                 frontGrab.setPosition(0.85);
                 sleep(250);
                 Erectus.setPosition(0.6);
-                raised = false;
+                raise = false;
                 while(Lift.getCurrentPosition() > 80){
                     Lift.setPower(-1);
                 }
                 Lift.setPower(0);
             }
 
-            if(gamepad2.x && !raised){
+            if(gamepad2.x && !raise){
                 frontGrab.setPosition(0);
                 sleep(250);
                 Erectus.setPosition(1);
-                raised = true;
+                raise = true;
                 sleep(250);
             }
             else if(gamepad2.x){
                 frontGrab.setPosition(0.85);
                 sleep(250);
                 Erectus.setPosition(0.6);
-                raised = false;
+                raise = false;
                 sleep(250);
+            }
+
+            if(gamepad1.a){
+                capstone.setPosition(0);
+                sleep(1000);
+                capstone.setPosition(0.7);
             }
 
             // Show the elapsed game time and wheel power.

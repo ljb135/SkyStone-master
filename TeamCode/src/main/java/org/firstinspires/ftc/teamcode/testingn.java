@@ -4,6 +4,8 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.opencv.core.Core;
@@ -29,6 +31,19 @@ import java.util.List;
 //comment out this line before using
 public class testingn extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
+    private DcMotor FRDrive = null;
+    private DcMotor FLDrive = null;
+    private DcMotor BRDrive = null;
+    private DcMotor BLDrive = null;
+    private DcMotor Lift = null;
+    private Servo Erectus = null;
+    private Servo frontGrab = null;
+    private Servo foundation = null;
+    private double timeout = 5;
+    private int FLPosition = 0;
+    private int FRPosition = 0;
+    private int BLPosition = 0;
+    private int BRPosition = 0;
 
     //0 means skystone, 1 means yellow stone
     //-1 for debug, but we can keep it like this because if it works, it should change to either 0 or 255
@@ -54,7 +69,26 @@ public class testingn extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+        FRDrive  = hardwareMap.get(DcMotor.class, "front_right");
+        FLDrive = hardwareMap.get(DcMotor.class, "front_left");
+        BRDrive  = hardwareMap.get(DcMotor.class, "back_right");
+        BLDrive  = hardwareMap.get(DcMotor.class, "back_left");
+        Lift  = hardwareMap.get(DcMotor.class, "lift");
+        Erectus = hardwareMap.get(Servo.class, "erectus");
+        frontGrab = hardwareMap.get(Servo.class, "front_grab");
+        foundation = hardwareMap.get(Servo.class, "foundation");
 
+        // Most robots need the motor on one side to be reversed to drive forward
+        // Reverse the motor that runs backwards when connected directly to the battery
+
+        FRDrive.setDirection(DcMotor.Direction.REVERSE);
+        FLDrive.setDirection(DcMotor.Direction.FORWARD);
+        BRDrive.setDirection(DcMotor.Direction.REVERSE);
+        BLDrive.setDirection(DcMotor.Direction.FORWARD);
+        Lift.setDirection(DcMotor.Direction.REVERSE);
+        Erectus.setDirection(Servo.Direction.FORWARD);
+        frontGrab.setDirection(Servo.Direction.FORWARD);
+        foundation.setDirection(Servo.Direction.REVERSE);
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
         phoneCam.openCameraDevice();//open camera
@@ -72,6 +106,11 @@ public class testingn extends LinearOpMode {
 
             telemetry.update();
             sleep(100);
+            while(valMid!=0){
+
+            }
+            moverobot(20,20,0.5);
+
             //call movement functions
 //            strafe(0.4, 200);
 //            moveDistance(0.4, 700);
@@ -214,5 +253,53 @@ public class testingn extends LinearOpMode {
             }
         }
 
+    }
+    private void moverobot(int left, int right, double power){
+        if(opModeIsActive()){
+            FLPosition += left;
+            FRPosition += right;
+            BLPosition += left;
+            BRPosition += right;
+            FLDrive.setTargetPosition(FLPosition);
+            FRDrive.setTargetPosition(FRPosition);
+            BLDrive.setTargetPosition(BLPosition);
+            BRDrive.setTargetPosition(BRPosition);
+
+            FLDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            FRDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            BLDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            BRDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            FLDrive.setTargetPosition(FLPosition);
+            FRDrive.setTargetPosition(FRPosition);
+            BLDrive.setTargetPosition(BLPosition);
+            BRDrive.setTargetPosition(BRPosition);
+
+            runtime.reset();
+
+            while(FRDrive.getPower() != power || FLDrive.getPower() != power || BLDrive.getPower() != power || BRDrive.getPower() != power){
+                FLDrive.setPower(power);
+                FRDrive.setPower(power);
+                BLDrive.setPower(power);
+                BRDrive.setPower(power);
+            }
+
+            while (opModeIsActive() && (runtime.seconds() < timeout) && (FLDrive.isBusy() && FRDrive.isBusy() && BLDrive.isBusy() && BRDrive.isBusy())) {
+                telemetry.addData("Position", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)FRDrive.getCurrentPosition(), (float)FLDrive.getCurrentPosition(), (float)BRDrive.getCurrentPosition(), (float)BLDrive.getCurrentPosition());
+                telemetry.addData("Target Position", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)FRDrive.getTargetPosition(), (float)FLDrive.getTargetPosition(), (float)BRDrive.getTargetPosition(), (float)BLDrive.getTargetPosition());
+                telemetry.addData("Power", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)FRDrive.getPower(), (float)FLDrive.getPower(), (float)BRDrive.getPower(), (float)BLDrive.getPower());
+                telemetry.update();
+            }
+
+            FRDrive.setPower(0);
+            FLDrive.setPower(0);
+            BLDrive.setPower(0);
+            BRDrive.setPower(0);
+
+            FLDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            FRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            BLDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            BRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
     }
 }

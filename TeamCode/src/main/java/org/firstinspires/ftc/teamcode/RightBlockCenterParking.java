@@ -30,6 +30,7 @@ public class RightBlockCenterParking extends LinearOpMode {
     private Servo Erectus = null;
     private Servo frontGrab = null;
     private Servo foundation = null;
+    private Servo capstone = null;
     private double timeout = 5;
     private int FLPosition = 0;
     private int FRPosition = 0;
@@ -51,6 +52,7 @@ public class RightBlockCenterParking extends LinearOpMode {
         Erectus = hardwareMap.get(Servo.class, "erectus");
         frontGrab = hardwareMap.get(Servo.class, "front_grab");
         foundation = hardwareMap.get(Servo.class, "foundation");
+        capstone = hardwareMap.get(Servo.class, "capstone");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -63,13 +65,15 @@ public class RightBlockCenterParking extends LinearOpMode {
         Erectus.setDirection(Servo.Direction.FORWARD);
         frontGrab.setDirection(Servo.Direction.FORWARD);
         foundation.setDirection(Servo.Direction.REVERSE);
+        capstone.setDirection(Servo.Direction.FORWARD);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
 
+        capstone.setPosition(0.7);
         frontGrab.setPosition(0.85);
-        sleep(500);
+        sleep(250);
         Erectus.setPosition(0.6);
         foundation.setPosition(0.45);
 
@@ -82,30 +86,64 @@ public class RightBlockCenterParking extends LinearOpMode {
         BRDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         telemetry.addData("Stage 1", true); //drive up to blocks
-        move(1700,1700,0.3);
-        sleep(500);
+        move(1600,1600,0.3);
+        sleep(250);
 
         frontGrab.setPosition(0);
-        sleep(500);
+        sleep(250);
 
         telemetry.addData("Stage 2", true); //back up slightly
         move(-200,-200,0.3);
-        sleep(500);
+        sleep(250);
 
         telemetry.addData("Stage 3", true); //rotate left
         move(-950,950,0.3);
-        sleep(500);
+        sleep(250);
 
         telemetry.addData("Stage 4", true); //drive past bridge
-        move(2500,2500,0.3);
-        sleep(500);
+        move(2400,2400,0.3);
+        sleep(250);
+
+        frontGrab.setPosition(0.85);
+        sleep(250);
+
+        telemetry.addData("Stage 5", true); //backup
+        move(-3000,-3000,0.3);
+        sleep(250);
+
+        telemetry.addData("Stage 5", true); //rotate right
+        move(950,-950,0.3);
+        sleep(250);
+
+        telemetry.addData("Stage 5", true); //drive up to blocks
+        move(300,300,0.3);
+        sleep(250);
 
         frontGrab.setPosition(0);
-        sleep(500);
+        sleep(250);
+
+        telemetry.addData("Stage 2", true); //back up slightly
+        move(-300,-300,0.3);
+        sleep(250);
+
+        telemetry.addData("Stage 3", true); //rotate left
+        move(-950,950,0.3);
+        sleep(250
+        );
+
+        telemetry.addData("Stage 4", true); //drive past bridge
+        move(3000,3000,0.3);
+        sleep(250
+        );
+
+        frontGrab.setPosition(0.85);
+        sleep(250
+        );
 
         telemetry.addData("Stage 5", true); //backup and park
         move(-1300,-1300,0.3);
-        sleep(500);
+        sleep(250
+        );
     }
 
     private void move(int left, int right, double power){

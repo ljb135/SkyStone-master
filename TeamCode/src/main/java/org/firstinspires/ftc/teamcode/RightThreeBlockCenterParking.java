@@ -19,8 +19,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Left Center Parking", group="Linear Opmode")
-public class LeftCenterParking extends LinearOpMode {
+@Autonomous(name="Right Three Block Center Parking", group="Linear Opmode")
+public class RightThreeBlockCenterParking extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor FRDrive = null;
     private DcMotor FLDrive = null;
@@ -71,25 +71,109 @@ public class LeftCenterParking extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        capstone.setPosition(0.7);
         frontGrab.setPosition(0.85);
-        sleep(500);
+        sleep(250
+        );
         Erectus.setPosition(0.6);
         foundation.setPosition(0.45);
+        capstone.setPosition(0.7);
 
         telemetry.addData("Position", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)FRDrive.getCurrentPosition(), (float)FLDrive.getCurrentPosition(), (float)BRDrive.getCurrentPosition(), (float)BLDrive.getCurrentPosition());
         telemetry.update();
 
-        telemetry.addData("Stage 1", true); //drive up near center
-        move(1500,1500,0.3);
+        FLDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        FRDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BLDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BRDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+        telemetry.addData("Stage 1", true); //drive up to blocks
+        move(1700,1700,0.3);
+        sleep(250);
+
+        frontGrab.setPosition(0);
+        sleep(250);
+
+        telemetry.addData("Stage 2", true); //back up slightly
+        move(-300,-300,0.6);
+        sleep(250);
+
+        telemetry.addData("Stage 3", true); //rotate left
+        move(-950,950,0.3);
+        sleep(250);
+
+        telemetry.addData("Stage 4", true); //drive past bridge
+        move(2150,2150,0.6);
         sleep(500);
 
-        telemetry.addData("Stage 2", true); //rotate right
+        frontGrab.setPosition(0.85);
+        sleep(250);
+
+        telemetry.addData("Stage 5", true); //back up
+        move(-2750,-2750,0.6);
+        sleep(500);
+
+        telemetry.addData("Stage 5", true); //rotate right
         move(950,-950,0.3);
+        sleep(250);
+
+        telemetry.addData("Stage 5", true); //drive up to blocks
+        move(300,300,0.3);
+        sleep(250);
+
+        frontGrab.setPosition(0);
+        sleep(250);
+
+        telemetry.addData("Stage 2", true); //back up slightly
+        move(-300,-300,0.6);
+        sleep(250);
+
+        telemetry.addData("Stage 3", true); //rotate left
+        move(-950,950,0.3);
+        sleep(250
+        );
+
+        telemetry.addData("Stage 4", true); //drive past bridge
+        move(3100,3100,0.6);
+        sleep(500
+        );
+
+        frontGrab.setPosition(0.85);
+        sleep(250
+        );
+
+        telemetry.addData("Stage 5", true); //backup and park
+        move(-3500,-3500,0.6);
         sleep(500);
 
-        telemetry.addData("Stage 1", true); //drive forward and park
-        move(1300,1300,0.3);
+        telemetry.addData("Stage 5", true); //rotate right
+        move(950,-950,0.3);
+        sleep(250);
+
+        telemetry.addData("Stage 5", true); //drive up to blocks
+        move(300,300,0.3);
+        sleep(250);
+
+        frontGrab.setPosition(0);
+        sleep(250);
+
+        telemetry.addData("Stage 2", true); //back up slightly
+        move(-300,-300,0.6);
+        sleep(250);
+
+        telemetry.addData("Stage 3", true); //rotate left
+        move(-950,950,0.3);
+        sleep(250);
+
+        telemetry.addData("Stage 4", true); //drive past bridge
+        move(3700,3700,0.6);
+        sleep(500);
+
+        frontGrab.setPosition(0.85);
+        sleep(250);
+
+        telemetry.addData("Stage 5", true); //backup and park
+        move(-1300,-1300,0.3);
+        sleep(250);
     }
 
     private void move(int left, int right, double power){

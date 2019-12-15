@@ -72,14 +72,7 @@ public class LeftFoundationParking extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        telemetry.addData("Position", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)FRDrive.getCurrentPosition(), (float)FLDrive.getCurrentPosition(), (float)BRDrive.getCurrentPosition(), (float)BLDrive.getCurrentPosition());
-        telemetry.update();
-
-        FLDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        FRDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        BLDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        BRDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-
+        capstone.setPosition(0.7);
         foundation.setPosition(0.45);
         frontGrab.setPosition(1);
         capstone.setPosition(0.7);

@@ -1,26 +1,36 @@
+
 package org.firstinspires.ftc.teamcode;
+
+import android.app.Activity;
+import android.graphics.Color;
+import android.view.View;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-/**
- * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
- * the autonomous or the teleop period of an FTC match. The names of OpModes appear on the menu
- * of the FTC Driver Station. When an selection is made from the menu, the corresponding OpMode
- * class is instantiated on the Robot Controller and executed.
- *
- * This particular OpMode just executes a basic Tank Drive Teleop for a two wheeled robot
- * It includes all the skeletal structure that all linear OpModes contain.
- *
- * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
- * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
- */
+import org.opencv.core.Core;
+import org.opencv.core.Mat;
+import org.opencv.core.MatOfPoint;
+import org.opencv.core.Point;
+import org.opencv.core.Scalar;
+import org.opencv.imgproc.Imgproc;
+import org.openftc.easyopencv.OpenCvCamera;
+import org.openftc.easyopencv.OpenCvCameraFactory;
+import org.openftc.easyopencv.OpenCvCameraRotation;
+import org.openftc.easyopencv.OpenCvInternalCamera;
+import org.openftc.easyopencv.OpenCvPipeline;
 
-@Autonomous(name="Left Center Parking", group="Linear Opmode")
-public class LeftCenterParking extends LinearOpMode {
+import java.util.ArrayList;
+import java.util.List;
+
+
+@Autonomous(name= "ColorSense", group="Linear Opmode")
+//comment out this line before using
+public class colorsense extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor FRDrive = null;
     private DcMotor FLDrive = null;
@@ -30,20 +40,35 @@ public class LeftCenterParking extends LinearOpMode {
     private Servo Erectus = null;
     private Servo frontGrab = null;
     private Servo foundation = null;
-    private Servo capstone = null;
+    private ColorSensor colorSensor;
     private double timeout = 5;
     private int FLPosition = 0;
     private int FRPosition = 0;
     private int BLPosition = 0;
     private int BRPosition = 0;
 
+    @Override
     public void runOpMode() {
-        telemetry.addData("Status", "Initialized");
-        telemetry.update();
 
-        // Initialize the hardware variables. Note that the strings used here as parameters
-        // to 'get' must correspond to the names assigned during the robot configuration
-        // step (using the FTC Robot Controller app on the phone).
+        // hsvValues is an array that will hold the hue, saturation, and value information.
+        float hsvValues[] = {0F,0F,0F};
+
+        // values is a reference to the hsvValues array.
+        final float values[] = hsvValues;
+
+        // get a reference to the RelativeLayout so we can change the background
+        // color of the Robot Controller app to match the hue detected by the RGB sensor.
+        int relativeLayoutId = hardwareMap.appContext.getResources().getIdentifier("RelativeLayout", "id", hardwareMap.appContext.getPackageName());
+        final View relativeLayout = ((Activity) hardwareMap.appContext).findViewById(relativeLayoutId);
+
+        // bPrevState and bCurrState represent the previous and current state of the button.
+        boolean bPrevState = false;
+        boolean bCurrState = false;
+
+        // bLedOn represents the state of the LED.
+        boolean bLedOn = true;
+
+        // get a reference to our ColorSensor object.
         FRDrive  = hardwareMap.get(DcMotor.class, "front_right");
         FLDrive = hardwareMap.get(DcMotor.class, "front_left");
         BRDrive  = hardwareMap.get(DcMotor.class, "back_right");
@@ -52,11 +77,9 @@ public class LeftCenterParking extends LinearOpMode {
         Erectus = hardwareMap.get(Servo.class, "erectus");
         frontGrab = hardwareMap.get(Servo.class, "front_grab");
         foundation = hardwareMap.get(Servo.class, "foundation");
-        capstone = hardwareMap.get(Servo.class, "capstone");
+        colorSensor = hardwareMap.get(ColorSensor.class, "sensor_color");
 
-        // Most robots need the motor on one side to be reversed to drive forward
-        // Reverse the motor that runs backwards when connected directly to the battery
-
+        // Set the LED in the beginning
         FRDrive.setDirection(DcMotor.Direction.REVERSE);
         FLDrive.setDirection(DcMotor.Direction.FORWARD);
         BRDrive.setDirection(DcMotor.Direction.REVERSE);
@@ -65,34 +88,60 @@ public class LeftCenterParking extends LinearOpMode {
         Erectus.setDirection(Servo.Direction.FORWARD);
         frontGrab.setDirection(Servo.Direction.FORWARD);
         foundation.setDirection(Servo.Direction.REVERSE);
-        capstone.setDirection(Servo.Direction.FORWARD);
+        colorSensor.enableLed(bLedOn);
 
-        // Wait for the game to start (driver presses PLAY)
+        // wait for the start button to be pressed.
         waitForStart();
-        runtime.reset();
 
-        capstone.setPosition(0.7);
-        frontGrab.setPosition(0.85);
-        sleep(500);
-        Erectus.setPosition(0.6);
-        foundation.setPosition(0.45);
+        // while the op mode is active, loop and read the RGB data.
+        // Note we use opModeIsActive() as our loop condition because it is an interruptible method.
+        while (opModeIsActive()) {
 
-        telemetry.addData("Position", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)FRDrive.getCurrentPosition(), (float)FLDrive.getCurrentPosition(), (float)BRDrive.getCurrentPosition(), (float)BLDrive.getCurrentPosition());
-        telemetry.update();
+            // check the status of the x button on either gamepad.
+            bCurrState = gamepad1.x;
 
-        telemetry.addData("Stage 1", true); //drive up near center
-        move(1500,1500,0.3);
-        sleep(500);
+            // check for button state transitions.
+            if (bCurrState && (bCurrState != bPrevState))  {
 
-        telemetry.addData("Stage 2", true); //rotate right
-        move(950,-950,0.3);
-        sleep(500);
+                // button is transitioning to a pressed state. So Toggle LED
+                bLedOn = !bLedOn;
+                colorSensor.enableLed(bLedOn);
+            }
 
-        telemetry.addData("Stage 1", true); //drive forward and park
-        move(1300,1300,0.3);
+            // update previous state variable.
+            bPrevState = bCurrState;
+
+            // convert the RGB values to HSV values.
+            Color.RGBToHSV(colorSensor.red() * 8, colorSensor.green() * 8, colorSensor.blue() * 8, hsvValues);
+
+            // send the info back to driver station using telemetry function.
+            telemetry.addData("LED", bLedOn ? "On" : "Off");
+            telemetry.addData("Clear", colorSensor.alpha());
+            telemetry.addData("Red  ", colorSensor.red());
+            telemetry.addData("Green", colorSensor.green());
+            telemetry.addData("Blue ", colorSensor.blue());
+            telemetry.addData("Hue", hsvValues[0]);
+
+            // change the background color to match the color detected by the RGB sensor.
+            // pass a reference to the hue, saturation, and value array as an argument
+            // to the HSVToColor method.
+            relativeLayout.post(new Runnable() {
+                public void run() {
+                    relativeLayout.setBackgroundColor(Color.HSVToColor(0xff, values));
+                }
+            });
+
+            telemetry.update();
+        }
+
+        // Set the panel back to the default color
+        relativeLayout.post(new Runnable() {
+            public void run() {
+                relativeLayout.setBackgroundColor(Color.WHITE);
+            }
+        });
     }
-
-    private void move(int left, int right, double power){
+    private void moverobot(int left, int right, double power){
         if(opModeIsActive()){
             FLPosition += left;
             FRPosition += right;

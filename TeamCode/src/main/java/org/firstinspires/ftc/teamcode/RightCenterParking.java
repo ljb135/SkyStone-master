@@ -30,6 +30,7 @@ public class RightCenterParking extends LinearOpMode {
     private Servo Erectus = null;
     private Servo frontGrab = null;
     private Servo foundation = null;
+    private Servo capstone = null;
     private double timeout = 5;
     private int FLPosition = 0;
     private int FRPosition = 0;
@@ -51,6 +52,7 @@ public class RightCenterParking extends LinearOpMode {
         Erectus = hardwareMap.get(Servo.class, "erectus");
         frontGrab = hardwareMap.get(Servo.class, "front_grab");
         foundation = hardwareMap.get(Servo.class, "foundation");
+        capstone = hardwareMap.get(Servo.class, "capstone");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -63,12 +65,13 @@ public class RightCenterParking extends LinearOpMode {
         Erectus.setDirection(Servo.Direction.FORWARD);
         frontGrab.setDirection(Servo.Direction.FORWARD);
         foundation.setDirection(Servo.Direction.REVERSE);
+        capstone.setDirection(Servo.Direction.FORWARD);
 
         // Wait for the game to start (driver presses PLAY)
         waitForStart();
         runtime.reset();
 
-        frontGrab.setPosition(0.85);
+        capstone.setPosition(0.7);
         sleep(500);
         Erectus.setPosition(0.6);
         foundation.setPosition(0.45);

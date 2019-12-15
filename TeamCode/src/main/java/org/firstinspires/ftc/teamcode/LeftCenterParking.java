@@ -77,18 +77,18 @@ public class LeftCenterParking extends LinearOpMode {
         telemetry.update();
 
         telemetry.addData("Stage 1", true); //drive up near center
-        moverobot(1500,1500,0.3);
+        move(1500,1500,0.3);
         sleep(500);
 
         telemetry.addData("Stage 2", true); //rotate right
-        moverobot(950,-950,0.3);
+        move(950,-950,0.3);
         sleep(500);
 
         telemetry.addData("Stage 1", true); //drive forward and park
-        moverobot(1300,1300,0.3);
+        move(1300,1300,0.3);
     }
 
-    private void moverobot(int left, int right, double power){
+    private void move(int left, int right, double power){
         if(opModeIsActive()){
             FLPosition += left;
             FRPosition += right;

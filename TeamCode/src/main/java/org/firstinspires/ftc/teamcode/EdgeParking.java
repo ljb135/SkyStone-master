@@ -77,11 +77,11 @@ public class EdgeParking extends LinearOpMode {
         telemetry.update();
 
         telemetry.addData("Stage 1", true); //move forward to park
-        moverobot(1300,1300,0.3);
+        move(1300,1300,0.3);
         sleep(500);
     }
 
-    private void moverobot(int left, int right, double power){
+    private void move(int left, int right, double power){
         if(opModeIsActive()){
             FLPosition += left;
             FRPosition += right;

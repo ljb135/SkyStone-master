@@ -82,33 +82,33 @@ public class RightBlockCenterParking extends LinearOpMode {
         BRDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         telemetry.addData("Stage 1", true); //drive up to blocks
-        moverobot(1700,1700,0.3);
+        move(1700,1700,0.3);
         sleep(500);
 
         frontGrab.setPosition(0);
         sleep(500);
 
         telemetry.addData("Stage 2", true); //back up slightly
-        moverobot(-200,-200,0.3);
+        move(-200,-200,0.3);
         sleep(500);
 
         telemetry.addData("Stage 3", true); //rotate left
-        moverobot(-950,950,0.3);
+        move(-950,950,0.3);
         sleep(500);
 
         telemetry.addData("Stage 4", true); //drive past bridge
-        moverobot(2500,2500,0.3);
+        move(2500,2500,0.3);
         sleep(500);
 
         frontGrab.setPosition(0);
         sleep(500);
 
         telemetry.addData("Stage 5", true); //backup and park
-        moverobot(-1300,-1300,0.3);
+        move(-1300,-1300,0.3);
         sleep(500);
     }
 
-    private void moverobot(int left, int right, double power){
+    private void move(int left, int right, double power){
         if(opModeIsActive()){
             FLPosition += left;
             FRPosition += right;

@@ -71,6 +71,7 @@ public class Manual extends LinearOpMode {
     private double FR = 0;
     private double BL = 0;
     private double BR = 0;
+    private boolean sensitive = false;
     private boolean grab = false;
     private boolean drag = false;
     private boolean raise = false;
@@ -100,7 +101,7 @@ public class Manual extends LinearOpMode {
         FLDrive.setDirection(DcMotor.Direction.FORWARD);
         BRDrive.setDirection(DcMotor.Direction.REVERSE);
         BLDrive.setDirection(DcMotor.Direction.FORWARD);
-        Lift.setDirection(DcMotor.Direction.REVERSE);
+        Lift.setDirection(DcMotor.Direction.FORWARD);
         Erectus.setDirection(Servo.Direction.FORWARD);
         frontGrab.setDirection(Servo.Direction.FORWARD);
         foundation.setDirection(Servo.Direction.REVERSE);
@@ -129,20 +130,24 @@ public class Manual extends LinearOpMode {
             // POV Mode uses left stick to go forward, and right stick to turn.
             // - This uses basic math to combine motions and is easier to drive straight.
 
-            if(abs(gamepad1.left_stick_y) >= threshold || abs(gamepad1.left_stick_x) >= threshold)
-            {
-                FR = Range.clip((-gamepad1.left_stick_y - gamepad1.left_stick_x)/2, -1.0, 1.0);
-                FL = Range.clip((-gamepad1.left_stick_y + gamepad1.left_stick_x)/2, -1.0, 1.0);
-                BR = Range.clip((-gamepad1.left_stick_y + gamepad1.left_stick_x)/2, -1.0, 1.0);
-                BL = Range.clip((-gamepad1.left_stick_y - gamepad1.left_stick_x)/2, -1.0, 1.0);
+            if(!sensitive && (abs(gamepad1.left_stick_y) >= threshold || abs(gamepad1.left_stick_x) >= threshold)) {
+                FR = Range.clip((-gamepad1.left_stick_y - gamepad1.left_stick_x) / 2, -1.0, 1.0);
+                FL = Range.clip((-gamepad1.left_stick_y + gamepad1.left_stick_x) / 2, -1.0, 1.0);
+                BR = Range.clip((-gamepad1.left_stick_y + gamepad1.left_stick_x) / 2, -1.0, 1.0);
+                BL = Range.clip((-gamepad1.left_stick_y - gamepad1.left_stick_x) / 2, -1.0, 1.0);
             }
-            if(abs(gamepad1.right_stick_x) > threshold)
-            {
+            else if (abs(gamepad1.left_stick_y) >= threshold || abs(gamepad1.left_stick_x) >= threshold) {
+                FR = Range.scale((-gamepad1.left_stick_y - gamepad1.left_stick_x) / 2, -1.0, 1.0, -0.5,0.5);
+                FL = Range.scale((-gamepad1.left_stick_y + gamepad1.left_stick_x) / 2, -1.0, 1.0, -0.5,0.5);
+                BR = Range.scale((-gamepad1.left_stick_y + gamepad1.left_stick_x) / 2, -1.0, 1.0, -0.5,0.5);
+                BL = Range.scale((-gamepad1.left_stick_y - gamepad1.left_stick_x) / 2, -1.0, 1.0, -0.5,0.5);
+            }
+            if (abs(gamepad1.right_stick_x) > threshold) {
                 //rotate
-                FR = Range.clip((-gamepad1.right_stick_x)/2, -0.6, 0.6);
-                FL = Range.clip((gamepad1.right_stick_x)/2, -0.6, 0.6);
-                BR = Range.clip((-gamepad1.right_stick_x)/2, -0.6, 0.6);
-                BL = Range.clip((gamepad1.right_stick_x)/2, -0.6, 0.6);
+                FR = Range.clip((-gamepad1.right_stick_x) / 2, -0.6, 0.6);
+                FL = Range.clip((gamepad1.right_stick_x) / 2, -0.6, 0.6);
+                BR = Range.clip((-gamepad1.right_stick_x) / 2, -0.6, 0.6);
+                BL = Range.clip((gamepad1.right_stick_x) / 2, -0.6, 0.6);
             }
 
             FRDrive.setPower(FR);
@@ -150,7 +155,7 @@ public class Manual extends LinearOpMode {
             BRDrive.setPower(BR);
             BLDrive.setPower(BL);
 
-            if(gamepad2.dpad_up && Lift.getCurrentPosition() < 2800){
+            if(gamepad2.dpad_up && Lift.getCurrentPosition() < 2780){
                 Lift.setPower(1);
             }
             else if(gamepad2.dpad_down && Lift.getCurrentPosition() > 80){
@@ -211,6 +216,11 @@ public class Manual extends LinearOpMode {
                 capstone.setPosition(0);
                 sleep(1000);
                 capstone.setPosition(0.7);
+            }
+
+            if(gamepad1.b){
+                sensitive = !sensitive;
+                sleep(500);
             }
 
             // Show the elapsed game time and wheel power.

@@ -72,18 +72,20 @@ public class LeftFoundationParking extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        capstone.setPosition(0.7);
+        capstone.setPosition(0.8);
         foundation.setPosition(0.45);
         frontGrab.setPosition(1);
-        capstone.setPosition(0.7);
         Erectus.setPosition(1);
 
+        move(-200,-200,0.3);
+        sleep(250);
+
         telemetry.addData("Stage 0", true); //strafe right
-        strafe(300,0.4);
+        strafe(600,0.4);
         sleep(250);
 
         telemetry.addData("Stage 1", true); //back up into foundation
-        move(-2100,-2100,0.3);
+        move(-1900,-1900,0.3);
         sleep(250);
 
         frontGrab.setPosition(0);
@@ -106,7 +108,7 @@ public class LeftFoundationParking extends LinearOpMode {
         sleep(250);
 
         telemetry.addData("Stage 5", true); //drive forward to edge
-        move(1800,1800,0.4);
+        move(1700,1700,0.4);
         sleep(250);
 
         telemetry.addData("Stage 6", true); //rotate left
@@ -117,12 +119,26 @@ public class LeftFoundationParking extends LinearOpMode {
         move(2500,2500,0.4);
         sleep(250);
 
+//        move(1200, 1200, 0.4);
+//        sleep(250);
+//        move(950,-950,0.4);
+//        sleep(250);
+//        move(-600,-600,0.4);
+//        sleep(250);
+//        move(200,200,0.4);
+//        sleep(250);
+//        move(-950,950,0.4);
+//        sleep(250);
+//        move(1200, 1200, 0.4);
+//        sleep(250);
+
+
         telemetry.addData("Stage 8", true); //rotate left
         move(-950,950,0.4);
         sleep(250);
 
         telemetry.addData("Stage 9", true); //drive forward to near middle
-        move(1800,1800,0.4);
+        move(1700,1700,0.4);
         sleep(250);
 
         telemetry.addData("Stage 10", true); //rotate left
@@ -138,7 +154,7 @@ public class LeftFoundationParking extends LinearOpMode {
         foundation.setPosition(0.45);
 
         telemetry.addData("Stage 12", true); //drive up near center
-        move(650,650,0.4);
+        move(600,600,0.4);
         sleep(250);
 
         telemetry.addData("Stage 13", true); //rotate right

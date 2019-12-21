@@ -111,11 +111,11 @@ public class Manual extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
+        capstone.setPosition(0.8);
         frontGrab.setPosition(0.85);
         sleep(500);
         Erectus.setPosition(0.6);
         foundation.setPosition(0.45);
-        capstone.setPosition(0.7);
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -124,6 +124,15 @@ public class Manual extends LinearOpMode {
 
             // Choose to drive using either Tank Mode, or POV Mode
             // Comment out the method that's not used.  The default below is POV.
+
+            if(Lift.getCurrentPosition() > 2680){
+                Lift.setPower(Range.clip(-gamepad2.left_stick_y, -0.8, 0));
+            }
+            else if(Lift.getCurrentPosition() < 80){
+                Lift.setPower(Range.clip(-gamepad2.left_stick_y, 0, 1.0));
+            } else {
+                Lift.setPower(Range.clip(-gamepad2.left_stick_y, -0.8, 1.0));
+            }
 
             double threshold = 0;
 
@@ -155,14 +164,16 @@ public class Manual extends LinearOpMode {
             BRDrive.setPower(BR);
             BLDrive.setPower(BL);
 
-            if(gamepad2.dpad_up && Lift.getCurrentPosition() < 2780){
-                Lift.setPower(1);
-            }
-            else if(gamepad2.dpad_down && Lift.getCurrentPosition() > 80){
-                Lift.setPower(-1);
-            } else {
-                Lift.setPower(0);
-            }
+//            if(gamepad2.dpad_up && Lift.getCurrentPosition() < 2680){
+//                Lift.setPower(0.5);
+//            }
+//            else if(gamepad2.dpad_down && Lift.getCurrentPosition() > 80){
+//                Lift.setPower(-0.5);
+//            } else {
+//                Lift.setPower(0);
+//            }
+
+
 
             if(gamepad2.a && !grab){
                 frontGrab.setPosition(0);
@@ -215,7 +226,7 @@ public class Manual extends LinearOpMode {
             if(gamepad1.a){
                 capstone.setPosition(0);
                 sleep(1000);
-                capstone.setPosition(0.7);
+                capstone.setPosition(0.8);
             }
 
             if(gamepad1.b){

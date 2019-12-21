@@ -71,12 +71,11 @@ public class RightThreeBlockCenterParking extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
+        capstone.setPosition(0.8);
         frontGrab.setPosition(0.85);
-        sleep(250
-        );
+        sleep(250);
         Erectus.setPosition(0.6);
         foundation.setPosition(0.45);
-        capstone.setPosition(0.7);
 
         telemetry.addData("Position", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)FRDrive.getCurrentPosition(), (float)FLDrive.getCurrentPosition(), (float)BRDrive.getCurrentPosition(), (float)BLDrive.getCurrentPosition());
         telemetry.update();

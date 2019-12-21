@@ -27,9 +27,9 @@ import java.util.List;
 
 
 
-@Autonomous(name= "opencvSkystoneDetector", group="Linear Opmode")
+@Autonomous(name= "opencvSkystoneGrab", group="Linear Opmode")
 //comment out this line before using
-public class testingn extends LinearOpMode {
+public class FoundationTesting extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor FRDrive = null;
     private DcMotor FLDrive = null;

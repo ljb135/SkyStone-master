@@ -71,7 +71,7 @@ public class RightCenterParking extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        capstone.setPosition(0.7);
+        capstone.setPosition(0.8);
         sleep(500);
         Erectus.setPosition(0.6);
         foundation.setPosition(0.45);

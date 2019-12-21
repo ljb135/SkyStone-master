@@ -106,10 +106,20 @@ public class testingn extends LinearOpMode {
 
             telemetry.update();
             sleep(100);
-            while(valMid!=0){
-
-            }
             moverobot(20,20,0.5);
+            if (valMid == 0) {
+                strafe(200, 0.5);
+                moverobot(700, 700, 0.5);
+            }
+            if(valLeft==0){
+                strafe(-50, 0.5);
+                moverobot(700, 700, 0.5);
+            }
+            if(valRight==0){
+                strafe(600,0.5);
+                moverobot(700,700,0.5);
+            }
+
 
             //call movement functions
 //            strafe(0.4, 200);
@@ -260,6 +270,54 @@ public class testingn extends LinearOpMode {
             FRPosition += right;
             BLPosition += left;
             BRPosition += right;
+            FLDrive.setTargetPosition(FLPosition);
+            FRDrive.setTargetPosition(FRPosition);
+            BLDrive.setTargetPosition(BLPosition);
+            BRDrive.setTargetPosition(BRPosition);
+
+            FLDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            FRDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            BLDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            BRDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            FLDrive.setTargetPosition(FLPosition);
+            FRDrive.setTargetPosition(FRPosition);
+            BLDrive.setTargetPosition(BLPosition);
+            BRDrive.setTargetPosition(BRPosition);
+
+            runtime.reset();
+
+            while(FRDrive.getPower() != power || FLDrive.getPower() != power || BLDrive.getPower() != power || BRDrive.getPower() != power){
+                FLDrive.setPower(power);
+                FRDrive.setPower(power);
+                BLDrive.setPower(power);
+                BRDrive.setPower(power);
+            }
+
+            while (opModeIsActive() && (runtime.seconds() < timeout) && (FLDrive.isBusy() && FRDrive.isBusy() && BLDrive.isBusy() && BRDrive.isBusy())) {
+                telemetry.addData("Position", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)FRDrive.getCurrentPosition(), (float)FLDrive.getCurrentPosition(), (float)BRDrive.getCurrentPosition(), (float)BLDrive.getCurrentPosition());
+                telemetry.addData("Target Position", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)FRDrive.getTargetPosition(), (float)FLDrive.getTargetPosition(), (float)BRDrive.getTargetPosition(), (float)BLDrive.getTargetPosition());
+                telemetry.addData("Power", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)FRDrive.getPower(), (float)FLDrive.getPower(), (float)BRDrive.getPower(), (float)BLDrive.getPower());
+                telemetry.update();
+            }
+
+            FRDrive.setPower(0);
+            FLDrive.setPower(0);
+            BLDrive.setPower(0);
+            BRDrive.setPower(0);
+
+            FLDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            FRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            BLDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            BRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
+    }
+    private void strafe(int distance, double power){
+        if(opModeIsActive()){
+            FLPosition += distance;
+            FRPosition -= distance;
+            BLPosition -= distance;
+            BRPosition += distance;
             FLDrive.setTargetPosition(FLPosition);
             FRDrive.setTargetPosition(FRPosition);
             BLDrive.setTargetPosition(BLPosition);

@@ -108,7 +108,7 @@ public class testingn extends LinearOpMode {
         frontGrab.setPosition(1);
         Erectus.setPosition(1);
 
-        while (opModeIsActive()) {
+
             telemetry.addData("Values", valLeft+"   "+valMid+"   "+valRight);
             telemetry.addData("Height", rows);
             telemetry.addData("Width", cols);
@@ -117,10 +117,9 @@ public class testingn extends LinearOpMode {
             sleep(100);
             moverobot(500,500,0.5);
             while(valMid!=0){
-                strafe(-100,0.8);
+                strafe(150,1);
             }
-            strafe(-300,0.5);
-            moverobot(1100,1100,0.5);
+            moverobot(1200,1200,0.5);
             frontGrab.setPosition(0.85);
             sleep(500);
             Erectus.setPosition(0.6);
@@ -133,7 +132,8 @@ public class testingn extends LinearOpMode {
 //            strafe(0.4, 200);
 //            moveDistance(0.4, 700);
 
-        }
+
+
     }
 
     //detection pipeline

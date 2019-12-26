@@ -29,7 +29,7 @@ import java.util.List;
 
 @Autonomous(name= "opencvSkystoneDetector", group="Linear Opmode")
 //comment out this line before using
-public class testingn extends LinearOpMode {
+public class Skystone extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor FRDrive = null;
     private DcMotor FLDrive = null;
@@ -109,29 +109,53 @@ public class testingn extends LinearOpMode {
         Erectus.setPosition(1);
 
 
-            telemetry.addData("Values", valLeft+"   "+valMid+"   "+valRight);
-            telemetry.addData("Height", rows);
-            telemetry.addData("Width", cols);
+        telemetry.addData("Values", valLeft+"   "+valMid+"   "+valRight);
+        telemetry.addData("Height", rows);
+        telemetry.addData("Width", cols);
 
-            telemetry.update();
-            sleep(100);
-            moverobot(500,500,0.5);
-            while(valMid!=0){
-                strafe(150,1);
-            }
-            moverobot(1200,1200,0.5);
-            frontGrab.setPosition(0.85);
-            sleep(500);
-            Erectus.setPosition(0.6);
-            foundation.setPosition(0.45);
-            sleep(500);
-            frontGrab.setPosition(0);
-            sleep(250);
+        telemetry.update();
+        sleep(100);
+        move(50,50,0.5);
+        stopStrafe();
+        while(valMid==255){
+            startStrafe(0.5);
 
-            //call movement functions
+        }
+        int distance = FLDrive.getCurrentPosition();
+        int fr = FRDrive.getCurrentPosition();
+        int bl = BLDrive.getCurrentPosition();
+        int br = BRDrive.getCurrentPosition();
+        stopStrafe();
+
+        move(1700,1700,0.5);
+
+        frontGrab.setPosition(0.85);
+        sleep(500);
+        Erectus.setPosition(0.6);
+        sleep(500);
+        frontGrab.setPosition(0);
+        sleep(250);
+
+        move(-200,-200,0.3);
+        sleep(250);
+
+        strafe(-distance, 0.3);
+
+        move(-950,950,0.3);
+        sleep(250);
+
+        move(3500,3500,0.3);
+        sleep(250);
+
+        move(950,-950,0.3);
+        sleep(250);
+
+        move(200,200,0.3);
+        sleep(250);
+
+        //call movement functions
 //            strafe(0.4, 200);
 //            moveDistance(0.4, 700);
-
 
 
     }
@@ -272,7 +296,7 @@ public class testingn extends LinearOpMode {
         }
 
     }
-    private void moverobot(int left, int right, double power){
+    private void move(int left, int right, double power){
         if(opModeIsActive()){
             FLPosition += left;
             FRPosition += right;
@@ -368,4 +392,37 @@ public class testingn extends LinearOpMode {
             BRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
     }
+    private void startStrafe(double power){
+        if(opModeIsActive()){
+
+            FLDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            FRDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            BLDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            BRDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+            runtime.reset();
+
+            FLDrive.setPower(power);
+            FRDrive.setPower(-power);
+            BLDrive.setPower(-power);
+            BRDrive.setPower(power);
+
+
+        }
+    }
+    private void stopStrafe(){
+        FRDrive.setPower(0);
+        FLDrive.setPower(0);
+        BLDrive.setPower(0);
+        BRDrive.setPower(0);
+        FLDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        FRDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BLDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BRDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        FLDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        FRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        BLDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        BRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
 }

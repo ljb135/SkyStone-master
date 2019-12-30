@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -45,6 +46,7 @@ public class Skystone extends LinearOpMode {
     private int BLPosition = 0;
     private int BRPosition = 0;
     private Servo capstone = null;
+    private int distance = 0;
 
     //0 means skystone, 1 means yellow stone
     //-1 for debug, but we can keep it like this because if it works, it should change to either 0 or 255
@@ -87,7 +89,7 @@ public class Skystone extends LinearOpMode {
         FLDrive.setDirection(DcMotor.Direction.FORWARD);
         BRDrive.setDirection(DcMotor.Direction.REVERSE);
         BLDrive.setDirection(DcMotor.Direction.FORWARD);
-        Lift.setDirection(DcMotor.Direction.REVERSE);
+        Lift.setDirection(DcMotor.Direction.FORWARD);
         Erectus.setDirection(Servo.Direction.FORWARD);
         frontGrab.setDirection(Servo.Direction.FORWARD);
         foundation.setDirection(Servo.Direction.REVERSE);
@@ -119,12 +121,8 @@ public class Skystone extends LinearOpMode {
         stopStrafe();
         while(valMid==255){
             startStrafe(0.5);
-
         }
-        int distance = FLDrive.getCurrentPosition();
-        int fr = FRDrive.getCurrentPosition();
-        int bl = BLDrive.getCurrentPosition();
-        int br = BRDrive.getCurrentPosition();
+        distance = FLDrive.getCurrentPosition();
         stopStrafe();
 
         move(1700,1700,0.5);
@@ -144,20 +142,69 @@ public class Skystone extends LinearOpMode {
         move(-950,950,0.3);
         sleep(250);
 
-        move(3500,3500,0.3);
+        move(4500,4500,0.3);
         sleep(250);
 
         move(950,-950,0.3);
+        while(Lift.getCurrentPosition() < 1000){
+            Lift.setPower(1.0);
+        }
+        Lift.setPower(0);
+
+        move(400,400,0.3);
+        while(Lift.getCurrentPosition() > 600){
+            Lift.setPower(-1.0);
+        }
+        Lift.setPower(0);
+        frontGrab.setPosition(0.85);
         sleep(250);
+
+        move(-400,-400,0.3);
+        sleep(250);
+
+        move(950,-950,0.3);
+        while(Lift.getCurrentPosition() > 80){
+            Lift.setPower(-1.0);
+        }
+        Lift.setPower(0);
+        frontGrab.setPosition(0);
+        sleep(250);
+
+        move(6000,6000,0.3);
+        sleep(250);
+
+        stopStrafe();
+        move(-950,950,0.3);
+        sleep(250);
+
+        stopStrafe();
+        strafe(distance,0.3);
+        stopStrafe();
+        sleep(250);
+
 
         move(200,200,0.3);
+
+        frontGrab.setPosition(0.85);
+        sleep(500);
+        Erectus.setPosition(0.6);
+        sleep(500);
+        frontGrab.setPosition(0);
         sleep(250);
 
-        //call movement functions
-//            strafe(0.4, 200);
-//            moveDistance(0.4, 700);
+        move(-200,-200,0.3);
+        sleep(250);
 
+        stopStrafe();
+        strafe(-distance, 0.3);
+        stopStrafe();
+        sleep(250);
 
+        move(-950,950,0.3);
+        sleep(250);
+
+        move(6500,6500,0.3);
+        sleep(250);
     }
 
     //detection pipeline

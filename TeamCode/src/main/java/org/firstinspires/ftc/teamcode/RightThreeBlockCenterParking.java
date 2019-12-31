@@ -19,8 +19,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Left Block Center Parking", group="Linear Opmode")
-public class LeftBlockCenterParking extends LinearOpMode {
+@Autonomous(name="Right Three Block Center Parking", group="Linear Opmode")
+public class RightThreeBlockCenterParking extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor FRDrive = null;
     private DcMotor FLDrive = null;
@@ -86,33 +86,33 @@ public class LeftBlockCenterParking extends LinearOpMode {
         BRDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
 
         telemetry.addData("Stage 1", true); //drive up to blocks
-        move(1600,1600,0.3);
+        move(1700,1700,0.3);
         sleep(250);
 
         frontGrab.setPosition(0);
         sleep(250);
 
         telemetry.addData("Stage 2", true); //back up slightly
-        move(-200,-200,0.3);
+        move(-300,-300,0.6);
         sleep(250);
 
-        telemetry.addData("Stage 3", true); //rotate right
-        move(950,-950,0.3);
+        telemetry.addData("Stage 3", true); //rotate left
+        move(-950,950,0.3);
         sleep(250);
 
         telemetry.addData("Stage 4", true); //drive past bridge
-        move(2400,2400,0.3);
-        sleep(250);
+        move(2150,2150,0.6);
+        sleep(500);
 
         frontGrab.setPosition(0.85);
         sleep(250);
 
-        telemetry.addData("Stage 5", true); //backup
-        move(-3000,-3000,0.3);
-        sleep(250);
+        telemetry.addData("Stage 5", true); //back up
+        move(-2750,-2750,0.6);
+        sleep(500);
 
         telemetry.addData("Stage 5", true); //rotate right
-        move(-950,950,0.3);
+        move(950,-950,0.3);
         sleep(250);
 
         telemetry.addData("Stage 5", true); //drive up to blocks
@@ -123,17 +123,17 @@ public class LeftBlockCenterParking extends LinearOpMode {
         sleep(250);
 
         telemetry.addData("Stage 2", true); //back up slightly
-        move(-300,-300,0.3);
+        move(-300,-300,0.6);
         sleep(250);
 
         telemetry.addData("Stage 3", true); //rotate left
-        move(950,-950,0.3);
+        move(-950,950,0.3);
         sleep(250
         );
 
         telemetry.addData("Stage 4", true); //drive past bridge
-        move(3000,3000,0.3);
-        sleep(250
+        move(3100,3100,0.6);
+        sleep(500
         );
 
         frontGrab.setPosition(0.85);
@@ -141,9 +141,38 @@ public class LeftBlockCenterParking extends LinearOpMode {
         );
 
         telemetry.addData("Stage 5", true); //backup and park
+        move(-3500,-3500,0.6);
+        sleep(500);
+
+        telemetry.addData("Stage 5", true); //rotate right
+        move(950,-950,0.3);
+        sleep(250);
+
+        telemetry.addData("Stage 5", true); //drive up to blocks
+        move(300,300,0.3);
+        sleep(250);
+
+        frontGrab.setPosition(0);
+        sleep(250);
+
+        telemetry.addData("Stage 2", true); //back up slightly
+        move(-300,-300,0.6);
+        sleep(250);
+
+        telemetry.addData("Stage 3", true); //rotate left
+        move(-950,950,0.3);
+        sleep(250);
+
+        telemetry.addData("Stage 4", true); //drive past bridge
+        move(3700,3700,0.6);
+        sleep(500);
+
+        frontGrab.setPosition(0.85);
+        sleep(250);
+
+        telemetry.addData("Stage 5", true); //backup and park
         move(-1300,-1300,0.3);
-        sleep(250
-        );
+        sleep(250);
     }
 
     private void move(int left, int right, double power){

@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -29,7 +30,7 @@ import java.util.List;
 
 @Autonomous(name= "opencvSkystoneDetector", group="Linear Opmode")
 //comment out this line before using
-public class testingn extends LinearOpMode {
+public class Skystone extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor FRDrive = null;
     private DcMotor FLDrive = null;
@@ -44,6 +45,8 @@ public class testingn extends LinearOpMode {
     private int FRPosition = 0;
     private int BLPosition = 0;
     private int BRPosition = 0;
+    private Servo capstone = null;
+    private int distance = 0;
 
     //0 means skystone, 1 means yellow stone
     //-1 for debug, but we can keep it like this because if it works, it should change to either 0 or 255
@@ -77,6 +80,7 @@ public class testingn extends LinearOpMode {
         Erectus = hardwareMap.get(Servo.class, "erectus");
         frontGrab = hardwareMap.get(Servo.class, "front_grab");
         foundation = hardwareMap.get(Servo.class, "foundation");
+        capstone = hardwareMap.get(Servo.class, "capstone");
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -85,10 +89,11 @@ public class testingn extends LinearOpMode {
         FLDrive.setDirection(DcMotor.Direction.FORWARD);
         BRDrive.setDirection(DcMotor.Direction.REVERSE);
         BLDrive.setDirection(DcMotor.Direction.FORWARD);
-        Lift.setDirection(DcMotor.Direction.REVERSE);
+        Lift.setDirection(DcMotor.Direction.FORWARD);
         Erectus.setDirection(Servo.Direction.FORWARD);
         frontGrab.setDirection(Servo.Direction.FORWARD);
         foundation.setDirection(Servo.Direction.REVERSE);
+        capstone.setDirection(Servo.Direction.FORWARD);
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
         phoneCam.openCameraDevice();//open camera
@@ -99,33 +104,107 @@ public class testingn extends LinearOpMode {
 
         waitForStart();
         runtime.reset();
-        while (opModeIsActive()) {
-            telemetry.addData("Values", valLeft+"   "+valMid+"   "+valRight);
-            telemetry.addData("Height", rows);
-            telemetry.addData("Width", cols);
 
-            telemetry.update();
-            sleep(100);
-            moverobot(20,20,0.5);
-            if (valMid == 0) {
-                strafe(200, 0.5);
-                moverobot(700, 700, 0.5);
-            }
-            if(valLeft==0){
-                strafe(-50, 0.5);
-                moverobot(700, 700, 0.5);
-            }
-            if(valRight==0){
-                strafe(600,0.5);
-                moverobot(700,700,0.5);
-            }
+        capstone.setPosition(0.8);
+        foundation.setPosition(0.45);
+        frontGrab.setPosition(1);
+        Erectus.setPosition(1);
 
 
-            //call movement functions
-//            strafe(0.4, 200);
-//            moveDistance(0.4, 700);
+        telemetry.addData("Values", valLeft+"   "+valMid+"   "+valRight);
+        telemetry.addData("Height", rows);
+        telemetry.addData("Width", cols);
 
+        telemetry.update();
+        sleep(100);
+        move(50,50,0.5);
+        stopStrafe();
+        while(valMid==255){
+            startStrafe(0.5);
         }
+        distance = FLDrive.getCurrentPosition();
+        stopStrafe();
+
+        move(1700,1700,0.5);
+
+        frontGrab.setPosition(0.85);
+        sleep(500);
+        Erectus.setPosition(0.6);
+        sleep(500);
+        frontGrab.setPosition(0);
+        sleep(250);
+
+        move(-200,-200,0.3);
+        sleep(250);
+
+        strafe(-distance, 0.3);
+
+        move(-950,950,0.3);
+        sleep(250);
+
+        move(4500,4500,0.3);
+        sleep(250);
+
+        move(950,-950,0.3);
+        while(Lift.getCurrentPosition() < 1000){
+            Lift.setPower(1.0);
+        }
+        Lift.setPower(0);
+
+        move(400,400,0.3);
+        while(Lift.getCurrentPosition() > 600){
+            Lift.setPower(-1.0);
+        }
+        Lift.setPower(0);
+        frontGrab.setPosition(0.85);
+        sleep(250);
+
+        move(-400,-400,0.3);
+        sleep(250);
+
+        move(950,-950,0.3);
+        while(Lift.getCurrentPosition() > 80){
+            Lift.setPower(-1.0);
+        }
+        Lift.setPower(0);
+        frontGrab.setPosition(0);
+        sleep(250);
+
+        move(6000,6000,0.3);
+        sleep(250);
+
+        stopStrafe();
+        move(-950,950,0.3);
+        sleep(250);
+
+        stopStrafe();
+        strafe(distance,0.3);
+        stopStrafe();
+        sleep(250);
+
+
+        move(200,200,0.3);
+
+        frontGrab.setPosition(0.85);
+        sleep(500);
+        Erectus.setPosition(0.6);
+        sleep(500);
+        frontGrab.setPosition(0);
+        sleep(250);
+
+        move(-200,-200,0.3);
+        sleep(250);
+
+        stopStrafe();
+        strafe(-distance, 0.3);
+        stopStrafe();
+        sleep(250);
+
+        move(-950,950,0.3);
+        sleep(250);
+
+        move(6500,6500,0.3);
+        sleep(250);
     }
 
     //detection pipeline
@@ -264,7 +343,7 @@ public class testingn extends LinearOpMode {
         }
 
     }
-    private void moverobot(int left, int right, double power){
+    private void move(int left, int right, double power){
         if(opModeIsActive()){
             FLPosition += left;
             FRPosition += right;
@@ -360,4 +439,37 @@ public class testingn extends LinearOpMode {
             BRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
     }
+    private void startStrafe(double power){
+        if(opModeIsActive()){
+
+            FLDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            FRDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            BLDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            BRDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+            runtime.reset();
+
+            FLDrive.setPower(power);
+            FRDrive.setPower(-power);
+            BLDrive.setPower(-power);
+            BRDrive.setPower(power);
+
+
+        }
+    }
+    private void stopStrafe(){
+        FRDrive.setPower(0);
+        FLDrive.setPower(0);
+        BLDrive.setPower(0);
+        BRDrive.setPower(0);
+        FLDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        FRDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BLDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BRDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        FLDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        FRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        BLDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        BRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+
 }

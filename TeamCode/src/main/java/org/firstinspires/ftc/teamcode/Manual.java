@@ -71,6 +71,7 @@ public class Manual extends LinearOpMode {
     private double FR = 0;
     private double BL = 0;
     private double BR = 0;
+    private boolean sensitive = false;
     private boolean grab = false;
     private boolean drag = false;
     private boolean raise = false;
@@ -100,7 +101,7 @@ public class Manual extends LinearOpMode {
         FLDrive.setDirection(DcMotor.Direction.FORWARD);
         BRDrive.setDirection(DcMotor.Direction.REVERSE);
         BLDrive.setDirection(DcMotor.Direction.FORWARD);
-        Lift.setDirection(DcMotor.Direction.REVERSE);
+        Lift.setDirection(DcMotor.Direction.FORWARD);
         Erectus.setDirection(Servo.Direction.FORWARD);
         frontGrab.setDirection(Servo.Direction.FORWARD);
         foundation.setDirection(Servo.Direction.REVERSE);
@@ -110,11 +111,11 @@ public class Manual extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
+        capstone.setPosition(0.8);
         frontGrab.setPosition(0.85);
         sleep(500);
         Erectus.setPosition(0.6);
         foundation.setPosition(0.45);
-        capstone.setPosition(0.7);
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -124,25 +125,38 @@ public class Manual extends LinearOpMode {
             // Choose to drive using either Tank Mode, or POV Mode
             // Comment out the method that's not used.  The default below is POV.
 
+            if(Lift.getCurrentPosition() > 2680){
+                Lift.setPower(Range.clip(-gamepad2.left_stick_y, -0.8, 0));
+            }
+            else if(Lift.getCurrentPosition() < 80){
+                Lift.setPower(Range.clip(-gamepad2.left_stick_y, 0, 1.0));
+            } else {
+                Lift.setPower(Range.clip(-gamepad2.left_stick_y, -0.8, 1.0));
+            }
+
             double threshold = 0;
 
             // POV Mode uses left stick to go forward, and right stick to turn.
             // - This uses basic math to combine motions and is easier to drive straight.
 
-            if(abs(gamepad1.left_stick_y) >= threshold || abs(gamepad1.left_stick_x) >= threshold)
-            {
-                FR = Range.clip((-gamepad1.left_stick_y - gamepad1.left_stick_x)/2, -1.0, 1.0);
-                FL = Range.clip((-gamepad1.left_stick_y + gamepad1.left_stick_x)/2, -1.0, 1.0);
-                BR = Range.clip((-gamepad1.left_stick_y + gamepad1.left_stick_x)/2, -1.0, 1.0);
-                BL = Range.clip((-gamepad1.left_stick_y - gamepad1.left_stick_x)/2, -1.0, 1.0);
+            if(!sensitive && (abs(gamepad1.left_stick_y) >= threshold || abs(gamepad1.left_stick_x) >= threshold)) {
+                FR = Range.clip((-gamepad1.left_stick_y - gamepad1.left_stick_x) / 2, -1.0, 1.0);
+                FL = Range.clip((-gamepad1.left_stick_y + gamepad1.left_stick_x) / 2, -1.0, 1.0);
+                BR = Range.clip((-gamepad1.left_stick_y + gamepad1.left_stick_x) / 2, -1.0, 1.0);
+                BL = Range.clip((-gamepad1.left_stick_y - gamepad1.left_stick_x) / 2, -1.0, 1.0);
             }
-            if(abs(gamepad1.right_stick_x) > threshold)
-            {
+            else if (abs(gamepad1.left_stick_y) >= threshold || abs(gamepad1.left_stick_x) >= threshold) {
+                FR = Range.scale((-gamepad1.left_stick_y - gamepad1.left_stick_x) / 2, -1.0, 1.0, -0.5,0.5);
+                FL = Range.scale((-gamepad1.left_stick_y + gamepad1.left_stick_x) / 2, -1.0, 1.0, -0.5,0.5);
+                BR = Range.scale((-gamepad1.left_stick_y + gamepad1.left_stick_x) / 2, -1.0, 1.0, -0.5,0.5);
+                BL = Range.scale((-gamepad1.left_stick_y - gamepad1.left_stick_x) / 2, -1.0, 1.0, -0.5,0.5);
+            }
+            if (abs(gamepad1.right_stick_x) > threshold) {
                 //rotate
-                FR = Range.clip((-gamepad1.right_stick_x)/2, -0.6, 0.6);
-                FL = Range.clip((gamepad1.right_stick_x)/2, -0.6, 0.6);
-                BR = Range.clip((-gamepad1.right_stick_x)/2, -0.6, 0.6);
-                BL = Range.clip((gamepad1.right_stick_x)/2, -0.6, 0.6);
+                FR = Range.clip((-gamepad1.right_stick_x) / 2, -0.6, 0.6);
+                FL = Range.clip((gamepad1.right_stick_x) / 2, -0.6, 0.6);
+                BR = Range.clip((-gamepad1.right_stick_x) / 2, -0.6, 0.6);
+                BL = Range.clip((gamepad1.right_stick_x) / 2, -0.6, 0.6);
             }
 
             FRDrive.setPower(FR);
@@ -150,14 +164,16 @@ public class Manual extends LinearOpMode {
             BRDrive.setPower(BR);
             BLDrive.setPower(BL);
 
-            if(gamepad2.dpad_up && Lift.getCurrentPosition() < 2800){
-                Lift.setPower(1);
-            }
-            else if(gamepad2.dpad_down && Lift.getCurrentPosition() > 80){
-                Lift.setPower(-1);
-            } else {
-                Lift.setPower(0);
-            }
+//            if(gamepad2.dpad_up && Lift.getCurrentPosition() < 2680){
+//                Lift.setPower(0.5);
+//            }
+//            else if(gamepad2.dpad_down && Lift.getCurrentPosition() > 80){
+//                Lift.setPower(-0.5);
+//            } else {
+//                Lift.setPower(0);
+//            }
+
+
 
             if(gamepad2.a && !grab){
                 frontGrab.setPosition(0);
@@ -210,7 +226,12 @@ public class Manual extends LinearOpMode {
             if(gamepad1.a){
                 capstone.setPosition(0);
                 sleep(1000);
-                capstone.setPosition(0.7);
+                capstone.setPosition(0.8);
+            }
+
+            if(gamepad1.b){
+                sensitive = !sensitive;
+                sleep(500);
             }
 
             // Show the elapsed game time and wheel power.

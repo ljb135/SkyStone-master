@@ -122,14 +122,11 @@ public class Skystone extends LinearOpMode {
         while(valMid==255){
             startStrafe(0.5);
         }
-        stopStrafe();
-        strafe(-50,0.3);
-
         distance = FLDrive.getCurrentPosition();
         stopStrafe();
 
-        move(1700,1700,0.5);
-
+        move(1300,1300,0.5);
+        move(400,400,0.2);
         frontGrab.setPosition(0.85);
         sleep(500);
         Erectus.setPosition(0.6);
@@ -137,24 +134,23 @@ public class Skystone extends LinearOpMode {
         frontGrab.setPosition(0);
         sleep(250);
 
-        move(-300,-300,0.5);
+        move(-400,-400,0.5);
         sleep(250);
 
         strafe(-distance, 0.3);
 
-        move(-950,950,0.3);
+        move(-985,985,0.15);
         sleep(250);
 
         move(4500,4500,0.5);
         sleep(250);
-
-        move(950,-950,0.3);
         while(Lift.getCurrentPosition() < 800){
             Lift.setPower(1.0);
         }
         Lift.setPower(0);
+        move(950,-950,0.3);
 
-        move(600,600,0.5);
+        move(500,500,0.2);
         sleep(250);
 
         while(Lift.getCurrentPosition() > 600){
@@ -176,18 +172,30 @@ public class Skystone extends LinearOpMode {
         Lift.setPower(0);
         frontGrab.setPosition(0);
         sleep(250);
-
-        move(-600,-600,0.3);
+        move(-500,-500,0.1);
+        move(-50,-50,0.1);
         sleep(250);
-
+        frontGrab.setPosition(0);
         foundation.setPosition(0.8);
-        sleep(500);
-        move(1500,1500,0.3);
+        sleep(250);
+        move(1600,1600,0.3);
         sleep(250);
 
-        move(-950,950,0.3);
+        move(-700,700,0.3);
         sleep(250);
-        stopStrafe();
+        move(600,600,0.3);
+        sleep(250);
+        move(-1700, 1700, 0.3);
+        sleep(250);
+        move(-500,-500,0.5);
+        sleep(250);
+        foundation.setPosition(0.45);
+        sleep(250);
+        move(100,100,0.5);
+        sleep(250);
+        strafe(-1000,0.5);
+        sleep(250);
+        move(1300,1300,0.5);
 //        strafe(distance,0.3);
 //        stopStrafe();
 //        sleep(250);

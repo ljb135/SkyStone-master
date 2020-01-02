@@ -122,6 +122,9 @@ public class Skystone extends LinearOpMode {
         while(valMid==255){
             startStrafe(0.5);
         }
+        stopStrafe();
+        strafe(-50,0.3);
+
         distance = FLDrive.getCurrentPosition();
         stopStrafe();
 
@@ -134,7 +137,7 @@ public class Skystone extends LinearOpMode {
         frontGrab.setPosition(0);
         sleep(250);
 
-        move(-200,-200,0.3);
+        move(-300,-300,0.5);
         sleep(250);
 
         strafe(-distance, 0.3);
@@ -142,16 +145,18 @@ public class Skystone extends LinearOpMode {
         move(-950,950,0.3);
         sleep(250);
 
-        move(4500,4500,0.3);
+        move(4500,4500,0.5);
         sleep(250);
 
         move(950,-950,0.3);
-        while(Lift.getCurrentPosition() < 1000){
+        while(Lift.getCurrentPosition() < 800){
             Lift.setPower(1.0);
         }
         Lift.setPower(0);
 
-        move(400,400,0.3);
+        move(600,600,0.5);
+        sleep(250);
+
         while(Lift.getCurrentPosition() > 600){
             Lift.setPower(-1.0);
         }
@@ -162,7 +167,9 @@ public class Skystone extends LinearOpMode {
         move(-400,-400,0.3);
         sleep(250);
 
-        move(950,-950,0.3);
+        move(1900,-1900,0.3);
+        sleep(250);
+
         while(Lift.getCurrentPosition() > 80){
             Lift.setPower(-1.0);
         }
@@ -170,41 +177,44 @@ public class Skystone extends LinearOpMode {
         frontGrab.setPosition(0);
         sleep(250);
 
-        move(6000,6000,0.3);
+        move(-600,-600,0.3);
         sleep(250);
 
-        stopStrafe();
-        move(-950,950,0.3);
-        sleep(250);
-
-        stopStrafe();
-        strafe(distance,0.3);
-        stopStrafe();
-        sleep(250);
-
-
-        move(200,200,0.3);
-
-        frontGrab.setPosition(0.85);
+        foundation.setPosition(0.8);
         sleep(500);
-        Erectus.setPosition(0.6);
-        sleep(500);
-        frontGrab.setPosition(0);
-        sleep(250);
-
-        move(-200,-200,0.3);
-        sleep(250);
-
-        stopStrafe();
-        strafe(-distance, 0.3);
-        stopStrafe();
+        move(1500,1500,0.3);
         sleep(250);
 
         move(-950,950,0.3);
         sleep(250);
-
-        move(6500,6500,0.3);
-        sleep(250);
+        stopStrafe();
+//        strafe(distance,0.3);
+//        stopStrafe();
+//        sleep(250);
+//
+//
+//        move(200,200,0.3);
+//
+//        frontGrab.setPosition(0.85);
+//        sleep(500);
+//        Erectus.setPosition(0.6);
+//        sleep(500);
+//        frontGrab.setPosition(0);
+//        sleep(250);
+//
+//        move(-200,-200,0.3);
+//        sleep(250);
+//
+//        stopStrafe();
+//        strafe(-distance, 0.3);
+//        stopStrafe();
+//        sleep(250);
+//
+//        move(-950,950,0.3);
+//        sleep(250);
+//        stopStrafe();
+//        move(6500,6500,0.3);
+//        sleep(250);
     }
 
     //detection pipeline

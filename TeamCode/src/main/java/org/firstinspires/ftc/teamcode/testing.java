@@ -25,7 +25,7 @@ public class testing extends LinearOpMode {
 
     @Override
     public void runOpMode() {
-
+        /*
         sensorService = (SensorManager) this.getSystemService(Context.SENSOR_SERVICE);
         sensor = sensorService.getDefaultSensor(Sensor.TYPE_GAME_ROTATION_VECTOR);
         if (sensor != null) {
@@ -37,7 +37,7 @@ public class testing extends LinearOpMode {
             Toast.makeText(this, "ORIENTATION Sensor not found",
                     Toast.LENGTH_LONG).show();
             finish();
-        }
+        }*/
 
 //        // get a reference to our ColorSensor object.
 //        frontRight = hardwareMap.get(DcMotor.class, "frontRight");

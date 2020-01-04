@@ -1,19 +1,15 @@
 package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
-import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
-import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -27,7 +23,7 @@ import java.util.List;
 
 
 
-@Autonomous(name= "opencvSkystoneDetector", group="Linear Opmode")
+@Autonomous(name= "skystonedetector", group="Linear Opmode")
 //comment out this line before using
 public class Skystone extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
@@ -118,34 +114,32 @@ public class Skystone extends LinearOpMode {
         telemetry.update();
         sleep(100);
 
+        //move away from wall
+        move(100,100,0.5);
+        sleep(100);
+
         //depending on the location of the skystone, strafe so that the robot is in front
-        if(valLeft==255){
-            skystonePlacement = 1;
-
-            //move away from wall
-            move(100,100,0.5);
-            sleep(100);
-
-            strafe(-500, 0.3);
+        // ***PHONE IS UPSIDE DOWN, SO valRight corresponds to left block
+        if(valRight==255){
+            skystonePlacement = 1; // left block
+            strafe(625, 0.1);
         }
-        else if(valRight==255){
-            skystonePlacement = 3;
-
-            //move away from wall
-            move(100,100,0.5);
-            sleep(100);
-
-            strafe(625, 0.3);
+        else if(valLeft==255){
+            skystonePlacement = 3; // right block
+            strafe(-500, 0.1);
         }
         else{
-            skystonePlacement = 2;
-
-            //move away from wall
-            move(100,100,0.5);
-            sleep(100);
-
-            strafe(25, 0.3);
+            skystonePlacement = 2; // center block
+            strafe(25, 0.1);
         }
+
+//        while(opModeIsActive()) {
+//            telemetry.addData("valLeft", valLeft);
+//            telemetry.addData("valMid", valMid);
+//            telemetry.addData("valRight", valRight);
+//            telemetry.update();
+//        }
+
         sleep(250);
 
         //move up to block
@@ -170,17 +164,20 @@ public class Skystone extends LinearOpMode {
         move(-950,950,0.3);
         sleep(250);
 
+        telemetry.addData("skystone position", skystonePlacement);
+        telemetry.update();
+
+        sleep(3000);
+
         //depending on location of the skystone, move a certain distance under the bridge
-        if(skystonePlacement == 1){
-            move(4500,4500,0.3);
+        if(skystonePlacement == 1) {
+            move(5800, 5800, 0.3);
             sleep(250);
-        }
-        if(skystonePlacement == 2){
-            move(5400,5400,0.3);
+        } else if(skystonePlacement == 2) {
+            move(6500, 6500, 0.3);
             sleep(250);
-        }
-        if(skystonePlacement == 3){
-            move(6300,6300,0.3);
+        } else {
+            move(7700,7700,0.3);
             sleep(250);
         }
 
@@ -214,7 +211,7 @@ public class Skystone extends LinearOpMode {
         sleep(100);
 
         //back away from foundation
-        move(-400,-400,0.3);
+        move(-550,-550,0.3);
         sleep(250);
 
 		/* code for second block
@@ -350,6 +347,8 @@ public class Skystone extends LinearOpMode {
         move(-900, -900, 0.3);
         sleep(250);
     }
+
+
 
     //detection pipeline
     static class StageSwitchingPipeline extends OpenCvPipeline

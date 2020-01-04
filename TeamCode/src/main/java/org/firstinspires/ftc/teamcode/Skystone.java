@@ -118,23 +118,35 @@ public class Skystone extends LinearOpMode {
         telemetry.update();
         sleep(100);
 
-        //move away from wall
-        move(50,50,0.5);
-        sleep(100);
-
         //depending on the location of the skystone, strafe so that the robot is in front
         if(valLeft==255){
             skystonePlacement = 1;
+
+            //move away from wall
+            move(100,100,0.5);
+            sleep(100);
+
             strafe(-500, 0.3);
         }
-        if(valMid==255){
+        else if(valRight==255){
             skystonePlacement = 2;
-            strafe(25, 0.3);
-        }
-        if(valRight==255){
-            skystonePlacement = 3;
+
+            //move away from wall
+            move(100,100,0.5);
+            sleep(100);
+
             strafe(700, 0.3);
         }
+        else{
+            skystonePlacement = 3;
+
+            //move away from wall
+            move(100,100,0.5);
+            sleep(100);
+
+            strafe(25, 0.3);
+        }
+        sleep(250);
 
         //move up to block
         move(1400,1400,0.3);
@@ -151,7 +163,7 @@ public class Skystone extends LinearOpMode {
         sleep(250);
 
         //move back
-        move(-200,-200,0.3);
+        move(-300,-300,0.3);
         sleep(250);
 
         //rotate towards the bridge
@@ -164,16 +176,16 @@ public class Skystone extends LinearOpMode {
             sleep(250);
         }
         if(skystonePlacement == 2){
-            move(4800,4800,0.3);
+            move(5000,5000,0.3);
             sleep(250);
         }
         if(skystonePlacement == 3){
-            move(5100,5100,0.3);
+            move(5400,5400,0.3);
             sleep(250);
         }
 
         //lift up grabber
-        while(Lift.getCurrentPosition() < 800){
+        while(Lift.getCurrentPosition() < 1000){
             Lift.setPower(1.0);
         }
         Lift.setPower(0);
@@ -186,12 +198,20 @@ public class Skystone extends LinearOpMode {
         sleep(250);
 
         //lower the grabber and release the block
-        while(Lift.getCurrentPosition() > 600){
+        while(Lift.getCurrentPosition() > 550){
             Lift.setPower(-1.0);
         }
         Lift.setPower(0);
+        sleep(100);
         frontGrab.setPosition(0.85);
-        sleep(250);
+        sleep(100);
+
+        //lift the grabber
+        while(Lift.getCurrentPosition() < 700){
+            Lift.setPower(1.0);
+        }
+        Lift.setPower(0);
+        sleep(100);
 
         //back away from foundation
         move(-400,-400,0.3);
@@ -279,16 +299,18 @@ public class Skystone extends LinearOpMode {
         move(1900,-1900,0.3);
         sleep(250);
 
-        //pull in grabber
+        //reset grabber
         while(Lift.getCurrentPosition() > 80){
             Lift.setPower(-1.0);
         }
         Lift.setPower(0);
-        frontGrab.setPosition(0);
+        Erectus.setPosition(1);
+        sleep(250);
+        frontGrab.setPosition(1);
         sleep(250);
 
         //move toward foundation
-        move(-500,-500,0.1);
+        move(-600,-600,0.1);
         sleep(250);
 
         //clamp foundation
@@ -296,28 +318,37 @@ public class Skystone extends LinearOpMode {
         sleep(250);
 
         //move foundation into corner
-        move(1300,1200,0.3);
+        move(1500,1500,0.3);
         sleep(250);
-        move(-700,700,0.3);
+        move(-500,500,0.3);
         sleep(250);
-        move(600,600,0.3);
+        move(300,300,0.3);
         sleep(250);
-        move(-1700, 1700, 0.3);
+        move(-2000, 2000, 0.3);
         sleep(250);
-        move(-500,-500,0.5);
+        move(-300,-300,0.3);
         sleep(250);
 
         //unclamp foundation and move away
         foundation.setPosition(0.45);
         sleep(250);
-        move(100,100,0.5);
+        move(200,200,0.5);
         sleep(250);
 
         //parking
-        strafe(-750,0.5);
+        //strafe(-600,0.3);
+        //Parking without strafing
+        move(-950, 950, 0.3);
+        move(200, 200, 0.3);
+        move(-950, 950, 0.3);
         sleep(250);
-        move(1500,1500,0.5);
-        //extend arm out at the end
+        move(-900,-900,0.3);
+        frontGrab.setPosition(0.85);
+        sleep(500);
+        Erectus.setPosition(0.6);
+        sleep(100);
+        move(-900, -900, 0.3);
+        sleep(250);
     }
 
     //detection pipeline

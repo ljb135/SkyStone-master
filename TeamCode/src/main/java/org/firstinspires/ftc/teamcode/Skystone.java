@@ -129,16 +129,16 @@ public class Skystone extends LinearOpMode {
             strafe(-500, 0.3);
         }
         else if(valRight==255){
-            skystonePlacement = 2;
+            skystonePlacement = 3;
 
             //move away from wall
             move(100,100,0.5);
             sleep(100);
 
-            strafe(700, 0.3);
+            strafe(625, 0.3);
         }
         else{
-            skystonePlacement = 3;
+            skystonePlacement = 2;
 
             //move away from wall
             move(100,100,0.5);
@@ -176,11 +176,11 @@ public class Skystone extends LinearOpMode {
             sleep(250);
         }
         if(skystonePlacement == 2){
-            move(5000,5000,0.3);
+            move(5400,5400,0.3);
             sleep(250);
         }
         if(skystonePlacement == 3){
-            move(5400,5400,0.3);
+            move(6300,6300,0.3);
             sleep(250);
         }
 

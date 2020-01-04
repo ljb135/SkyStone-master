@@ -71,17 +71,21 @@ public class EdgeParking extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
+        //move servos into position
         capstone.setPosition(0.8);
-        frontGrab.setPosition(0.85);
-        sleep(500);
-        Erectus.setPosition(0.6);
+        frontGrab.setPosition(0);
+        sleep(100);
         foundation.setPosition(0.45);
+        sleep(100);
 
         telemetry.addData("Position", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)FRDrive.getCurrentPosition(), (float)FLDrive.getCurrentPosition(), (float)BRDrive.getCurrentPosition(), (float)BLDrive.getCurrentPosition());
         telemetry.update();
 
+        //sleep if team asks us to wait until the end to park
+        //sleep(25000);
+
         telemetry.addData("Stage 1", true); //move forward to park
-        move(1300,1300,0.3);
+        move(-1000,-1000,0.3);
         sleep(500);
     }
 

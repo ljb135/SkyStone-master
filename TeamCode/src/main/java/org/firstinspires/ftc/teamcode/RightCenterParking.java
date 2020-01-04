@@ -71,13 +71,18 @@ public class RightCenterParking extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
+        //move servos into position
         capstone.setPosition(0.8);
-        sleep(500);
-        Erectus.setPosition(0.6);
+        frontGrab.setPosition(0);
+        sleep(100);
         foundation.setPosition(0.45);
+        sleep(100);
 
         telemetry.addData("Position", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)FRDrive.getCurrentPosition(), (float)FLDrive.getCurrentPosition(), (float)BRDrive.getCurrentPosition(), (float)BLDrive.getCurrentPosition());
         telemetry.update();
+
+        //sleep if team asks us to wait until the end to park
+        //sleep(25000);
 
         telemetry.addData("Stage 1", true); //drive up near center
         move(1500,1500,0.3);
@@ -87,7 +92,7 @@ public class RightCenterParking extends LinearOpMode {
         move(-950,950,0.3);
         sleep(500);
 
-        telemetry.addData("Stage 1", true); //drive forward and park
+        telemetry.addData("Stage 3", true); //drive forward and park
         move(1300,1300,0.3);
     }
 

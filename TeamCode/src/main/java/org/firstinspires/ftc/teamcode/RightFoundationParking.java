@@ -3,6 +3,7 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -76,92 +77,124 @@ public class RightFoundationParking extends LinearOpMode {
         frontGrab.setPosition(1);
         Erectus.setPosition(1);
 
+        //move away from wall
         move(-200,-200,0.3);
         sleep(250);
 
-        telemetry.addData("Stage 0", true); //strafe left
+        //strafe right so robot is in the middle of the foundation
+        telemetry.addData("Stage 0", true); //strafe right
         strafe(-600,0.4);
         sleep(250);
 
-        telemetry.addData("Stage 1", true); //back up into foundation
+        //back up into foundation
+        telemetry.addData("Stage 1", true);
         move(-1900,-1900,0.3);
         sleep(250);
+        move(-50,-50,0.1);
+        sleep(250);
 
+        //close grabber and clamp onto foundation
         frontGrab.setPosition(0);
         foundation.setPosition(0.8);
         sleep(250);
 
-        telemetry.addData("Stage 2", true); //drive foundation forward
+        //drive foundation forward
+        telemetry.addData("Stage 2", true);
         move(1750,1750,0.3);
         sleep(250);
 
+        //rotate foundation into the corner
+        move(700,-700,0.3);
+        sleep(250);
+        move(600,600,0.3);
+        sleep(250);
+        move(1700, -1700, 0.3);
+        sleep(250);
+        move(-800,-800,0.5);
+        sleep(250);
+
+        //unclamp foundation and move away
         foundation.setPosition(0.45);
         sleep(250);
-
-        telemetry.addData("Stage 3", true); //give space to rotate
-        move(250,250,0.4);
+        move(400,400,0.5);
         sleep(250);
 
-        telemetry.addData("Stage 4", true); //rotate right
-        move(950,-950,0.4);
+        //park
+        move(950, -950, 0.3);
+        sleep(100);
+        move(400, 400, 0.3);
+        sleep(100);
+        move(950, -950, 0.3);
         sleep(250);
-
-        telemetry.addData("Stage 5", true); //drive forward to edge
-        move(1700,1700,0.4);
-        sleep(250);
-
-        telemetry.addData("Stage 6", true); //rotate right
-        move(950,-950,0.4);
-        sleep(250);
-
-        telemetry.addData("Stage 7", true); //drive forward to edge
-        move(2500,2500,0.4);
-        sleep(250);
-
-//        move(1200, 1200, 0.4);
+        move(-1500,-1500,0.3);
+//
+//        foundation.setPosition(0.45);
 //        sleep(250);
+//
+//        telemetry.addData("Stage 3", true); //give space to rotate
+//        move(250,250,0.4);
+//        sleep(250);
+//
+//        telemetry.addData("Stage 4", true); //rotate left
 //        move(-950,950,0.4);
 //        sleep(250);
-//        move(-600,-600,0.4);
+//
+//        telemetry.addData("Stage 5", true); //drive forward to edge
+//        move(1700,1700,0.4);
 //        sleep(250);
-//        move(200,200,0.4);
+//
+//        telemetry.addData("Stage 6", true); //rotate left
+//        move(-950,950,0.4);
 //        sleep(250);
+//
+//        telemetry.addData("Stage 7", true); //drive forward to edge
+//        move(2500,2500,0.4);
+//        sleep(250);
+//
+////        move(1200, 1200, 0.4);
+////        sleep(250);
+////        move(950,-950,0.4);
+////        sleep(250);
+////        move(-600,-600,0.4);
+////        sleep(250);
+////        move(200,200,0.4);
+////        sleep(250);
+////        move(-950,950,0.4);
+////        sleep(250);
+////        move(1200, 1200, 0.4);
+////        sleep(250);
+//
+//
+//        telemetry.addData("Stage 8", true); //rotate left
+//        move(-950,950,0.4);
+//        sleep(250);
+//
+//        telemetry.addData("Stage 9", true); //drive forward to near middle
+//        move(1700,1700,0.4);
+//        sleep(250);
+//
+//        telemetry.addData("Stage 10", true); //rotate left
 //        move(950,-950,0.4);
 //        sleep(250);
-//        move(1200, 1200, 0.4);
+//
+//        telemetry.addData("Stage 11", true); //drive foundation in
+//        move(-2000,-2000,0.4);
+//
+//        frontGrab.setPosition(0.85);
+//        sleep(500);
+//        Erectus.setPosition(0.6);
+//        foundation.setPosition(0.45);
+//
+//        telemetry.addData("Stage 12", true); //drive up near center
+//        move(600,600,0.4);
 //        sleep(250);
-
-
-        telemetry.addData("Stage 8", true); //rotate left
-        move(950,-950,0.4);
-        sleep(250);
-
-        telemetry.addData("Stage 9", true); //drive forward to near middle
-        move(1700,1700,0.4);
-        sleep(250);
-
-        telemetry.addData("Stage 10", true); //rotate left
-        move(-950,950,0.4);
-        sleep(250);
-
-        telemetry.addData("Stage 11", true); //drive foundation in
-        move(-2000,-2000,0.4);
-
-        frontGrab.setPosition(0.85);
-        sleep(500);
-        Erectus.setPosition(0.6);
-        foundation.setPosition(0.45);
-
-        telemetry.addData("Stage 12", true); //drive up near center
-        move(600,600,0.4);
-        sleep(250);
-
-        telemetry.addData("Stage 13", true); //rotate right
-        move(-950,950,0.4);
-        sleep(250);
-
-        telemetry.addData("Stage 14", true); //drive forward and park
-        move(2300,2300,0.4);
+//
+//        telemetry.addData("Stage 13", true); //rotate right
+//        move(950,-950,0.4);
+//        sleep(250);
+//
+//        telemetry.addData("Stage 14", true); //drive forward and park
+//        move(2300,2300,0.4);
     }
 
     private void move(int left, int right, double power){

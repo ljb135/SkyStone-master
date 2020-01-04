@@ -77,42 +77,56 @@ public class LeftFoundationParking extends LinearOpMode {
         frontGrab.setPosition(1);
         Erectus.setPosition(1);
 
-
+        //move away from wall
         move(-200,-200,0.3);
         sleep(250);
 
+        //strafe right so robot is in the middle of the foundation
         telemetry.addData("Stage 0", true); //strafe right
         strafe(600,0.4);
         sleep(250);
 
-        telemetry.addData("Stage 1", true); //back up into foundation
+        //back up into foundation
+        telemetry.addData("Stage 1", true);
         move(-1900,-1900,0.3);
         sleep(250);
         move(-50,-50,0.1);
         sleep(250);
+
+        //close grabber and clamp onto foundation
         frontGrab.setPosition(0);
         foundation.setPosition(0.8);
         sleep(250);
 
-        telemetry.addData("Stage 2", true); //drive foundation forward
+        //drive foundation forward
+        telemetry.addData("Stage 2", true);
         move(1750,1750,0.3);
         sleep(250);
 
+        //rotate foundation into the corner
         move(-700,700,0.3);
         sleep(250);
         move(600,600,0.3);
         sleep(250);
         move(-1700, 1700, 0.3);
         sleep(250);
-        move(-500,-500,0.5);
+        move(-800,-800,0.5);
         sleep(250);
+
+        //unclamp foundation and move away
         foundation.setPosition(0.45);
         sleep(250);
-        move(100,100,0.5);
+        move(400,400,0.5);
         sleep(250);
-        strafe(-1000,0.5);
+
+        //park
+        move(-950, 950, 0.3);
+        sleep(100);
+        move(400, 400, 0.3);
+        sleep(100);
+        move(-950, 950, 0.3);
         sleep(250);
-        move(1300,1300,0.5);
+        move(-1500,-1500,0.3);
 //
 //        foundation.setPosition(0.45);
 //        sleep(250);

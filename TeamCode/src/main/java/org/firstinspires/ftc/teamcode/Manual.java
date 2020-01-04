@@ -32,7 +32,6 @@ package org.firstinspires.ftc.teamcode;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
@@ -113,9 +112,9 @@ public class Manual extends LinearOpMode {
 
         capstone.setPosition(0.8);
         frontGrab.setPosition(0.85);
-        sleep(500);
         Erectus.setPosition(0.6);
         foundation.setPosition(0.45);
+        sleep(100);
 
         // run until the end of the match (driver presses STOP)
         while (opModeIsActive()) {
@@ -178,28 +177,27 @@ public class Manual extends LinearOpMode {
             if(gamepad2.a && !grab){
                 frontGrab.setPosition(0);
                 grab = true;
-                sleep(500);
-            }
-            else if(gamepad2.a){
+                sleep(20);
+            } else if(gamepad2.a){
                 frontGrab.setPosition(0.85);
                 grab = false;
-                sleep(500);
+                sleep(20);
             }
 
             if(gamepad2.b && !drag){
                 foundation.setPosition(0.8);
                 drag = true;
-                sleep(500);
+                sleep(20);
             }
             else if(gamepad2.b){
                 foundation.setPosition(0.45);
                 drag = false;
-                sleep(500);
+                sleep(20);
             }
 
             if(gamepad2.y){
                 frontGrab.setPosition(0.85);
-                sleep(250);
+                sleep(20);
                 Erectus.setPosition(0.6);
                 raise = false;
                 while(Lift.getCurrentPosition() > 80){
@@ -210,10 +208,10 @@ public class Manual extends LinearOpMode {
 
             if(gamepad2.x && !raise){
                 frontGrab.setPosition(0);
-                sleep(250);
+                sleep(20);
                 Erectus.setPosition(1);
                 raise = true;
-                sleep(250);
+                sleep(20);
             }
             else if(gamepad2.x){
                 frontGrab.setPosition(0.85);
@@ -231,7 +229,7 @@ public class Manual extends LinearOpMode {
 
             if(gamepad1.b){
                 sensitive = !sensitive;
-                sleep(500);
+                sleep(20);
             }
 
             // Show the elapsed game time and wheel power.

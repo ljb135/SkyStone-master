@@ -31,7 +31,7 @@ public class Skystone extends LinearOpMode {
     private DcMotor FLDrive = null;
     private DcMotor BRDrive = null;
     private DcMotor BLDrive = null;
-    private DcMotor Lift = null;
+    private DcMotor lift = null;
     private Servo Erectus = null;
     private Servo frontGrab = null;
     private Servo foundation = null;
@@ -72,7 +72,7 @@ public class Skystone extends LinearOpMode {
         FLDrive = hardwareMap.get(DcMotor.class, "front_left");
         BRDrive  = hardwareMap.get(DcMotor.class, "back_right");
         BLDrive  = hardwareMap.get(DcMotor.class, "back_left");
-        Lift  = hardwareMap.get(DcMotor.class, "lift");
+        lift = hardwareMap.get(DcMotor.class, "lift");
         Erectus = hardwareMap.get(Servo.class, "erectus");
         frontGrab = hardwareMap.get(Servo.class, "front_grab");
         foundation = hardwareMap.get(Servo.class, "foundation");
@@ -85,7 +85,7 @@ public class Skystone extends LinearOpMode {
         FLDrive.setDirection(DcMotor.Direction.FORWARD);
         BRDrive.setDirection(DcMotor.Direction.REVERSE);
         BLDrive.setDirection(DcMotor.Direction.FORWARD);
-        Lift.setDirection(DcMotor.Direction.FORWARD);
+        lift.setDirection(DcMotor.Direction.FORWARD);
         Erectus.setDirection(Servo.Direction.FORWARD);
         frontGrab.setDirection(Servo.Direction.FORWARD);
         foundation.setDirection(Servo.Direction.REVERSE);
@@ -114,24 +114,25 @@ public class Skystone extends LinearOpMode {
         telemetry.update();
         sleep(100);
 
-        //move away from wall
-        move(100,100,0.5);
+        // move away from wall
+        move(100,100,0.2);
         sleep(100);
 
-        //depending on the location of the skystone, strafe so that the robot is in front
-        // ***PHONE IS UPSIDE DOWN, SO valRight corresponds to left block
-        if(valRight==255){
-            skystonePlacement = 1; // left block
-            strafe(625, 0.1);
+        // Skystone Center
+        // **PHONE IS UPSIDE DOWN so valLeft for right block
+
+        int strafeDistance = 25;
+        double strafePower = 0.1;
+        if(valLeft == 0){
+            skystonePlacement = 3; // Skystone right
+            strafeDistance = 625;
+        } else if(valRight == 0){
+            skystonePlacement = 1; // Skystone left
+            strafeDistance = -500;
+        } else{
+            skystonePlacement = 2; // Skystone center
         }
-        else if(valLeft==255){
-            skystonePlacement = 3; // right block
-            strafe(-500, 0.1);
-        }
-        else{
-            skystonePlacement = 2; // center block
-            strafe(25, 0.1);
-        }
+        strafe(strafeDistance, strafePower);
 
 //        while(opModeIsActive()) {
 //            telemetry.addData("valLeft", valLeft);
@@ -142,13 +143,13 @@ public class Skystone extends LinearOpMode {
 
         sleep(250);
 
-        //move up to block
+        // move up to block
         move(1400,1400,0.3);
         sleep(100);
         move(300,300,0.1);
         sleep(100);
 
-        //grab block
+        // grab block
         frontGrab.setPosition(0.85);
         sleep(500);
         Erectus.setPosition(0.6);
@@ -156,11 +157,11 @@ public class Skystone extends LinearOpMode {
         frontGrab.setPosition(0);
         sleep(250);
 
-        //move back
+        // move back
         move(-300,-300,0.3);
         sleep(250);
 
-        //rotate towards the bridge
+        // rotate towards the bridge
         move(-950,950,0.3);
         sleep(250);
 
@@ -169,48 +170,48 @@ public class Skystone extends LinearOpMode {
 
         sleep(3000);
 
-        //depending on location of the skystone, move a certain distance under the bridge
+        // move to foundation
         if(skystonePlacement == 1) {
             move(5800, 5800, 0.3);
             sleep(250);
         } else if(skystonePlacement == 2) {
-            move(6500, 6500, 0.3);
+            move(6400, 6400, 0.3);
             sleep(250);
         } else {
-            move(7700,7700,0.3);
+            move(6925,6925,0.3);
             sleep(250);
         }
 
-        //lift up grabber
-        while(Lift.getCurrentPosition() < 1000){
-            Lift.setPower(1.0);
+        // lift up grabber
+        while(opModeIsActive() && lift.getCurrentPosition() < 1000){
+            lift.setPower(1.0);
         }
-        Lift.setPower(0);
+        lift.setPower(0);
 
-        //rotate to face the foundation
+        // rotate to face the foundation
         move(950,-950,0.3);
 
-        //move forward to the foundation
+        // move forward to the foundation
         move(600,600,0.1);
         sleep(250);
 
-        //lower the grabber and release the block
-        while(Lift.getCurrentPosition() > 550){
-            Lift.setPower(-1.0);
+        // lower the grabber and release the block
+        while(opModeIsActive() && lift.getCurrentPosition() > 550){
+            lift.setPower(-1.0);
         }
-        Lift.setPower(0);
+        lift.setPower(0);
         sleep(100);
         frontGrab.setPosition(0.85);
         sleep(100);
 
-        //lift the grabber
-        while(Lift.getCurrentPosition() < 700){
-            Lift.setPower(1.0);
+        // lift the grabber
+        while(opModeIsActive() && lift.getCurrentPosition() < 700){
+            lift.setPower(1.0);
         }
-        Lift.setPower(0);
+        lift.setPower(0);
         sleep(100);
 
-        //back away from foundation
+        // back away from foundation
         move(-550,-550,0.3);
         sleep(250);
 
@@ -267,10 +268,10 @@ public class Skystone extends LinearOpMode {
 		}
 
 		//lift up grabber
-        while(Lift.getCurrentPosition() < 800){
-            Lift.setPower(1.0);
+        while(lift.getCurrentPosition() < 800){
+            lift.setPower(1.0);
         }
-        Lift.setPower(0);
+        lift.setPower(0);
 
 		//rotate to face the foundation
         move(950,-950,0.3);
@@ -280,10 +281,10 @@ public class Skystone extends LinearOpMode {
         sleep(250);
 
 		//lower the grabber and release the block
-        while(Lift.getCurrentPosition() > 600){
-            Lift.setPower(-1.0);
+        while(lift.getCurrentPosition() > 600){
+            lift.setPower(-1.0);
         }
-        Lift.setPower(0);
+        lift.setPower(0);
         frontGrab.setPosition(0.85);
         sleep(250);
 
@@ -296,11 +297,11 @@ public class Skystone extends LinearOpMode {
         move(1900,-1900,0.3);
         sleep(250);
 
-        //reset grabber
-        while(Lift.getCurrentPosition() > 80){
-            Lift.setPower(-1.0);
+        // reset grabber
+        while(opModeIsActive() && lift.getCurrentPosition() > 80){
+            lift.setPower(-1.0);
         }
-        Lift.setPower(0);
+        lift.setPower(0);
         Erectus.setPosition(1);
         sleep(250);
         frontGrab.setPosition(1);
@@ -509,7 +510,7 @@ public class Skystone extends LinearOpMode {
 
             runtime.reset();
 
-            while(FRDrive.getPower() != power || FLDrive.getPower() != power || BLDrive.getPower() != power || BRDrive.getPower() != power){
+            while(opModeIsActive() && (FRDrive.getPower() != power || FLDrive.getPower() != power || BLDrive.getPower() != power || BRDrive.getPower() != power)) {
                 FLDrive.setPower(power);
                 FRDrive.setPower(power);
                 BLDrive.setPower(power);
@@ -557,7 +558,7 @@ public class Skystone extends LinearOpMode {
 
             runtime.reset();
 
-            while(FRDrive.getPower() != power || FLDrive.getPower() != power || BLDrive.getPower() != power || BRDrive.getPower() != power){
+            while(opModeIsActive() && (FRDrive.getPower() != power || FLDrive.getPower() != power || BLDrive.getPower() != power || BRDrive.getPower() != power)) {
                 FLDrive.setPower(power);
                 FRDrive.setPower(power);
                 BLDrive.setPower(power);
@@ -582,6 +583,7 @@ public class Skystone extends LinearOpMode {
             BRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
     }
+
     private void startStrafe(double power){
         if(opModeIsActive()){
 

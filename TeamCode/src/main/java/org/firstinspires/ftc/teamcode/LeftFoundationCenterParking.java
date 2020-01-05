@@ -20,8 +20,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Right Foundation Parking", group="Linear Opmode")
-public class RightFoundationParking extends LinearOpMode {
+@Autonomous(name="Left Foundation Center Parking", group="Linear Opmode")
+public class LeftFoundationCenterParking extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor FRDrive = null;
     private DcMotor FLDrive = null;
@@ -83,7 +83,7 @@ public class RightFoundationParking extends LinearOpMode {
 
         //strafe so robot is in the middle of the foundation
         telemetry.addData("Stage 0", true); //strafe right
-        strafe(-900,0.3);
+        strafe(700,0.3);
         sleep(250);
 
         //back up into foundation
@@ -100,17 +100,17 @@ public class RightFoundationParking extends LinearOpMode {
 
         //drive foundation forward
         telemetry.addData("Stage 2", true);
-        move(1600,1600,0.3);
+        move(1750,1750,0.3);
         sleep(250);
 
         //rotate foundation into the corner
-        move(500,-500,0.3);
+        move(-700,700,0.3);
         sleep(250);
-        move(200,200,0.3);
+        move(500,500,0.3);
         sleep(250);
-        move(1900, -1900, 0.3);
+        move(-1500, 1500, 0.3);
         sleep(250);
-        move(-600,-600,0.2);
+        move(-800,-800,0.2);
         sleep(250);
 
         stopStrafe();
@@ -122,15 +122,16 @@ public class RightFoundationParking extends LinearOpMode {
         sleep(250);
 
         //park
-        move(950, -950, 0.3);
+        move(-950, 950, 0.3);
         sleep(100);
-        move(750, 750, 0.3);
+        move(650, 650, 0.3);
         sleep(100);
-        move(950, -950, 0.3);
+        move(-950, 950, 0.3);
         sleep(250);
         move(-2000,-2000,0.3);
         frontGrab.setPosition(0.85);
         Erectus.setPosition(0.6);
+        sleep(500);
 //
 //        foundation.setPosition(0.45);
 //        sleep(250);

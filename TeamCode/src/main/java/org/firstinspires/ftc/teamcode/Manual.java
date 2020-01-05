@@ -177,27 +177,27 @@ public class Manual extends LinearOpMode {
             if(gamepad2.a && !grab){
                 frontGrab.setPosition(0);
                 grab = true;
-                sleep(20);
+                sleep(500);
             } else if(gamepad2.a){
                 frontGrab.setPosition(0.85);
                 grab = false;
-                sleep(20);
+                sleep(500);
             }
 
-            if(gamepad2.b && !drag){
+            if(gamepad1.x && !drag){
                 foundation.setPosition(0.8);
                 drag = true;
-                sleep(20);
+                sleep(500);
             }
-            else if(gamepad2.b){
+            else if(gamepad1.x){
                 foundation.setPosition(0.45);
                 drag = false;
-                sleep(20);
+                sleep(500);
             }
 
             if(gamepad2.y){
                 frontGrab.setPosition(0.85);
-                sleep(20);
+                sleep(250);
                 Erectus.setPosition(0.6);
                 raise = false;
                 while(Lift.getCurrentPosition() > 80){
@@ -208,10 +208,10 @@ public class Manual extends LinearOpMode {
 
             if(gamepad2.x && !raise){
                 frontGrab.setPosition(0);
-                sleep(20);
+                sleep(250);
                 Erectus.setPosition(1);
                 raise = true;
-                sleep(20);
+                sleep(250);
             }
             else if(gamepad2.x){
                 frontGrab.setPosition(0.85);
@@ -229,7 +229,7 @@ public class Manual extends LinearOpMode {
 
             if(gamepad1.b){
                 sensitive = !sensitive;
-                sleep(20);
+                sleep(500);
             }
 
             // Show the elapsed game time and wheel power.

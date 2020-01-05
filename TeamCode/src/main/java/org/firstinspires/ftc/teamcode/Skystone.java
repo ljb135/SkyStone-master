@@ -187,14 +187,24 @@ public class Skystone extends LinearOpMode {
             lift.setPower(1.0);
         }
         lift.setPower(0);
+        sleep(100);
 
-        // rotate to face the foundation
+        telemetry.addData("rotating...", 1);
+        telemetry.update();
+        // rotate towards the bridge
         move(950,-950,0.3);
+        sleep(250);
 
+        telemetry.addData("move forward", 1);
+        telemetry.update();
+        sleep(2000);
         // move forward to the foundation
         move(600,600,0.1);
         sleep(250);
 
+        telemetry.addData("lowering grabber", 1);
+        telemetry.update();
+        sleep(2000);
         // lower the grabber and release the block
         while(opModeIsActive() && lift.getCurrentPosition() > 550){
             lift.setPower(-1.0);
@@ -507,6 +517,9 @@ public class Skystone extends LinearOpMode {
             FRDrive.setTargetPosition(FRPosition);
             BLDrive.setTargetPosition(BLPosition);
             BRDrive.setTargetPosition(BRPosition);
+
+            telemetry.addData("Position", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)FRDrive.getTargetPosition(), (float)FLDrive.getTargetPosition(), (float)BRDrive.getTargetPosition(), (float)BLDrive.getTargetPosition());
+
 
             runtime.reset();
 

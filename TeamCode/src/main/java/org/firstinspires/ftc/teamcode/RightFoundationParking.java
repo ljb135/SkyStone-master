@@ -81,9 +81,9 @@ public class RightFoundationParking extends LinearOpMode {
         move(-200,-200,0.3);
         sleep(250);
 
-        //strafe right so robot is in the middle of the foundation
+        //strafe so robot is in the middle of the foundation
         telemetry.addData("Stage 0", true); //strafe right
-        strafe(-600,0.4);
+        strafe(-900,0.3);
         sleep(250);
 
         //back up into foundation
@@ -100,33 +100,37 @@ public class RightFoundationParking extends LinearOpMode {
 
         //drive foundation forward
         telemetry.addData("Stage 2", true);
-        move(1750,1750,0.3);
+        move(1600,1600,0.3);
         sleep(250);
 
         //rotate foundation into the corner
-        move(700,-700,0.3);
+        move(500,-500,0.3);
         sleep(250);
-        move(600,600,0.3);
+        move(200,200,0.3);
         sleep(250);
-        move(1700, -1700, 0.3);
+        move(1900, -1900, 0.3);
         sleep(250);
-        move(-800,-800,0.5);
+        move(-600,-600,0.2);
         sleep(250);
+
+        stopStrafe();
 
         //unclamp foundation and move away
         foundation.setPosition(0.45);
         sleep(250);
-        move(400,400,0.5);
+        move(400,400,0.3);
         sleep(250);
 
         //park
         move(950, -950, 0.3);
         sleep(100);
-        move(400, 400, 0.3);
+        move(750, 750, 0.3);
         sleep(100);
         move(950, -950, 0.3);
         sleep(250);
-        move(-1500,-1500,0.3);
+        move(-2000,-2000,0.3);
+        frontGrab.setPosition(0.85);
+        Erectus.setPosition(0.6);
 //
 //        foundation.setPosition(0.45);
 //        sleep(250);
@@ -293,5 +297,23 @@ public class RightFoundationParking extends LinearOpMode {
             BLDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             BRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
+    }
+    private void stopStrafe(){
+        FLPosition = 0;
+        FRPosition = 0;
+        BLPosition = 0;
+        BRPosition = 0;
+        FRDrive.setPower(0);
+        FLDrive.setPower(0);
+        BLDrive.setPower(0);
+        BRDrive.setPower(0);
+        FLDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        FRDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BLDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BRDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        FLDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        FRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        BLDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        BRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 }

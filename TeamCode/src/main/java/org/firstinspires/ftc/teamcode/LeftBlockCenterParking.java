@@ -122,20 +122,18 @@ public class LeftBlockCenterParking extends LinearOpMode {
         move(100,100,0.5);
         sleep(100);
 
-        //depending on the location of the skystone, strafe so that the robot is in front
-        if(valRight==255){
-            skystonePlacement = 1; // right block
-            strafe(625, 0.1);
+        int strafeDistance = 25;
+        double strafePower = 0.1;
+        if(valLeft == 0){
+            skystonePlacement = 3; // Skystone right
+            strafeDistance = 625;
+        } else if(valRight == 0){
+            skystonePlacement = 1; // Skystone left
+            strafeDistance = -500;
+        } else{
+            skystonePlacement = 2; // Skystone center
         }
-        else if(valLeft==255){
-            skystonePlacement = 3; // left block
-            strafe(-500, 0.1);
-        }
-        else{
-            skystonePlacement = 2; // center block
-            strafe(25, 0.1);
-        }
-
+        strafe(strafeDistance, strafePower);
         sleep(250);
 
         //move up to block

@@ -32,6 +32,7 @@ public class RightCenterParking extends LinearOpMode {
     private Servo foundation = null;
     private Servo capstone = null;
     private double timeout = 5;
+    private int rotate = 580;
     private int FLPosition = 0;
     private int FRPosition = 0;
     private int BLPosition = 0;
@@ -93,7 +94,7 @@ public class RightCenterParking extends LinearOpMode {
         sleep(100);
 
         telemetry.addData("Stage 2", true); //rotate left
-        move(-950,950,0.3);
+        move(-rotate,rotate,0.3);
         sleep(500);
 
         telemetry.addData("Stage 3", true); //drive forward and park

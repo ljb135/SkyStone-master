@@ -40,6 +40,7 @@ public class RightBlockCenterParking extends LinearOpMode {
     private Servo frontGrab = null;
     private Servo foundation = null;
     private double timeout = 5;
+    private int rotate = 580;
     private int FLPosition = 0;
     private int FRPosition = 0;
     private int BLPosition = 0;
@@ -173,7 +174,7 @@ public class RightBlockCenterParking extends LinearOpMode {
         stopStrafe();
 
         //rotate before foundation and move forward to drop off block
-        move(950,-950,0.3);
+        move(rotate,-rotate,0.3);
         sleep(250);
 
         move(200,200, 0.3);
@@ -191,7 +192,7 @@ public class RightBlockCenterParking extends LinearOpMode {
         stopStrafe();
 
         //rotate to go under bridge
-		move(-950,950,0.3);
+		move(-rotate,rotate,0.3);
 		sleep(100);
         move(-800,-800,0.2);//park under bridge
 		//depending on location of the skystone, move a certain distance under the bridge
@@ -212,7 +213,7 @@ public class RightBlockCenterParking extends LinearOpMode {
 //		stopStrafe();
 //
 //		//rotate towards block
-//		move(950,-950,0.3);
+//		move(rotate,-rotate,0.3);
 //		sleep(100);
 //		if(skystonePlacement==2) {
 //            strafe(530, 0.5);
@@ -238,7 +239,7 @@ public class RightBlockCenterParking extends LinearOpMode {
 //		stopStrafe();
 //
 //		//rotate towards the bridge
-//        move(-950,950,0.3);
+//        move(-rotate,rotate,0.3);
 //        sleep(250);
 //
 //		//depending on location of the skystone, move a certain distance under the bridge

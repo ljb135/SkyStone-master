@@ -44,6 +44,8 @@ public class RightSkystoneFoundationCenterParking extends LinearOpMode {
     private int distance = 0;
     private int skystonePlacement = 0;
 
+    private int rotate = 600;
+
     //0 means skystone, 1 means yellow stone
     //-1 for debug, but we can keep it like this because if it works, it should change to either 0 or 255
     private static int valMid = -1;
@@ -130,7 +132,7 @@ public class RightSkystoneFoundationCenterParking extends LinearOpMode {
             skystonePlacement = 2; // Skystone center
         }
         strafe(strafeDistance, strafePower);
-        sleep(250);
+        sleep(100);
 
         //move up to block
         move(1600,1600,0.3);
@@ -138,30 +140,30 @@ public class RightSkystoneFoundationCenterParking extends LinearOpMode {
 
         //grab block
         frontGrab.setPosition(0.85);
-        sleep(500);
-        Erectus.setPosition(0.6);
-        sleep(500);
-        frontGrab.setPosition(0);
         sleep(250);
+        Erectus.setPosition(0.6);
+        sleep(250);
+        frontGrab.setPosition(0);
+        sleep(100);
 
         //move back
         move(-300,-300,0.3);
-        sleep(250);
+        sleep(100);
 
         //rotate towards the bridge
-        move(-930,930,0.3);
-        sleep(250);
+        move(-rotate,rotate,0.3);
+        sleep(100);
 
         //depending on location of the skystone, move a certain distance under the bridge
         if(skystonePlacement == 1) {
-            move(4500, 4500, 0.3);
-            sleep(250);
+            move(4600, 4600, 0.3);
+            sleep(100);
         } else if(skystonePlacement == 2) {
             move(6400, 6400, 0.3);
-            sleep(250);
+            sleep(100);
         } else {
             move(6925,6925,0.3);
-            sleep(250);
+            sleep(100);
         }
 
         stopStrafe();
@@ -171,19 +173,19 @@ public class RightSkystoneFoundationCenterParking extends LinearOpMode {
             lift.setPower(1.0);
         }
         lift.setPower(0);
-        sleep(500);
+        sleep(250);
 
         telemetry.addData("rotating...", 1);
         telemetry.update();
         // rotate towards the foundation
-        move(950,-950,0.3);
-        sleep(250);
+        move(rotate,-rotate,0.3);
+        sleep(100);
 
         telemetry.addData("move forward", 1);
         telemetry.update();
         // move forward to the foundation
-        move(600,600,0.1);
-        sleep(250);
+        move(600,600,0.3);
+        sleep(100);
 
         telemetry.addData("lowering grabber", 1);
         telemetry.update();
@@ -194,22 +196,22 @@ public class RightSkystoneFoundationCenterParking extends LinearOpMode {
         lift.setPower(0);
         sleep(100);
         frontGrab.setPosition(0.85);
-        sleep(500);
+        sleep(100);
 
         // lift the grabber
         while(opModeIsActive() && lift.getCurrentPosition() < 700){
             lift.setPower(1.0);
         }
         lift.setPower(0);
-        sleep(500);
+        sleep(100);
 
         // back away from foundation
-        move(-550,-550,0.3);
-        sleep(250);
+        move(-300,-300,0.3);
+        sleep(100);
 
         //rotate 180 degrees
-        move(1900,-1900,0.3);
-        sleep(250);
+        move(2*rotate,-2*rotate,0.3);
+        sleep(100);
 
         // reset grabber
         while(opModeIsActive() && lift.getCurrentPosition() > 80){
@@ -217,12 +219,12 @@ public class RightSkystoneFoundationCenterParking extends LinearOpMode {
         }
         lift.setPower(0);
         Erectus.setPosition(1);
-        sleep(250);
+        sleep(100);
         frontGrab.setPosition(0);
-        sleep(250);
+        sleep(100);
 
         //move toward foundation
-        move(-600,-600,0.1);
+        move(-300,-300,0.3);
         sleep(250);
         move(-50, -50, 0.1);
         sleep(250);
@@ -231,20 +233,126 @@ public class RightSkystoneFoundationCenterParking extends LinearOpMode {
         foundation.setPosition(0.8);
         sleep(250);
 
-        move(-300,300,0.3);
-        sleep(250);
-        move(1300,1300,0.3);
-        sleep(250);
-        move(-1900, 1900, 0.3);
-        sleep(250);
+        move(-200,200,0.3);
+        sleep(100);
+        move(1200,1200,0.3);
+        sleep(100);
+        move(-2*rotate, 2*rotate, 0.3);
+        sleep(100);
         move(-900,-900,0.2);
-        sleep(250);
+        sleep(100);
 
         stopStrafe();
 
-        //unclamp foundation and park
+        //unclamp foundation
         foundation.setPosition(0.45);
         sleep(250);
+
+        /* Get second block
+        //depending on location of the skystone, move a certain distance under the bridge
+//		if(skystonePlacement == 1){
+//			move(4200, 4200,0.3);
+//			sleep(100);
+//		}
+//		else if(skystonePlacement == 2){
+//			move(4000,4000,0.3);
+//			sleep(100);
+//
+//		}
+//		else if(skystonePlacement == 3){
+//			move(4000,4000,0.3);
+//			sleep(100);
+//		}
+//
+//		stopStrafe();
+
+//      //move grabber up
+        frontGrab.setPosition(1);
+
+//		//rotate towards block
+//		move(-rotate,rotate,0.3);
+//		sleep(100);
+
+        //use special mechanism for skystone positions 2 and 3
+//		if(skystonePlacement==2) {
+//
+//      }
+        else if(skystonePlacement==3){
+
+        }
+
+//		//move towards block
+//		move(300,300,0.3);
+//      sleep(100);
+//
+//		//grab block
+//		Erectus.setPosition(0.6);
+//		sleep(250);
+//		frontGrab.setPosition(0);
+//		sleep(250);
+
+//		//move back
+//		move(-275,-275,0.3);
+//		sleep(100);
+
+        //use special mechanism for skystone positions 2 and 3
+//      if(skystonePlacement==2) {
+//
+//      }
+        else if(skystonePosition==3){
+
+        }
+//
+//		stopStrafe();
+//
+//		//rotate towards the bridge
+//        move(-rotate,rotate,0.3);
+//        sleep(100);
+//
+//		//depending on location of the skystone, move a certain distance under the bridge
+//        if(skystonePlacement == 1){
+//            move(4000,4300,0.3);
+//            sleep(100);
+//        }
+//        else if(skystonePlacement == 2){
+//            move(4000,4100,0.3);
+//            sleep(100);
+//        }
+//        else if(skystonePlacement == 3){
+//            move(4300,4300,0.3);
+//            sleep(100);
+//        }
+//
+//        // lift up grabber
+//        while(opModeIsActive() && lift.getCurrentPosition() < 1000){
+//            lift.setPower(1.0);
+//        }
+//        lift.setPower(0);
+//        sleep(250);
+//
+//        telemetry.addData("move forward", 1);
+//        telemetry.update();
+//        // move forward to the foundation
+//        move(300,300,0.3);
+//        sleep(100);
+//
+//        //release the block
+//        frontGrab.setPosition(0.85);
+//        sleep(100);
+//
+//        // back away from foundation
+//        move(-300,-300,0.3);
+//        sleep(100);
+//
+//        // reset grabber
+//        while(opModeIsActive() && lift.getCurrentPosition() > 80){
+//            lift.setPower(-1.0);
+//        }
+//        lift.setPower(0);
+//        sleep(100);
+        */
+
+        //park
         move(2500,2500,0.3);
         frontGrab.setPosition(0.85);
         Erectus.setPosition(0.6);
@@ -440,10 +548,10 @@ public class RightSkystoneFoundationCenterParking extends LinearOpMode {
     }
     private void strafe(int distance, double power){
         if(opModeIsActive()){
-            FLPosition += distance;
-            FRPosition -= distance;
-            BLPosition -= distance;
-            BRPosition += distance;
+            FLPosition -= distance;
+            FRPosition += distance;
+            BLPosition += distance;
+            BRPosition -= distance;
             FLDrive.setTargetPosition(FLPosition);
             FRDrive.setTargetPosition(FRPosition);
             BLDrive.setTargetPosition(BLPosition);

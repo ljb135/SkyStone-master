@@ -503,10 +503,6 @@ public class Skystone extends LinearOpMode {
             FRPosition += right;
             BLPosition += left;
             BRPosition += right;
-            FLDrive.setTargetPosition(FLPosition);
-            FRDrive.setTargetPosition(FRPosition);
-            BLDrive.setTargetPosition(BLPosition);
-            BRDrive.setTargetPosition(BRPosition);
 
             FLDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             FRDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);

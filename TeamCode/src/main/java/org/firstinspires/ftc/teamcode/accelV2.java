@@ -67,7 +67,7 @@ public class accelV2 extends LinearOpMode {
 //            FRDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 //            BLDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 //            BRDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            FLDrive.setTargetPosition(8000);
+            FLDrive.setTargetPosition(5000);
 //            BLDrive.setTargetPosition(8000);
 //            FRDrive.setTargetPosition(8000);
 //            BRDrive.setTargetPosition(8000);
@@ -76,10 +76,8 @@ public class accelV2 extends LinearOpMode {
             runtime.reset();
 
             double accelVal = 1000; // Number of ticks to accelerate
-            double decelVal = 5000; // Number of ticks to decelerate
+            double decelVal = 3000; // Number of ticks to decelerate
             double wheelSpeed = 0;
-            double maxSpeed = 0;
-            double prevSpeed = 0;
             telemetry.addData("target", FLDrive.getTargetPosition());
 
             FLDrive.setPower(0.1);
@@ -103,41 +101,26 @@ public class accelV2 extends LinearOpMode {
 //            BRDrive.setPower(0.3);
 //            sleep(1000);
 
-            while (opModeIsActive() && ((accelVal - FLDrive.getCurrentPosition()) > 1)) {
-                wheelSpeed = Range.scale(FLDrive.getCurrentPosition(), 0, accelVal, 0, power);
+            while (opModeIsActive() && (((FLDrive.getTargetPosition() - decelVal) - FLDrive.getCurrentPosition()) > 1)) {
+                wheelSpeed = Range.scale(FLDrive.getCurrentPosition(), 0, 1000, 0, 1.0);
+                if(wheelSpeed > 1.0) {
+                    wheelSpeed = 1.0;
+                }
                 telemetry.addData("accelerating", 1);
                 telemetry.addData("wheelSpeed", "Wheel Speed (%.2f) CurrentPosition (%.2f) Target Position: (%.2f)", (float) wheelSpeed, (float)FLDrive.getCurrentPosition(), (float) FLDrive.getTargetPosition());
                 telemetry.update();
-                if(wheelSpeed > 1.0) {
-                    wheelSpeed = 1.0;
-                }
-
-                if(wheelSpeed - prevSpeed >= 0.2) {
-                    FLDrive.setPower(Math.abs(wheelSpeed));
-                    BLDrive.setPower(Math.abs(wheelSpeed));
-                    BRDrive.setPower(Math.abs(wheelSpeed));
-                    FRDrive.setPower(Math.abs(wheelSpeed));
-                    prevSpeed = wheelSpeed;
-                }
-
-            }
-
-            while (opModeIsActive() && (((FLDrive.getTargetPosition() - decelVal) - FLDrive.getCurrentPosition()) > 1)) {
-                telemetry.addData("constant", 1);
-                telemetry.addData("wheelSpeed", "Wheel Speed (%.2f) CurrentPosition (%.2f) Target Position: (%.2f)", (float) wheelSpeed, (float)FLDrive.getCurrentPosition(), (float) FLDrive.getTargetPosition());
-                telemetry.update();
-                maxSpeed = wheelSpeed;
-                if(wheelSpeed > 1.0) {
-                    wheelSpeed = 1.0;
-                }
-                if(wheelSpeed - prevSpeed >= 0.2) {
-                    prevSpeed = wheelSpeed;
-                }
+                FLDrive.setPower(wheelSpeed);
+                BLDrive.setPower(wheelSpeed);
+                BRDrive.setPower(wheelSpeed);
+                FRDrive.setPower(wheelSpeed);
             }
 
             while (opModeIsActive() && ((FLDrive.getTargetPosition() - FLDrive.getCurrentPosition()) > 1)) {
                 telemetry.addData("decelerating", 1);
                 wheelSpeed = Range.scale(FLDrive.getCurrentPosition(), FLDrive.getTargetPosition() - decelVal, FLDrive.getTargetPosition(), 0.7, 0);
+                if(wheelSpeed > 1.0) {
+                    wheelSpeed = 1.0;
+                }
                 telemetry.addData("wheelSpeed", "Wheel Speed (%.2f) CurrentPosition (%.2f) Target Position: (%.2f)", (float) wheelSpeed, (float)FLDrive.getCurrentPosition(), (float) FLDrive.getTargetPosition());
                 telemetry.update();
                 FLDrive.setPower(wheelSpeed);

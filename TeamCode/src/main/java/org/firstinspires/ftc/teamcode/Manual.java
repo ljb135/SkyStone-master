@@ -81,7 +81,7 @@ public class Manual extends LinearOpMode {
     private boolean raise = false;
     private boolean dropped = false;
     private boolean isPressed1X = false;
-    private boolean isPressed1A = false;
+    private boolean isPressed1Y = false;
     private boolean isPressed1B = false;
     private boolean isPressed2A = false;
     private boolean isPressed2Y = false;
@@ -171,8 +171,8 @@ public class Manual extends LinearOpMode {
             }
 
 
-            if (gamepad1.a) {
-                if(!isPressed1A) {
+            if (gamepad1.y) {
+                if(!isPressed1Y) {
                     if(dropped) {
                         capstonePosition = 0.8;
                         dropped = false;
@@ -180,10 +180,10 @@ public class Manual extends LinearOpMode {
                         capstonePosition = 0;
                         dropped = true;
                     }
-                    isPressed1A = true;
+                    isPressed1Y = true;
                 }
             } else {
-                isPressed1A = false;
+                isPressed1Y = false;
             }
 
             if (gamepad1.x) {
@@ -246,7 +246,7 @@ public class Manual extends LinearOpMode {
                 if(!isPressed2X) {
                     if(raise) {
                         frontGrabPosition = 0;
-                        erectusPosition = 0;
+                        erectusPosition = 1;
                         raise = false;
                     } else {
                         frontGrabPosition = 0.85;

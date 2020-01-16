@@ -20,8 +20,8 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Right Foundation Parking", group="Linear Opmode")
-public class RightFoundationParking extends LinearOpMode {
+@Autonomous(name="Left Foundation Center Parking", group="Linear Opmode")
+public class LeftFoundationCenterParking extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor FRDrive = null;
     private DcMotor FLDrive = null;
@@ -45,11 +45,11 @@ public class RightFoundationParking extends LinearOpMode {
         // Initialize the hardware variables. Note that the strings used here as parameters
         // to 'get' must correspond to the names assigned during the robot configuration
         // step (using the FTC Robot Controller app on the phone).
-        FRDrive  = hardwareMap.get(DcMotor.class, "front_right");
+        FRDrive = hardwareMap.get(DcMotor.class, "front_right");
         FLDrive = hardwareMap.get(DcMotor.class, "front_left");
-        BRDrive  = hardwareMap.get(DcMotor.class, "back_right");
-        BLDrive  = hardwareMap.get(DcMotor.class, "back_left");
-        Lift  = hardwareMap.get(DcMotor.class, "lift");
+        BRDrive = hardwareMap.get(DcMotor.class, "back_right");
+        BLDrive = hardwareMap.get(DcMotor.class, "back_left");
+        Lift = hardwareMap.get(DcMotor.class, "lift");
         Erectus = hardwareMap.get(Servo.class, "erectus");
         frontGrab = hardwareMap.get(Servo.class, "front_grab");
         foundation = hardwareMap.get(Servo.class, "foundation");
@@ -78,19 +78,19 @@ public class RightFoundationParking extends LinearOpMode {
         Erectus.setPosition(1);
 
         //move away from wall
-        move(-200,-200,0.3);
+        move(-200, -200, 0.3);
         sleep(250);
 
-        //strafe right so robot is in the middle of the foundation
+        //strafe so robot is in the middle of the foundation
         telemetry.addData("Stage 0", true); //strafe right
-        strafe(-600,0.4);
+        strafe(700, 0.3);
         sleep(250);
 
         //back up into foundation
         telemetry.addData("Stage 1", true);
-        move(-1900,-1900,0.3);
+        move(-1900, -1900, 0.3);
         sleep(250);
-        move(-50,-50,0.1);
+        move(-50, -50, 0.1);
         sleep(250);
 
         //close grabber and clamp onto foundation
@@ -98,103 +98,60 @@ public class RightFoundationParking extends LinearOpMode {
         foundation.setPosition(0.8);
         sleep(250);
 
+        /*
         //drive foundation forward
         telemetry.addData("Stage 2", true);
         move(1750,1750,0.3);
         sleep(250);
 
         //rotate foundation into the corner
-        move(700,-700,0.3);
+        move(-700,700,0.3);
         sleep(250);
-        move(600,600,0.3);
+        move(500,500,0.3);
         sleep(250);
-        move(1700, -1700, 0.3);
+        move(-1500, 1500, 0.3);
         sleep(250);
-        move(-800,-800,0.5);
+        move(-800,-800,0.2);
         sleep(250);
+
+        stopStrafe();
 
         //unclamp foundation and move away
         foundation.setPosition(0.45);
         sleep(250);
-        move(400,400,0.5);
+        move(400,400,0.3);
         sleep(250);
 
         //park
-        move(950, -950, 0.3);
+        move(-950, 950, 0.3);
         sleep(100);
-        move(400, 400, 0.3);
+        move(650, 650, 0.3);
         sleep(100);
-        move(950, -950, 0.3);
+        move(-950, 950, 0.3);
         sleep(250);
-        move(-1500,-1500,0.3);
-//
-//        foundation.setPosition(0.45);
-//        sleep(250);
-//
-//        telemetry.addData("Stage 3", true); //give space to rotate
-//        move(250,250,0.4);
-//        sleep(250);
-//
-//        telemetry.addData("Stage 4", true); //rotate left
-//        move(-950,950,0.4);
-//        sleep(250);
-//
-//        telemetry.addData("Stage 5", true); //drive forward to edge
-//        move(1700,1700,0.4);
-//        sleep(250);
-//
-//        telemetry.addData("Stage 6", true); //rotate left
-//        move(-950,950,0.4);
-//        sleep(250);
-//
-//        telemetry.addData("Stage 7", true); //drive forward to edge
-//        move(2500,2500,0.4);
-//        sleep(250);
-//
-////        move(1200, 1200, 0.4);
-////        sleep(250);
-////        move(950,-950,0.4);
-////        sleep(250);
-////        move(-600,-600,0.4);
-////        sleep(250);
-////        move(200,200,0.4);
-////        sleep(250);
-////        move(-950,950,0.4);
-////        sleep(250);
-////        move(1200, 1200, 0.4);
-////        sleep(250);
-//
-//
-//        telemetry.addData("Stage 8", true); //rotate left
-//        move(-950,950,0.4);
-//        sleep(250);
-//
-//        telemetry.addData("Stage 9", true); //drive forward to near middle
-//        move(1700,1700,0.4);
-//        sleep(250);
-//
-//        telemetry.addData("Stage 10", true); //rotate left
-//        move(950,-950,0.4);
-//        sleep(250);
-//
-//        telemetry.addData("Stage 11", true); //drive foundation in
-//        move(-2000,-2000,0.4);
-//
-//        frontGrab.setPosition(0.85);
-//        sleep(500);
-//        Erectus.setPosition(0.6);
-//        foundation.setPosition(0.45);
-//
-//        telemetry.addData("Stage 12", true); //drive up near center
-//        move(600,600,0.4);
-//        sleep(250);
-//
-//        telemetry.addData("Stage 13", true); //rotate right
-//        move(950,-950,0.4);
-//        sleep(250);
-//
-//        telemetry.addData("Stage 14", true); //drive forward and park
-//        move(2300,2300,0.4);
+        move(-2000,-2000,0.3);
+        frontGrab.setPosition(0.85);
+        Erectus.setPosition(0.6);
+        sleep(500);
+
+         */
+
+        //new foundation testing
+        move(-300,300,0.3);
+        sleep(250);
+        move(1450,1450,0.3);
+        sleep(250);
+        move(-1800, 1800, 0.3);
+        sleep(250);
+        move(-900,-900,0.2);
+        sleep(250);
+
+        stopStrafe();
+
+        //unclamp foundation and park
+        foundation.setPosition(0.45);
+        sleep(250);
+        move(2500,2500,0.3);
     }
 
     private void move(int left, int right, double power){
@@ -293,5 +250,23 @@ public class RightFoundationParking extends LinearOpMode {
             BLDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             BRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
+    }
+    private void stopStrafe(){
+        FLPosition = 0;
+        FRPosition = 0;
+        BLPosition = 0;
+        BRPosition = 0;
+        FRDrive.setPower(0);
+        FLDrive.setPower(0);
+        BLDrive.setPower(0);
+        BRDrive.setPower(0);
+        FLDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        FRDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BLDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BRDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        FLDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        FRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        BLDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        BRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 }

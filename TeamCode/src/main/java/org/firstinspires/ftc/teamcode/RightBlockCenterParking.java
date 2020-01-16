@@ -40,6 +40,7 @@ public class RightBlockCenterParking extends LinearOpMode {
     private Servo frontGrab = null;
     private Servo foundation = null;
     private double timeout = 5;
+    private int rotate = 580;
     private int FLPosition = 0;
     private int FRPosition = 0;
     private int BLPosition = 0;
@@ -119,29 +120,25 @@ public class RightBlockCenterParking extends LinearOpMode {
         sleep(100);
 
         //move away from wall
-        move(100,100,0.5);
+        move(100,100,0.3);
         sleep(100);
 
-        //depending on the location of the skystone, strafe so that the robot is in front
-        if(valRight==255){
-            skystonePlacement = 1; // right block
-            strafe(625, 0.1);
+        int strafeDistance = 75;
+        double strafePower = 0.3;
+        if(valLeft == 0){
+            skystonePlacement = 3; // Skystone right
+            strafeDistance = 525;
+        } else if(valRight == 0){
+            skystonePlacement = 1; // Skystone left
+            strafeDistance = -500;
+        } else{
+            skystonePlacement = 2; // Skystone center
         }
-        else if(valLeft==255){
-            skystonePlacement = 3; // left block
-            strafe(-500, 0.1);
-        }
-        else{
-            skystonePlacement = 2; // center block
-            strafe(25, 0.1);
-        }
-
+        strafe(strafeDistance, strafePower);
         sleep(250);
 
         //move up to block
-        move(1400,1400,0.3);
-        sleep(100);
-        move(300,300,0.1);
+        move(1600,1600,0.3);
         sleep(100);
 
         //grab block
@@ -157,7 +154,7 @@ public class RightBlockCenterParking extends LinearOpMode {
         sleep(250);
 
         //rotate towards the bridge
-        move(-950,950,0.3);
+        move(-930,930,0.3);
         sleep(250);
 
         //depending on location of the skystone, move a certain distance under the bridge
@@ -166,93 +163,108 @@ public class RightBlockCenterParking extends LinearOpMode {
             sleep(250);
         }
         else if(skystonePlacement == 2){
-            move(3200,3600,0.3);
+            move(3200,3200,0.3);
             sleep(250);
         }
         else if(skystonePlacement == 3){
-            move(3600,4200,0.3);
+            move(3600,3600,0.3);
             sleep(250);
         }
+
+        stopStrafe();
 
         //rotate before foundation and move forward to drop off block
-        move(950,-950,0.3);
+        move(rotate,-rotate,0.3);
         sleep(250);
-        move(300, 300, 0.3);
+
+        move(200,200, 0.3);
         sleep(100);
 
         //let go of block
         frontGrab.setPosition(0.85);
-        sleep(250);
+        sleep(100);
         Erectus.setPosition(0.6);
         sleep(100);
 
-        //move back
-        move(-300,-300,0.3);
+        move(-200,-200, 0.3);
         sleep(100);
+
+        stopStrafe();
 
         //rotate to go under bridge
-		move(-950,950,0.3);
+		move(-rotate,rotate,0.3);
 		sleep(100);
-
+        move(-800,-800,0.2);//park under bridge
 		//depending on location of the skystone, move a certain distance under the bridge
-		if(skystonePlacement == 1){
-			move(-4200,-4200,0.3);
-			sleep(250);
-		}
-		if(skystonePlacement == 2){
-			move(-4700,-4700,0.3);
-			sleep(250);
-		}
-		if(skystonePlacement == 3){
-			move(-4200,-4200,0.3);
-			sleep(250);
-		}
-
-		//rotate towards block
-		move(950,-950,0.3);
-		sleep(100);
-
-		//move towards block
-		move(300,300,0.3);
-        sleep(100);
-
-		//grab block
-		Erectus.setPosition(0.6);
-		sleep(500);
-		frontGrab.setPosition(0);
-		sleep(250);
-
-		//move back
-		move(-400,-400,0.3);
-		sleep(250);
-
-		//rotate towards the bridge
-        move(-950,950,0.3);
-        sleep(250);
-
-		//depending on location of the skystone, move a certain distance under the bridge
-        if(skystonePlacement == 1){
-            move(4500,4500,0.3);
-            sleep(250);
-        }
-        else if(skystonePlacement == 2){
-            move(5100,5100,0.3);
-            sleep(250);
-        }
-        else if(skystonePlacement == 3){
-            move(4500,4500,0.3);
-            sleep(250);
-        }
-
-        //let go of block
-        frontGrab.setPosition(0.85);
-        sleep(250);
-        Erectus.setPosition(0.6);
-        sleep(100);
-
-        //park
-        move(-1200, -1200, 0.3);
-        sleep(250);
+//		if(skystonePlacement == 1){
+//			move(-4200,-4200,0.5);
+//			sleep(250);
+//		}
+//		if(skystonePlacement == 2){
+//			move(-4000,-4000,0.5);
+//			sleep(250);
+//
+//		}
+//		if(skystonePlacement == 3){
+//			move(-4000,-4000,0.5);
+//			sleep(250);
+//		}
+//
+//		stopStrafe();
+//
+//		//rotate towards block
+//		move(rotate,-rotate,0.3);
+//		sleep(100);
+//		if(skystonePlacement==2) {
+//            strafe(530, 0.5);
+//            sleep(100);
+//        }
+//		//move towards block
+//		move(300,300,0.4);
+//        sleep(100);
+//
+//		//grab block
+//		Erectus.setPosition(0.6);
+//		sleep(500);
+//		frontGrab.setPosition(0);
+//		sleep(250);
+//		//move back
+//		move(-275,-275,0.4);
+//		sleep(250);
+//        if(skystonePlacement==2) {
+//            strafe(-530, 0.5);
+//            sleep(100);
+//        }
+//
+//		stopStrafe();
+//
+//		//rotate towards the bridge
+//        move(-rotate,rotate,0.3);
+//        sleep(250);
+//
+//		//depending on location of the skystone, move a certain distance under the bridge
+//        if(skystonePlacement == 1){
+//            move(4300,4300,0.5);
+//            sleep(250);
+//        }
+//        else if(skystonePlacement == 2){
+//            move(4100,4100,0.5);
+//            sleep(250);
+//        }
+//        else if(skystonePlacement == 3){
+//            move(4300,4300,0.5);
+//            sleep(250);
+//        }
+//
+//        //let go of block
+//        frontGrab.setPosition(0.85);
+//        sleep(250);
+//        Erectus.setPosition(0.6);
+//        sleep(100);
+//
+//        //park
+//        move(-1200, -1200, 0.4);
+//        sleep(250);
     }
 
     //detection pipeline
@@ -412,9 +424,14 @@ public class RightBlockCenterParking extends LinearOpMode {
             BLDrive.setTargetPosition(BLPosition);
             BRDrive.setTargetPosition(BRPosition);
 
+            telemetry.addData("Position", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)FRDrive.getTargetPosition(), (float)FLDrive.getTargetPosition(), (float)BRDrive.getTargetPosition(), (float)BLDrive.getTargetPosition());
+
+
             runtime.reset();
 
-            while(FRDrive.getPower() != power || FLDrive.getPower() != power || BLDrive.getPower() != power || BRDrive.getPower() != power){
+            while(opModeIsActive() && (FRDrive.getPower() != power || FLDrive.getPower() != power || BLDrive.getPower() != power || BRDrive.getPower() != power)) {
+                telemetry.addData("updating power,", 1);
+                telemetry.update();
                 FLDrive.setPower(power);
                 FRDrive.setPower(power);
                 BLDrive.setPower(power);
@@ -506,6 +523,10 @@ public class RightBlockCenterParking extends LinearOpMode {
         }
     }
     private void stopStrafe(){
+        FLPosition = 0;
+        FRPosition = 0;
+        BLPosition = 0;
+        BRPosition = 0;
         FRDrive.setPower(0);
         FLDrive.setPower(0);
         BLDrive.setPower(0);
@@ -519,5 +540,4 @@ public class RightBlockCenterParking extends LinearOpMode {
         BLDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         BRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
-
 }

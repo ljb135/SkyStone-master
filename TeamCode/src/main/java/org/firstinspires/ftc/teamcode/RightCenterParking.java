@@ -32,6 +32,7 @@ public class RightCenterParking extends LinearOpMode {
     private Servo foundation = null;
     private Servo capstone = null;
     private double timeout = 5;
+    private int rotate = 580;
     private int FLPosition = 0;
     private int FRPosition = 0;
     private int BLPosition = 0;
@@ -73,7 +74,9 @@ public class RightCenterParking extends LinearOpMode {
 
         //move servos into position
         capstone.setPosition(0.8);
-        frontGrab.setPosition(0);
+        frontGrab.setPosition(1);
+        sleep(100);
+        Erectus.setPosition(1);
         sleep(100);
         foundation.setPosition(0.45);
         sleep(100);
@@ -85,15 +88,19 @@ public class RightCenterParking extends LinearOpMode {
         //sleep(25000);
 
         telemetry.addData("Stage 1", true); //drive up near center
-        move(1500,1500,0.3);
+        move(-1500,-1500,0.3);
         sleep(500);
+        frontGrab.setPosition(0);
+        sleep(100);
 
         telemetry.addData("Stage 2", true); //rotate left
-        move(-950,950,0.3);
+        move(-rotate,rotate,0.3);
         sleep(500);
 
         telemetry.addData("Stage 3", true); //drive forward and park
-        move(1300,1300,0.3);
+        move(-2000,-2000,0.3);
+        sleep(500);
+        Erectus.setPosition(0.6);
     }
 
     private void move(int left, int right, double power){

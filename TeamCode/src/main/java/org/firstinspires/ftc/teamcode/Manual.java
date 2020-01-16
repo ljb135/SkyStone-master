@@ -40,7 +40,7 @@ import static java.lang.Math.abs;
 
 
 /**
- * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
+ * This file contains a minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
  * the autonomous or the teleop period of an FTC match. The names of OpModes appear on the menu
  * of the FTC Driver Station. When an selection is made from the menu, the corresponding OpMode
  * class is instantiated on the Robot Controller and executed.
@@ -61,8 +61,8 @@ public class Manual extends LinearOpMode {
     private DcMotor FLDrive = null;
     private DcMotor BRDrive = null;
     private DcMotor BLDrive = null;
-    private DcMotor Lift = null;
-    private Servo Erectus = null;
+    private DcMotor lift = null;
+    private Servo erectus = null;
     private Servo frontGrab = null;
     private Servo foundation = null;
     private Servo capstone = null;
@@ -70,10 +70,24 @@ public class Manual extends LinearOpMode {
     private double FR = 0;
     private double BL = 0;
     private double BR = 0;
+    private double liftPower = 0;
+    private double erectusPosition = 0.6;
+    private double frontGrabPosition = 0.85;
+    private double foundationPosition = 0.45;
+    private double capstonePosition = 0.8;
     private boolean sensitive = false;
     private boolean grab = false;
     private boolean drag = false;
     private boolean raise = false;
+    private boolean dropped = false;
+    private boolean isPressed1X = false;
+    private boolean isPressed1A = false;
+    private boolean isPressed1B = false;
+    private boolean isPressed2A = false;
+    private boolean isPressed2Y = false;
+    private boolean isPressed2X = false;
+
+
 
     @Override
     public void runOpMode() {
@@ -87,8 +101,8 @@ public class Manual extends LinearOpMode {
         FLDrive = hardwareMap.get(DcMotor.class, "front_left");
         BRDrive  = hardwareMap.get(DcMotor.class, "back_right");
         BLDrive  = hardwareMap.get(DcMotor.class, "back_left");
-        Lift  = hardwareMap.get(DcMotor.class, "lift");
-        Erectus = hardwareMap.get(Servo.class, "erectus");
+        lift = hardwareMap.get(DcMotor.class, "lift");
+        erectus = hardwareMap.get(Servo.class, "erectus");
         frontGrab = hardwareMap.get(Servo.class, "front_grab");
         foundation = hardwareMap.get(Servo.class, "foundation");
         capstone = hardwareMap.get(Servo.class, "capstone");
@@ -100,8 +114,8 @@ public class Manual extends LinearOpMode {
         FLDrive.setDirection(DcMotor.Direction.FORWARD);
         BRDrive.setDirection(DcMotor.Direction.REVERSE);
         BLDrive.setDirection(DcMotor.Direction.FORWARD);
-        Lift.setDirection(DcMotor.Direction.FORWARD);
-        Erectus.setDirection(Servo.Direction.FORWARD);
+        lift.setDirection(DcMotor.Direction.FORWARD);
+        erectus.setDirection(Servo.Direction.FORWARD);
         frontGrab.setDirection(Servo.Direction.FORWARD);
         foundation.setDirection(Servo.Direction.REVERSE);
         capstone.setDirection(Servo.Direction.FORWARD);
@@ -110,10 +124,10 @@ public class Manual extends LinearOpMode {
         waitForStart();
         runtime.reset();
 
-        capstone.setPosition(0.8);
-        frontGrab.setPosition(0.85);
-        Erectus.setPosition(0.6);
-        foundation.setPosition(0.45);
+        capstone.setPosition(capstonePosition);
+        frontGrab.setPosition(frontGrabPosition);
+        erectus.setPosition(erectusPosition);
+        foundation.setPosition(foundationPosition);
         sleep(100);
 
         // run until the end of the match (driver presses STOP)
@@ -124,13 +138,12 @@ public class Manual extends LinearOpMode {
             // Choose to drive using either Tank Mode, or POV Mode
             // Comment out the method that's not used.  The default below is POV.
 
-            if(Lift.getCurrentPosition() > 2680){
-                Lift.setPower(Range.clip(-gamepad2.left_stick_y, -0.8, 0));
-            }
-            else if(Lift.getCurrentPosition() < 80){
-                Lift.setPower(Range.clip(-gamepad2.left_stick_y, 0, 1.0));
+            if (lift.getCurrentPosition() > 2680) {
+                liftPower = Range.clip(-gamepad2.left_stick_y, -0.8, 0);
+            } else if (lift.getCurrentPosition() < 80) {
+                liftPower = Range.clip(-gamepad2.left_stick_y, 0, 1.0);
             } else {
-                Lift.setPower(Range.clip(-gamepad2.left_stick_y, -0.8, 1.0));
+                liftPower = Range.clip(-gamepad2.left_stick_y, -0.8, 1.0);
             }
 
             double threshold = 0;
@@ -138,17 +151,16 @@ public class Manual extends LinearOpMode {
             // POV Mode uses left stick to go forward, and right stick to turn.
             // - This uses basic math to combine motions and is easier to drive straight.
 
-            if(!sensitive && (abs(gamepad1.left_stick_y) >= threshold || abs(gamepad1.left_stick_x) >= threshold)) {
-                FR = Range.clip((-gamepad1.left_stick_y - gamepad1.left_stick_x) / 2, -1.0, 1.0);
-                FL = Range.clip((-gamepad1.left_stick_y + gamepad1.left_stick_x) / 2, -1.0, 1.0);
-                BR = Range.clip((-gamepad1.left_stick_y + gamepad1.left_stick_x) / 2, -1.0, 1.0);
-                BL = Range.clip((-gamepad1.left_stick_y - gamepad1.left_stick_x) / 2, -1.0, 1.0);
-            }
-            else if (abs(gamepad1.left_stick_y) >= threshold || abs(gamepad1.left_stick_x) >= threshold) {
-                FR = Range.scale((-gamepad1.left_stick_y - gamepad1.left_stick_x) / 2, -1.0, 1.0, -0.5,0.5);
-                FL = Range.scale((-gamepad1.left_stick_y + gamepad1.left_stick_x) / 2, -1.0, 1.0, -0.5,0.5);
-                BR = Range.scale((-gamepad1.left_stick_y + gamepad1.left_stick_x) / 2, -1.0, 1.0, -0.5,0.5);
-                BL = Range.scale((-gamepad1.left_stick_y - gamepad1.left_stick_x) / 2, -1.0, 1.0, -0.5,0.5);
+            if (!sensitive && (abs(gamepad1.left_stick_y) >= threshold || abs(gamepad1.left_stick_x) >= threshold)) {
+                FR = Range.clip((-gamepad1.left_stick_y + gamepad1.left_stick_x) / 2, -1.0, 1.0);
+                FL = Range.clip((-gamepad1.left_stick_y - gamepad1.left_stick_x) / 2, -1.0, 1.0);
+                BR = Range.clip((-gamepad1.left_stick_y - gamepad1.left_stick_x) / 2, -1.0, 1.0);
+                BL = Range.clip((-gamepad1.left_stick_y + gamepad1.left_stick_x) / 2, -1.0, 1.0);
+            } else if (abs(gamepad1.left_stick_y) >= threshold || abs(gamepad1.left_stick_x) >= threshold) {
+                FR = Range.scale((-gamepad1.left_stick_y + gamepad1.left_stick_x) / 2, -1.0, 1.0, -0.5, 0.5);
+                FL = Range.scale((-gamepad1.left_stick_y - gamepad1.left_stick_x) / 2, -1.0, 1.0, -0.5, 0.5);
+                BR = Range.scale((-gamepad1.left_stick_y - gamepad1.left_stick_x) / 2, -1.0, 1.0, -0.5, 0.5);
+                BL = Range.scale((-gamepad1.left_stick_y + gamepad1.left_stick_x) / 2, -1.0, 1.0, -0.5, 0.5);
             }
             if (abs(gamepad1.right_stick_x) > threshold) {
                 //rotate
@@ -158,84 +170,109 @@ public class Manual extends LinearOpMode {
                 BL = Range.clip((gamepad1.right_stick_x) / 2, -0.6, 0.6);
             }
 
+
+            if (gamepad1.a) {
+                if(!isPressed1A) {
+                    if(dropped) {
+                        capstonePosition = 0.8;
+                        dropped = false;
+                    } else {
+                        capstonePosition = 0;
+                        dropped = true;
+                    }
+                    isPressed1A = true;
+                }
+            } else {
+                isPressed1A = false;
+            }
+
+            if (gamepad1.x) {
+                if(!isPressed1X) {
+                    if(drag) {
+                        foundationPosition = 0.8;
+                        drag = false;
+                    } else {
+                        foundationPosition = 0.45;
+                        drag = true;
+                    }
+                    isPressed1X = true;
+                }
+            } else {
+                isPressed1X = false;
+            }
+
+            if (gamepad1.b) {
+                if(!isPressed1B) {
+                    sensitive = !sensitive;
+                    isPressed1B = true;
+                }
+            } else {
+                isPressed1B = false;
+            }
+
+            if (gamepad2.a) {
+                if(!isPressed2A) {
+                    if(grab) {
+                        frontGrabPosition = 0.85;
+                        grab = false;
+                    } else {
+                        frontGrabPosition = 0;
+                        grab = true;
+                    }
+                    isPressed2A = true;
+                }
+            } else {
+                isPressed2A = false;
+            }
+
+
+            if (gamepad2.y) {
+                if(!isPressed2Y) {
+                    frontGrabPosition = 0.85;
+                    erectusPosition = 0.6;
+                    raise = false;
+                    while (lift.getCurrentPosition() > 80) {
+                        lift.setPower(-1);
+                    }
+                    lift.setPower(0);
+                    isPressed2Y = true;
+                }
+            } else {
+                isPressed2Y = false;
+            }
+
+
+            if (gamepad2.x) {
+                if(!isPressed2X) {
+                    if(raise) {
+                        frontGrabPosition = 0;
+                        erectusPosition = 0;
+                        raise = false;
+                    } else {
+                        frontGrabPosition = 0.85;
+                        erectusPosition = 0.6;
+                        raise = true;
+                    }
+                    isPressed2X = true;
+                }
+            } else {
+                isPressed2X = false;
+            }
+
             FRDrive.setPower(FR);
             FLDrive.setPower(FL);
             BRDrive.setPower(BR);
             BLDrive.setPower(BL);
-
-//            if(gamepad2.dpad_up && Lift.getCurrentPosition() < 2680){
-//                Lift.setPower(0.5);
-//            }
-//            else if(gamepad2.dpad_down && Lift.getCurrentPosition() > 80){
-//                Lift.setPower(-0.5);
-//            } else {
-//                Lift.setPower(0);
-//            }
-
-
-
-            if(gamepad2.a && !grab){
-                frontGrab.setPosition(0);
-                grab = true;
-                sleep(20);
-            } else if(gamepad2.a){
-                frontGrab.setPosition(0.85);
-                grab = false;
-                sleep(20);
-            }
-
-            if(gamepad2.b && !drag){
-                foundation.setPosition(0.8);
-                drag = true;
-                sleep(20);
-            }
-            else if(gamepad2.b){
-                foundation.setPosition(0.45);
-                drag = false;
-                sleep(20);
-            }
-
-            if(gamepad2.y){
-                frontGrab.setPosition(0.85);
-                sleep(20);
-                Erectus.setPosition(0.6);
-                raise = false;
-                while(Lift.getCurrentPosition() > 80){
-                    Lift.setPower(-1);
-                }
-                Lift.setPower(0);
-            }
-
-            if(gamepad2.x && !raise){
-                frontGrab.setPosition(0);
-                sleep(20);
-                Erectus.setPosition(1);
-                raise = true;
-                sleep(20);
-            }
-            else if(gamepad2.x){
-                frontGrab.setPosition(0.85);
-                sleep(250);
-                Erectus.setPosition(0.6);
-                raise = false;
-                sleep(250);
-            }
-
-            if(gamepad1.a){
-                capstone.setPosition(0);
-                sleep(1000);
-                capstone.setPosition(0.8);
-            }
-
-            if(gamepad1.b){
-                sensitive = !sensitive;
-                sleep(20);
-            }
+            lift.setPower(liftPower);
+            erectus.setPosition(erectusPosition);
+            frontGrab.setPosition(frontGrabPosition);
+            capstone.setPosition(capstonePosition);
+            foundation.setPosition(foundationPosition);
 
             // Show the elapsed game time and wheel power.
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Controller", "X1: (%.2f) Y1: (%.2f) X2: (%.2f)", gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
-            telemetry.addData("Lift Value", Lift.getCurrentPosition());
+            telemetry.addData("lift Value", lift.getCurrentPosition());
             telemetry.addData("Position", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)FRDrive.getCurrentPosition(), (float)FLDrive.getCurrentPosition(), (float)BRDrive.getCurrentPosition(), (float)BLDrive.getCurrentPosition());
             telemetry.update();
         }

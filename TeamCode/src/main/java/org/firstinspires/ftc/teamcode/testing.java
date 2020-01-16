@@ -39,17 +39,17 @@ public class testing extends LinearOpMode {
             finish();
         }*/
 
-//        // get a reference to our ColorSensor object.
-//        frontRight = hardwareMap.get(DcMotor.class, "frontRight");
-//        frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
-//        backRight = hardwareMap.get(DcMotor.class, "backRight");
-//        backLeft = hardwareMap.get(DcMotor.class, "backLeft");
-//
-        // Set the LED in the beginning
-//        frontRight.setDirection(DcMotor.Direction.REVERSE);
-//        backRight.setDirection(DcMotor.Direction.REVERSE);
-//        frontLeft.setDirection(DcMotor.Direction.FORWARD);
-//        frontRight.setDirection(DcMotor.Direction.FORWARD);
+        // get a reference to our ColorSensor object.
+        frontRight = hardwareMap.get(DcMotor.class, "frontRight");
+        frontLeft = hardwareMap.get(DcMotor.class, "frontLeft");
+        backRight = hardwareMap.get(DcMotor.class, "backRight");
+        backLeft = hardwareMap.get(DcMotor.class, "backLeft");
+
+//         Set the LED in the beginning
+        frontRight.setDirection(DcMotor.Direction.REVERSE);
+        backRight.setDirection(DcMotor.Direction.REVERSE);
+        frontLeft.setDirection(DcMotor.Direction.FORWARD);
+        frontRight.setDirection(DcMotor.Direction.FORWARD);
 
         // wait for the start button to be pressed.
         waitForStart();
@@ -58,20 +58,17 @@ public class testing extends LinearOpMode {
         // Note we use opModeIsActive() as our loop condition because it is an interruptible method.
 
         while (opModeIsActive()) {
-//            frontRight.setPower(gamepad1.right_stick_y);
-//            backRight.setPower(gamepad1.right_stick_y);
-//            backLeft.setPower(gamepad1.right_stick_y);
-//            frontLeft.setPower(gamepad1.right_stick_y);
+            frontRight.setPower(gamepad1.right_stick_y);
+            backRight.setPower(gamepad1.right_stick_y);
+            backLeft.setPower(gamepad1.right_stick_y);
+            frontLeft.setPower(gamepad1.right_stick_y);
 
             telemetry.addData("frontRight", calculateVelocity(frontRight));
-//            telemetry.addData("backRight", calculateVelocity(backRight));
-//            telemetry.addData("frontLeft", calculateVelocity(frontLeft));
-//            telemetry.addData("backLeft", calculateVelocity(backLeft));
+            telemetry.addData("backRight", calculateVelocity(backRight));
+            telemetry.addData("frontLeft", calculateVelocity(frontLeft));
+            telemetry.addData("backLeft", calculateVelocity(backLeft));
 
             telemetry.update();
-
-
-
         }
     }
 

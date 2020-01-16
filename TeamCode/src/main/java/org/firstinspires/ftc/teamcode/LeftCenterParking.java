@@ -89,13 +89,13 @@ public class LeftCenterParking extends LinearOpMode {
         //sleep(22000);
 
         telemetry.addData("Stage 1", true); //drive up near center
-        move(-1500,-1500,0.3);
+        move(-1400,-1400,0.3);
         sleep(500);
         frontGrab.setPosition(0);
         sleep(100);
 
         telemetry.addData("Stage 2", true); //rotate right
-        move(950,-950,0.3);
+        move(585,-585,0.3);
         sleep(500);
 
         telemetry.addData("Stage 3", true); //drive forward and park

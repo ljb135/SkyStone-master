@@ -75,11 +75,11 @@ public class Manual extends LinearOpMode {
     private double frontGrabPosition = 0.85;
     private double foundationPosition = 0.45;
     private double capstonePosition = 0.8;
-    private boolean sensitive = false;
-    private boolean grab = false;
-    private boolean drag = false;
-    private boolean raise = false;
-    private boolean dropped = false;
+    private boolean sensitiveMode = false;
+    private boolean grabBlock = false;
+    private boolean dragFoundation = false;
+    private boolean raiseArm = false;
+    private boolean dropCapstone = false;
     private boolean isPressed1X = false;
     private boolean isPressed1Y = false;
     private boolean isPressed1B = false;
@@ -151,7 +151,7 @@ public class Manual extends LinearOpMode {
             // POV Mode uses left stick to go forward, and right stick to turn.
             // - This uses basic math to combine motions and is easier to drive straight.
 
-            if (!sensitive && (abs(gamepad1.left_stick_y) >= threshold || abs(gamepad1.left_stick_x) >= threshold)) {
+            if (!sensitiveMode && (abs(gamepad1.left_stick_y) >= threshold || abs(gamepad1.left_stick_x) >= threshold)) {
                 FR = Range.clip((-gamepad1.left_stick_y + gamepad1.left_stick_x) / 2, -1.0, 1.0);
                 FL = Range.clip((-gamepad1.left_stick_y - gamepad1.left_stick_x) / 2, -1.0, 1.0);
                 BR = Range.clip((-gamepad1.left_stick_y - gamepad1.left_stick_x) / 2, -1.0, 1.0);
@@ -173,12 +173,12 @@ public class Manual extends LinearOpMode {
 
             if (gamepad1.y) {
                 if(!isPressed1Y) {
-                    if(dropped) {
+                    if(dropCapstone) {
                         capstonePosition = 0.8;
-                        dropped = false;
+                        dropCapstone = false;
                     } else {
                         capstonePosition = 0;
-                        dropped = true;
+                        dropCapstone = true;
                     }
                     isPressed1Y = true;
                 }
@@ -188,12 +188,12 @@ public class Manual extends LinearOpMode {
 
             if (gamepad1.x) {
                 if(!isPressed1X) {
-                    if(drag) {
+                    if(dragFoundation) {
                         foundationPosition = 0.8;
-                        drag = false;
+                        dragFoundation = false;
                     } else {
                         foundationPosition = 0.45;
-                        drag = true;
+                        dragFoundation = true;
                     }
                     isPressed1X = true;
                 }
@@ -203,7 +203,7 @@ public class Manual extends LinearOpMode {
 
             if (gamepad1.b) {
                 if(!isPressed1B) {
-                    sensitive = !sensitive;
+                    sensitiveMode = !sensitiveMode;
                     isPressed1B = true;
                 }
             } else {
@@ -212,12 +212,12 @@ public class Manual extends LinearOpMode {
 
             if (gamepad2.a) {
                 if(!isPressed2A) {
-                    if(grab) {
+                    if(grabBlock) {
                         frontGrabPosition = 0.85;
-                        grab = false;
+                        grabBlock = false;
                     } else {
                         frontGrabPosition = 0;
-                        grab = true;
+                        grabBlock = true;
                     }
                     isPressed2A = true;
                 }
@@ -230,7 +230,7 @@ public class Manual extends LinearOpMode {
                 if(!isPressed2Y) {
                     frontGrabPosition = 0.85;
                     erectusPosition = 0.6;
-                    raise = false;
+                    raiseArm = false;
                     while (lift.getCurrentPosition() > 80) {
                         lift.setPower(-1);
                     }
@@ -244,14 +244,14 @@ public class Manual extends LinearOpMode {
 
             if (gamepad2.x) {
                 if(!isPressed2X) {
-                    if(raise) {
+                    if(raiseArm) {
                         frontGrabPosition = 0;
                         erectusPosition = 1;
-                        raise = false;
+                        raiseArm = false;
                     } else {
                         frontGrabPosition = 0.85;
                         erectusPosition = 0.6;
-                        raise = true;
+                        raiseArm = true;
                     }
                     isPressed2X = true;
                 }

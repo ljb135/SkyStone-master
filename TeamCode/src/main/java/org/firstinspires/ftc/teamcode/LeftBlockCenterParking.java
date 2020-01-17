@@ -159,19 +159,19 @@ public class LeftBlockCenterParking extends LinearOpMode {
         double strafePower = 0.3;
         if(valLeft == 0){
             skystonePlacement = 1; // Skystone right
-            strafeDistance = 525;
+            strafeDistance = 550;
         } else if(valRight == 0){
             skystonePlacement = 3; // Skystone left
             strafeDistance = -500;
         } else{
             skystonePlacement = 2; // Skystone center
         }
-        strafe(strafeDistance, strafePower);
+        strafe(strafeDistance , strafePower);
         stopStrafe();
         sleep(500);
-
+        gyroRotate(0);
         //move up to block
-        gyroStraight(robotAngle,1600,0.3);
+        move(1600,1600,0.3);
         sleep(100);
 
         //grab block
@@ -187,30 +187,32 @@ public class LeftBlockCenterParking extends LinearOpMode {
         sleep(250);
 
         //rotate towards the bridge
-        robotAngle -= 84;
+        robotAngle += 84;
         gyroRotate(robotAngle);
         sleep(250);
 
         //depending on location of the skystone, move a certain distance under the bridge
         if(skystonePlacement == 1){
-            gyroStraight(robotAngle,2800,0.3);
+            gyroStraight(robotAngle,-2700,0.3);
             sleep(250);
         }
         else if(skystonePlacement == 2){
-            gyroStraight(robotAngle,3200,0.3);
+            gyroStraight(robotAngle,-3100,0.3);
             sleep(250);
         }
         else if(skystonePlacement == 3){
-            gyroStraight(robotAngle,3600,0.3);
+            gyroStraight(robotAngle,-3500,0.3);
             sleep(250);
         }
 
         stopStrafe();
 
         //rotate before foundation and move forward to drop off block
-        robotAngle += 84;
+        robotAngle -= 84;
         gyroRotate(robotAngle);
         sleep(250);
+
+        stopStrafe();
 
         move(200,200, 0.3);
         sleep(100);
@@ -224,34 +226,34 @@ public class LeftBlockCenterParking extends LinearOpMode {
         move(-200,-200, 0.3);
         sleep(100);
 
-        stopStrafe();
-
         //rotate to go under bridge
         robotAngle -= 84;
         gyroRotate(robotAngle);
         sleep(100);
-        gyroStraight(robotAngle,-1200,0.2);//park under bridge
+
+        stopStrafe();
+
 
         //depending on location of the skystone, move a certain distance under the bridge
-//		if(skystonePlacement == 1){
-//			move(-4200,-4200,0.5);
-//			sleep(250);
-//		}
-//		if(skystonePlacement == 2){
-//			move(-4000,-4000,0.5);
-//			sleep(250);
-//
-//		}
-//		if(skystonePlacement == 3){
-//			move(-4000,-4000,0.5);
-//			sleep(250);
-//		}
-//
-//		stopStrafe();
-//
-//		//rotate towards block
-//		move(950,-950,0.3);
-//		sleep(100);
+		if(skystonePlacement == 1){
+			gyroStraight(robotAngle,-4500,0.7);
+			sleep(250);
+		}
+		if(skystonePlacement == 2){
+			gyroStraight(robotAngle,-8500,0.7);
+			sleep(250);
+
+		}
+		if(skystonePlacement == 3){
+			gyroStraight(robotAngle,-8500,0.7);
+			sleep(250);
+		}
+
+		stopStrafe();
+        robotAngle+=84;
+		//rotate towards block
+		gyroRotate(robotAngle);
+		sleep(100);
 //		if(skystonePlacement==2) {
 //            strafe(530, 0.5);
 //            sleep(100);
@@ -661,8 +663,6 @@ public class LeftBlockCenterParking extends LinearOpMode {
             double leftPower = power + correction;
             double rightPower = power - correction;
 
-
-
             runtime.reset();
 
             FLDrive.setPower(leftPower);
@@ -688,11 +688,9 @@ public class LeftBlockCenterParking extends LinearOpMode {
                 telemetry.addData("correction", correction);
                 telemetry.addData("leftPower", leftPower);
                 telemetry.addData("rightPower", rightPower);
-                telemetry.addData("integrated Z", robotAngle);
-                telemetry.addData("error", drivePid.getError());
-                telemetry.addData("p term", drivePid.getError() * drivePid.getP());
-                telemetry.addData("total error", drivePid.getM_totalError());
-                telemetry.addData("i term", drivePid.getM_totalError() * drivePid.getI());
+                telemetry.addData("Position", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)FRDrive.getCurrentPosition(), (float)FLDrive.getCurrentPosition(), (float)BRDrive.getCurrentPosition(), (float)BLDrive.getCurrentPosition());
+                telemetry.addData("Target Position", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)FRDrive.getTargetPosition(), (float)FLDrive.getTargetPosition(), (float)BRDrive.getTargetPosition(), (float)BLDrive.getTargetPosition());
+                telemetry.addData("Power", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)FRDrive.getPower(), (float)FLDrive.getPower(), (float)BRDrive.getPower(), (float)BLDrive.getPower());
                 telemetry.update();
             }
 

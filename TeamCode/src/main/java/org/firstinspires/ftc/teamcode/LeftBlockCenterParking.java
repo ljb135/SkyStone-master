@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
@@ -30,6 +31,11 @@ import java.util.List;
 @Autonomous(name= "LeftBlockCenterParking", group="Linear Opmode")
 //comment out this line before using
 public class LeftBlockCenterParking extends LinearOpMode {
+    private ModernRoboticsI2cGyro modernRoboticsI2cGyro;
+    private int initialValue = 0;
+    private int robotAngle = 0;
+    PIDController rotationPid;
+    PIDController drivePid;
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor FRDrive = null;
     private DcMotor FLDrive = null;
@@ -72,6 +78,7 @@ public class LeftBlockCenterParking extends LinearOpMode {
 
     @Override
     public void runOpMode() throws InterruptedException {
+        modernRoboticsI2cGyro = hardwareMap.get(ModernRoboticsI2cGyro.class, "gyro");
         FRDrive  = hardwareMap.get(DcMotor.class, "front_right");
         FLDrive = hardwareMap.get(DcMotor.class, "front_left");
         BRDrive  = hardwareMap.get(DcMotor.class, "back_right");
@@ -102,7 +109,33 @@ public class LeftBlockCenterParking extends LinearOpMode {
         //width, height
         //width = height in this case, because camera is in portrait mode.
 
+        rotationPid = new PIDController(0.01, 0.00007, 0.05);
+        drivePid = new PIDController(0.01, 0, 0);
+
+
+        telemetry.log().add("Gyro Calibrating. Do Not Move!");
+        modernRoboticsI2cGyro.calibrate();
+
+        // Wait until the gyro calibration is complete
+        runtime.reset();
+        while (!isStopRequested() && modernRoboticsI2cGyro.isCalibrating())  {
+            telemetry.addData("calibrating", "%s", Math.round(runtime.seconds()) % 2 == 0 ? "|.." : "..|");
+            telemetry.update();
+            sleep(50);
+        }
+
+        telemetry.log().clear();
+        telemetry.log().add("Gyro Calibrated. Press Start.");
+        telemetry.clear();
+        telemetry.update();
+
+        initialValue = modernRoboticsI2cGyro.getIntegratedZValue();
+        telemetry.addData("initial value", initialValue);
+        telemetry.update();
+
+        // Wait for the start button to be pressed
         waitForStart();
+        telemetry.log().clear();
         runtime.reset();
 
         capstone.setPosition(0.8);
@@ -134,10 +167,11 @@ public class LeftBlockCenterParking extends LinearOpMode {
             skystonePlacement = 2; // Skystone center
         }
         strafe(strafeDistance, strafePower);
-        sleep(250);
+        stopStrafe();
+        sleep(500);
 
         //move up to block
-        move(1600,1600,0.3);
+        gyroStraight(robotAngle,1600,0.3);
         sleep(100);
 
         //grab block
@@ -153,27 +187,29 @@ public class LeftBlockCenterParking extends LinearOpMode {
         sleep(250);
 
         //rotate towards the bridge
-        move(950,-950,0.3);
+        robotAngle -= 84;
+        gyroRotate(robotAngle);
         sleep(250);
 
         //depending on location of the skystone, move a certain distance under the bridge
         if(skystonePlacement == 1){
-            move(2800,2800,0.3);
+            gyroStraight(robotAngle,2800,0.3);
             sleep(250);
         }
         else if(skystonePlacement == 2){
-            move(3200,3200,0.3);
+            gyroStraight(robotAngle,3200,0.3);
             sleep(250);
         }
         else if(skystonePlacement == 3){
-            move(3600,3600,0.3);
+            gyroStraight(robotAngle,3600,0.3);
             sleep(250);
         }
 
         stopStrafe();
 
         //rotate before foundation and move forward to drop off block
-        move(-950,950,0.3);
+        robotAngle += 84;
+        gyroRotate(robotAngle);
         sleep(250);
 
         move(200,200, 0.3);
@@ -191,9 +227,11 @@ public class LeftBlockCenterParking extends LinearOpMode {
         stopStrafe();
 
         //rotate to go under bridge
-        move(950,-950,0.3);
+        robotAngle -= 84;
+        gyroRotate(robotAngle);
         sleep(100);
-        move(-1200,-1200,0.2);//park under bridge
+        gyroStraight(robotAngle,-1200,0.2);//park under bridge
+
         //depending on location of the skystone, move a certain distance under the bridge
 //		if(skystonePlacement == 1){
 //			move(-4200,-4200,0.5);
@@ -457,10 +495,10 @@ public class LeftBlockCenterParking extends LinearOpMode {
     }
     private void strafe(int distance, double power){
         if(opModeIsActive()){
-            FLPosition += distance;
-            FRPosition -= distance;
-            BLPosition -= distance;
-            BRPosition += distance;
+            FLPosition -= distance;
+            FRPosition += distance;
+            BLPosition += distance;
+            BRPosition -= distance;
             FLDrive.setTargetPosition(FLPosition);
             FRDrive.setTargetPosition(FRPosition);
             BLDrive.setTargetPosition(BLPosition);
@@ -538,5 +576,131 @@ public class LeftBlockCenterParking extends LinearOpMode {
         FRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         BLDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         BRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+    }
+    private void gyroRotate(int desiredAngle) {
+        if(opModeIsActive()) {
+
+            FLDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            FRDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            BLDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            BRDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
+            rotationPid.reset();
+            rotationPid.setSetpoint(desiredAngle);
+            rotationPid.setInputRange(-359, 359);
+            rotationPid.setTolerance(5);
+            rotationPid.enable();
+            boolean onTarget = false;
+            double motorPower = 0;
+//            .abs(rotationPid.getError()) > 5
+            while (opModeIsActive() && !onTarget) {
+                motorPower = rotationPid.performPID(modernRoboticsI2cGyro.getIntegratedZValue());
+                onTarget = Math.abs(rotationPid.getError()) < 2;
+
+                FLDrive.setPower(-motorPower);
+                FRDrive.setPower(motorPower);
+                BLDrive.setPower(-motorPower);
+                BRDrive.setPower(motorPower);
+
+                telemetry.addData("onTarget", onTarget);
+                telemetry.addData("motorPower", motorPower);
+                telemetry.addData("integrated Z", modernRoboticsI2cGyro.getIntegratedZValue());
+                telemetry.addData("error", rotationPid.getError());
+                telemetry.addData("p term", rotationPid.getError() * rotationPid.getP());
+                telemetry.addData("total error", rotationPid.getM_totalError());
+                telemetry.addData("i term", rotationPid.getM_totalError() * rotationPid.getI());
+                telemetry.addData("d error", rotationPid.getM_D_Error());
+                telemetry.addData("d term", rotationPid.getM_D_Error() * rotationPid.getD());
+                telemetry.update();
+            }
+
+            FLDrive.setPower(0);
+            FRDrive.setPower(0);
+            BLDrive.setPower(0);
+            BRDrive.setPower(0);
+            telemetry.addData("motorPower", motorPower);
+            telemetry.addData("integrated Z", modernRoboticsI2cGyro.getIntegratedZValue());
+            telemetry.addData("p term", rotationPid.getError() * rotationPid.getP());
+            telemetry.addData("total error", rotationPid.getM_totalError());
+            telemetry.addData("i term", rotationPid.getM_totalError() * rotationPid.getI());
+            telemetry.addData("d error", rotationPid.getM_D_Error());
+            telemetry.addData("d term", rotationPid.getM_D_Error() * 0.001);
+            telemetry.addData("completed rotation", 1);
+            telemetry.update();
+        }
+    }
+    private void gyroStraight(int desiredAngle, int targetPosition, double power) {
+        if(opModeIsActive()) {
+            drivePid.reset();
+            drivePid.setSetpoint(desiredAngle);
+            drivePid.setInputRange(-359, 359);
+            drivePid.setTolerance(1);
+
+//            rotationPid.setOutputRange(-maxPower, maxPower);
+            drivePid.enable();
+
+
+            FLDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            FRDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            BLDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            BRDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+
+            FLDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            FRDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            BLDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            BRDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            FRDrive.setTargetPosition(targetPosition);
+            BRDrive.setTargetPosition(targetPosition);
+            FLDrive.setTargetPosition(targetPosition);
+            BLDrive.setTargetPosition(targetPosition);
+
+            int robotAngle = modernRoboticsI2cGyro.getIntegratedZValue();
+            double correction = drivePid.performPID(robotAngle);
+            double leftPower = power + correction;
+            double rightPower = power - correction;
+
+
+
+            runtime.reset();
+
+            FLDrive.setPower(leftPower);
+            BLDrive.setPower(leftPower);
+            FRDrive.setPower(rightPower);
+            BRDrive.setPower(rightPower);
+
+
+
+            while (opModeIsActive() && (runtime.seconds() < timeout) && (FLDrive.isBusy() && FRDrive.isBusy() && BLDrive.isBusy() && BRDrive.isBusy())) {
+                robotAngle = modernRoboticsI2cGyro.getIntegratedZValue();
+                correction = drivePid.performPID(robotAngle);
+                leftPower = power + correction;
+                rightPower = power - correction;
+
+                FLDrive.setPower(leftPower);
+                BLDrive.setPower(leftPower);
+                FRDrive.setPower(rightPower);
+                BRDrive.setPower(rightPower);
+
+                telemetry.addData("runtime", runtime.seconds());
+                telemetry.addData("in loop", 1);
+                telemetry.addData("correction", correction);
+                telemetry.addData("leftPower", leftPower);
+                telemetry.addData("rightPower", rightPower);
+                telemetry.addData("integrated Z", robotAngle);
+                telemetry.addData("error", drivePid.getError());
+                telemetry.addData("p term", drivePid.getError() * drivePid.getP());
+                telemetry.addData("total error", drivePid.getM_totalError());
+                telemetry.addData("i term", drivePid.getM_totalError() * drivePid.getI());
+                telemetry.update();
+            }
+
+            FRDrive.setPower(0);
+            FLDrive.setPower(0);
+            BLDrive.setPower(0);
+            BRDrive.setPower(0);
+
+        }
     }
 }

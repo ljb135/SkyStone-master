@@ -24,6 +24,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class LeftCenterParking extends LinearOpMode {
     private ModernRoboticsI2cGyro modernRoboticsI2cGyro;
     private int initialValue = 0;
+    private int robotAngle = 0;
     PIDController rotationPid;
     PIDController drivePid;
     private ElapsedTime runtime = new ElapsedTime();
@@ -115,8 +116,6 @@ public class LeftCenterParking extends LinearOpMode {
 
         telemetry.addData("Position", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)FRDrive.getCurrentPosition(), (float)FLDrive.getCurrentPosition(), (float)BRDrive.getCurrentPosition(), (float)BLDrive.getCurrentPosition());
         telemetry.update();
-
-        int robotAngle = 0;
 
         //sleep if team asks us to wait until the end to park
         //sleep(22000);

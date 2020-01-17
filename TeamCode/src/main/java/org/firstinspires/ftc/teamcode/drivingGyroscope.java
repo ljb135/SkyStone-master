@@ -72,14 +72,19 @@ public class drivingGyroscope extends LinearOpMode {
         waitForStart();
         telemetry.log().clear();
 
-        int desiredAngle = 84;
+        int desiredAngle = 0;
 
-        gyroRotate(desiredAngle, 1.0);
-        gyroStraight(desiredAngle, 8000, 0.6);
+//        gyroRotate(desiredAngle);
+        gyroStraight(desiredAngle, -8000, 0.6);
     }
 
-    private void gyroRotate(int desiredAngle, double maxPower) {
+    private void gyroRotate(int desiredAngle) {
         if(opModeIsActive()) {
+
+            FLDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            FRDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            BLDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+            BRDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
             rotationPid.reset();
             rotationPid.setSetpoint(desiredAngle);
@@ -87,7 +92,7 @@ public class drivingGyroscope extends LinearOpMode {
             rotationPid.setTolerance(5);
             rotationPid.enable();
             boolean onTarget = false;
-            double motorPower = maxPower;
+            double motorPower = 0;
 //            .abs(rotationPid.getError()) > 5
             while (opModeIsActive() && !onTarget) {
                 motorPower = rotationPid.performPID(modernRoboticsI2cGyro.getIntegratedZValue());
@@ -125,7 +130,6 @@ public class drivingGyroscope extends LinearOpMode {
             telemetry.update();
         }
     }
-
     private void gyroStraight(int desiredAngle, int targetPosition, double power) {
         if(opModeIsActive()) {
             drivePid.reset();
@@ -135,6 +139,13 @@ public class drivingGyroscope extends LinearOpMode {
 
 //            rotationPid.setOutputRange(-maxPower, maxPower);
             drivePid.enable();
+
+
+            FLDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            FRDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            BLDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            BRDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
 
             FLDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             FRDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
@@ -147,29 +158,37 @@ public class drivingGyroscope extends LinearOpMode {
             BLDrive.setTargetPosition(targetPosition);
 
             int robotAngle = modernRoboticsI2cGyro.getIntegratedZValue();
-
             double correction = drivePid.performPID(robotAngle);
+            double leftPower = power + correction;
+            double rightPower = power - correction;
+
+
 
             runtime.reset();
 
-            FLDrive.setPower(power - correction);
-            BLDrive.setPower(power - correction);
-            FRDrive.setPower(power + correction);
-            BRDrive.setPower(power + correction);
+            FLDrive.setPower(leftPower);
+            BLDrive.setPower(leftPower);
+            FRDrive.setPower(rightPower);
+            BRDrive.setPower(rightPower);
+
 
 
             while (opModeIsActive() && (runtime.seconds() < timeout) && (FLDrive.isBusy() && FRDrive.isBusy() && BLDrive.isBusy() && BRDrive.isBusy())) {
                 robotAngle = modernRoboticsI2cGyro.getIntegratedZValue();
                 correction = drivePid.performPID(robotAngle);
-                FLDrive.setPower(power - correction);
-                BLDrive.setPower(power - correction);
-                FRDrive.setPower(power + correction);
-                BRDrive.setPower(power + correction);
+                leftPower = power + correction;
+                rightPower = power - correction;
+
+                FLDrive.setPower(leftPower);
+                BLDrive.setPower(leftPower);
+                FRDrive.setPower(rightPower);
+                BRDrive.setPower(rightPower);
+
                 telemetry.addData("runtime", runtime.seconds());
                 telemetry.addData("in loop", 1);
                 telemetry.addData("correction", correction);
-                telemetry.addData("leftPower", power + correction);
-                telemetry.addData("rightPower", power - correction);
+                telemetry.addData("leftPower", leftPower);
+                telemetry.addData("rightPower", rightPower);
                 telemetry.addData("integrated Z", robotAngle);
                 telemetry.addData("error", drivePid.getError());
                 telemetry.addData("p term", drivePid.getError() * drivePid.getP());

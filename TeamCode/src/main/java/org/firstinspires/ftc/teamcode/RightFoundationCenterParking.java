@@ -71,9 +71,6 @@ public class RightFoundationCenterParking extends LinearOpMode {
         foundation.setDirection(Servo.Direction.REVERSE);
         capstone.setDirection(Servo.Direction.FORWARD);
 
-        // Wait for the game to start (driver presses PLAY)
-        waitForStart();
-        runtime.reset();
 
         rotationPid = new PIDController(0.01, 0.00007, 0.05);
         drivePid = new PIDController(0.01, 0, 0);
@@ -146,11 +143,21 @@ public class RightFoundationCenterParking extends LinearOpMode {
 
         // Rotate towards the bridge
         gyroRotate(robotAngle);
+//        telemetry.addData("right before strafe sleep", 1);
+//        telemetry.update();
+//        sleep(4000);
+//
+//        strafe(150, 0.2);
+
+        stopStrafe();
+
+        move(-300, -300, 0.3);
         sleep(100);
 
-        strafe(150, 0.2);
-        foundation.setPosition(0);
+        foundation.setPosition(0.45);
         sleep(100);
+
+        gyroStraight(robotAngle, 3000, 0.4);
 
 
 //        capstone.setPosition(0.8);

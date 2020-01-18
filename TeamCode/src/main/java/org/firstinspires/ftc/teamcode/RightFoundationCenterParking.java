@@ -157,7 +157,7 @@ public class RightFoundationCenterParking extends LinearOpMode {
         foundation.setPosition(0.45);
         sleep(100);
 
-        gyroStraight(robotAngle, 3000, 0.4);
+        gyroStraight(robotAngle, 2500, 0.4);
 
 
 //        capstone.setPosition(0.8);

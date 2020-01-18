@@ -236,7 +236,7 @@ public class LeftBlockCenterParking extends LinearOpMode {
 
         //depending on location of the skystone, move a certain distance under the bridge
 		if(skystonePlacement == 1){
-			gyroStraight(robotAngle,-4500,0.7);
+			gyroStraight(robotAngle,-4000,0.5);
 			sleep(250);
 		}
 		if(skystonePlacement == 2){
@@ -254,6 +254,21 @@ public class LeftBlockCenterParking extends LinearOpMode {
 		//rotate towards block
 		gyroRotate(robotAngle);
 		sleep(100);
+        stopStrafe();
+		move(300,300,0.4);
+        sleep(100);
+
+		//grab block
+		Erectus.setPosition(0.6);
+		sleep(500);
+		frontGrab.setPosition(0);
+		sleep(250);
+		//move back
+		move(-275,-275,0.4);
+		sleep(250);
+		robotAngle-=84;
+		gyroRotate(robotAngle);
+
 //		if(skystonePlacement==2) {
 //            strafe(530, 0.5);
 //            sleep(100);
@@ -281,19 +296,19 @@ public class LeftBlockCenterParking extends LinearOpMode {
 //        move(-950,950,0.3);
 //        sleep(250);
 //
-//		//depending on location of the skystone, move a certain distance under the bridge
-//        if(skystonePlacement == 1){
-//            move(4300,4300,0.5);
-//            sleep(250);
-//        }
-//        else if(skystonePlacement == 2){
-//            move(4100,4100,0.5);
-//            sleep(250);
-//        }
-//        else if(skystonePlacement == 3){
-//            move(4300,4300,0.5);
-//            sleep(250);
-//        }
+		//depending on location of the skystone, move a certain distance under the bridge
+        if(skystonePlacement == 1){
+            gyroStraight(robotAngle,4300,0.5);
+            sleep(250);
+        }
+        else if(skystonePlacement == 2){
+            move(4100,4100,0.5);
+            sleep(250);
+        }
+        else if(skystonePlacement == 3){
+            move(4300,4300,0.5);
+            sleep(250);
+        }
 //
 //        //let go of block
 //        frontGrab.setPosition(0.85);
@@ -663,6 +678,14 @@ public class LeftBlockCenterParking extends LinearOpMode {
             double leftPower = power + correction;
             double rightPower = power - correction;
 
+            if(targetPosition > 0) {
+                leftPower = power - correction;
+                rightPower = power + correction;
+            }  else {
+                leftPower = power + correction;
+                rightPower = power - correction;
+            }
+
             runtime.reset();
 
             FLDrive.setPower(leftPower);
@@ -675,8 +698,14 @@ public class LeftBlockCenterParking extends LinearOpMode {
             while (opModeIsActive() && (runtime.seconds() < timeout) && (FLDrive.isBusy() && FRDrive.isBusy() && BLDrive.isBusy() && BRDrive.isBusy())) {
                 robotAngle = modernRoboticsI2cGyro.getIntegratedZValue();
                 correction = drivePid.performPID(robotAngle);
-                leftPower = power + correction;
-                rightPower = power - correction;
+
+                if(targetPosition > 0) {
+                    leftPower = power - correction;
+                    rightPower = power + correction;
+                }  else {
+                    leftPower = power + correction;
+                    rightPower = power - correction;
+                }
 
                 FLDrive.setPower(leftPower);
                 BLDrive.setPower(leftPower);

@@ -2,19 +2,15 @@ package org.firstinspires.ftc.teamcode;
 
 import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
 import org.opencv.core.MatOfPoint;
-import org.opencv.core.MatOfPoint2f;
 import org.opencv.core.Point;
-import org.opencv.core.Rect;
 import org.opencv.core.Scalar;
 import org.opencv.imgproc.Imgproc;
 import org.openftc.easyopencv.OpenCvCamera;
@@ -556,24 +552,6 @@ public class LeftBlockCenterParking extends LinearOpMode {
             FRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             BLDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             BRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        }
-    }
-    private void startStrafe(double power){
-        if(opModeIsActive()){
-
-            FLDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            FRDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            BLDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-            BRDrive.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
-
-            runtime.reset();
-
-            FLDrive.setPower(power);
-            FRDrive.setPower(-power);
-            BLDrive.setPower(-power);
-            BRDrive.setPower(power);
-
-
         }
     }
     private void stopStrafe(){

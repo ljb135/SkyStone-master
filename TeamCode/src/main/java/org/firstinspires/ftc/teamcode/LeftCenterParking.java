@@ -103,6 +103,8 @@ public class LeftCenterParking extends LinearOpMode {
         telemetry.log().clear();
         runtime.reset();
 
+        modernRoboticsI2cGyro.resetZAxisIntegrator();
+
         capstone.setPosition(0.8);
 
         //move servos into position

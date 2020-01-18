@@ -106,6 +106,8 @@ public class LeftFoundationCenterParking extends LinearOpMode {
         frontGrab.setPosition(1);
         Erectus.setPosition(1);
 
+        modernRoboticsI2cGyro.resetZAxisIntegrator();
+
         robotAngle = 0;
 
         move(-200, -200, 0.5);

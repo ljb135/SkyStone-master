@@ -24,7 +24,7 @@ import java.util.List;
 
 
 
-@Autonomous(name= "LeftEverything", group="Linear Opmode")
+@Autonomous(name= "Left Everything", group="Linear Opmode")
 //comment out this line before using
 public class LeftEverything extends LinearOpMode {
     private ModernRoboticsI2cGyro modernRoboticsI2cGyro;
@@ -145,6 +145,8 @@ public class LeftEverything extends LinearOpMode {
         telemetry.addData("Width", cols);
 
         telemetry.update();
+
+        modernRoboticsI2cGyro.resetZAxisIntegrator();
 
         //move away from wall
         move(100,100,0.3);

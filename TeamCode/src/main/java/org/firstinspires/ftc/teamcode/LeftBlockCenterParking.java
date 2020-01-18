@@ -147,6 +147,8 @@ public class LeftBlockCenterParking extends LinearOpMode {
         telemetry.update();
         sleep(100);
 
+        modernRoboticsI2cGyro.resetZAxisIntegrator();
+
         //move away from wall
         move(100,100,0.3);
         sleep(100);

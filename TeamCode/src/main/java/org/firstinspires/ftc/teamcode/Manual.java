@@ -189,10 +189,10 @@ public class Manual extends LinearOpMode {
             if (gamepad1.x) {
                 if(!isPressed1X) {
                     if(dragFoundation) {
-                        foundationPosition = 0.8;
+                        foundationPosition = 0.45;
                         dragFoundation = false;
                     } else {
-                        foundationPosition = 0.45;
+                        foundationPosition = 1;
                         dragFoundation = true;
                     }
                     isPressed1X = true;

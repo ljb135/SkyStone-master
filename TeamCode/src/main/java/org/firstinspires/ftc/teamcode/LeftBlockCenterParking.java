@@ -240,12 +240,12 @@ public class LeftBlockCenterParking extends LinearOpMode {
 			sleep(250);
 		}
 		if(skystonePlacement == 2){
-			gyroStraight(robotAngle,-8500,0.7);
+			gyroStraight(robotAngle,-4500,0.5);
 			sleep(250);
 
 		}
 		if(skystonePlacement == 3){
-			gyroStraight(robotAngle,-8500,0.7);
+			gyroStraight(robotAngle,-4500,0.5);
 			sleep(250);
 		}
 
@@ -302,23 +302,23 @@ public class LeftBlockCenterParking extends LinearOpMode {
             sleep(250);
         }
         else if(skystonePlacement == 2){
-            move(4100,4100,0.5);
+            gyroStraight(robotAngle,4500,0.5);
             sleep(250);
         }
         else if(skystonePlacement == 3){
-            move(4300,4300,0.5);
+            gyroStraight(robotAngle,4700,0.5);
             sleep(250);
         }
-//
-//        //let go of block
-//        frontGrab.setPosition(0.85);
-//        sleep(250);
-//        Erectus.setPosition(0.6);
-//        sleep(100);
-//
-//        //park
-//        move(-1200, -1200, 0.4);
-//        sleep(250);
+
+        //let go of block
+        frontGrab.setPosition(0.85);
+        sleep(250);
+        Erectus.setPosition(0.6);
+        sleep(100);
+
+        //park
+        gyroStraight(robotAngle, -1200, 0.4);
+        sleep(250);
     }
 
     //detection pipeline

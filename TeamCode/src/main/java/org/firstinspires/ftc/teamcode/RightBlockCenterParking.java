@@ -24,7 +24,7 @@ import java.util.List;
 
 
 
-@Autonomous(name= "RightBlockCenterParking", group="Linear Opmode")
+@Autonomous(name= "Right Block Center Parking", group="Linear Opmode")
 //comment out this line before using
 public class RightBlockCenterParking extends LinearOpMode {
     private ModernRoboticsI2cGyro modernRoboticsI2cGyro;

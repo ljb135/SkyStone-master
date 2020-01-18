@@ -145,11 +145,9 @@ public class LeftEverything extends LinearOpMode {
         telemetry.addData("Width", cols);
 
         telemetry.update();
-        sleep(100);
 
         //move away from wall
         move(100,100,0.3);
-        sleep(100);
 
         int strafeDistance = 75;
         double strafePower = 0.3;
@@ -174,111 +172,89 @@ public class LeftEverything extends LinearOpMode {
         }
 
         stopStrafe();
-        sleep(250);
         telemetry.addData("gyroRotate", 1);
         telemetry.update();
         gyroRotate(robotAngle);
         //move up to block
         gyroStraight(robotAngle, 1600,0.4);
         stopStrafe();
-        sleep(100);
 
         //grab block
         frontGrab.setPosition(0.85);
         erectus.setPosition(0.6);
-        sleep(250);
+        sleep(150);
         frontGrab.setPosition(0);
-        sleep(250);
+        sleep(150);
 
         //move back
         move(-100,-100,0.3);
-        sleep(250);
 
         //rotate towards the bridge
+        move(550,-550,0.2);
         robotAngle -= 84;
         gyroRotate(robotAngle);
-        sleep(250);
 
         //depending on location of the skystone, move a certain distance under the bridge
         if(skystonePlacement == 1){
-            gyroStraight(robotAngle,4500,0.5);
-            sleep(250);
+            gyroStraight(robotAngle,4000,0.6);
         }
         else if(skystonePlacement == 2){
-            gyroStraight(robotAngle,5050,0.5);
-            sleep(250);
+            gyroStraight(robotAngle,4450,0.6);
         }
         else if(skystonePlacement == 3){
-            gyroStraight(robotAngle,5500,0.5);
-            sleep(250);
+            gyroStraight(robotAngle,4900,0.6);
         }
 
         stopStrafe();
 
         //lift slide
         while(opModeIsActive() && lift.getCurrentPosition() < 1000){
-            lift.setPower(1.0);
+            lift.setPower(0.7);
         }
         lift.setPower(0);
-        sleep(250);
 
         //rotate to foundation and move forward to drop off block
+        move(-550,550,0.2);
         robotAngle += 84;
         gyroRotate(robotAngle);
-        sleep(250);
 
         stopStrafe();
 
-        move(300,300, 0.3);
-        sleep(100);
+        move(500,500, 0.3);
 
-        //lower slide and let go of block
-        while(opModeIsActive() && lift.getCurrentPosition() > 550){
-            lift.setPower(-1.0);
-        }
-        lift.setPower(0);
-        sleep(100);
         frontGrab.setPosition(0.85);
-        sleep(100);
-
-        //lift slide slightly
-        while(opModeIsActive() && lift.getCurrentPosition() < 700){
-            lift.setPower(1.0);
-        }
-        lift.setPower(0);
-        sleep(100);
 
         //back away from foundation
         move(-300,-300, 0.3);
-        sleep(100);
 
         //reset arm
         erectus.setPosition(1);
-        sleep(100);
         frontGrab.setPosition(0);
         sleep(100);
 
-        //rotate 180
-        robotAngle -= 168;
+        //rotate 90
+        robotAngle -= 84;
         gyroRotate(robotAngle);
-        sleep(100);
+
+        //rotate 90
+        robotAngle -= 84;
+        gyroRotate(robotAngle);
 
         //reset slide
         while(opModeIsActive() && lift.getCurrentPosition() > 80){
             lift.setPower(-1.0);
         }
         lift.setPower(0);
-        sleep(100);
+        foundation.setPosition(0.45);
 
         stopStrafe();
 
         //move towards foundation
-        move(-300,-300,0.2);
-        sleep(250);
+        move(-600,-600,0.3);
+        sleep(150);
 
         // Clamp onto the foundation
         frontGrab.setPosition(0);
-        sleep(100);
         foundation.setPosition(1);
         sleep(100);
 
@@ -286,7 +262,7 @@ public class LeftEverything extends LinearOpMode {
         gyroRotate(robotAngle);
 
         // Drive forward with foundation a little
-        gyroStraight(robotAngle,1000,0.3);
+        gyroStraight(robotAngle,1200,0.4);
         sleep(100);
 
         robotAngle -= 69;
@@ -302,7 +278,7 @@ public class LeftEverything extends LinearOpMode {
         stopStrafe();
 
         //push foundation against the wall
-        move(-300, -300, 0.3);
+        move(-400, -400, 0.3);
         sleep(100);
 
         //unclamp foundation

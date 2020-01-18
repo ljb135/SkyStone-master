@@ -153,21 +153,34 @@ public class LeftBlockCenterParking extends LinearOpMode {
 
         int strafeDistance = 75;
         double strafePower = 0.3;
+        telemetry.addData("valLeft", valLeft);
+        telemetry.update();
         if(valLeft == 0){
             skystonePlacement = 1; // Skystone right
             strafeDistance = 550;
+            telemetry.addData("strafingRight", 1);
+            telemetry.update();
+            strafe(strafeDistance , strafePower);
         } else if(valRight == 0){
             skystonePlacement = 3; // Skystone left
             strafeDistance = -500;
+            telemetry.addData("strafingLeft", 1);
+            telemetry.update();
+            strafe(strafeDistance , strafePower);
         } else{
+            telemetry.addData("strafingCenter", 1);
+            telemetry.update();
             skystonePlacement = 2; // Skystone center
         }
-        strafe(strafeDistance , strafePower);
+
         stopStrafe();
         sleep(250);
-        gyroRotate(0);
+        telemetry.addData("gyroRotate", 1);
+        telemetry.update();
+        gyroRotate(robotAngle);
         //move up to block
-        move(1600,1600,0.4);
+        gyroStraight(robotAngle, 1600,0.4);
+        stopStrafe();
         sleep(100);
 
         //grab block
@@ -182,28 +195,28 @@ public class LeftBlockCenterParking extends LinearOpMode {
         sleep(250);
 
         //rotate towards the bridge
-        robotAngle += 84;
+        robotAngle -= 84;
         gyroRotate(robotAngle);
         sleep(250);
 
         //depending on location of the skystone, move a certain distance under the bridge
         if(skystonePlacement == 1){
-            gyroStraight(robotAngle,-2700,0.5);
+            gyroStraight(robotAngle,2500,0.5);
             sleep(250);
         }
         else if(skystonePlacement == 2){
-            gyroStraight(robotAngle,-3100,0.5);
+            gyroStraight(robotAngle,3050,0.5);
             sleep(250);
         }
         else if(skystonePlacement == 3){
-            gyroStraight(robotAngle,-3500,0.5);
+            gyroStraight(robotAngle,3500,0.5);
             sleep(250);
         }
 
         stopStrafe();
 
         //rotate before foundation and move forward to drop off block
-        robotAngle -= 84;
+        robotAngle += 84;
         gyroRotate(robotAngle);
         sleep(250);
 
@@ -226,23 +239,26 @@ public class LeftBlockCenterParking extends LinearOpMode {
         gyroRotate(robotAngle);
         sleep(100);
 
-        stopStrafe();
+        frontGrab.setPosition(0);
+        sleep(100);
 
+        stopStrafe();
 
         //depending on location of the skystone, move a certain distance under the bridge
 		if(skystonePlacement == 1){
-			gyroStraight(robotAngle,-4050,0.5);
+			gyroStraight(robotAngle,-3850,0.5);
 			sleep(250);
 		}
 		if(skystonePlacement == 2){
-			gyroStraight(robotAngle,-4500,0.5);
+			gyroStraight(robotAngle,-4300,0.5);
 			sleep(250);
-
 		}
 		if(skystonePlacement == 3){
-			gyroStraight(robotAngle,-4500,0.5);
+			gyroStraight(robotAngle,-4400,0.5);
 			sleep(250);
 		}
+
+		frontGrab.setPosition(0.85);
 
 		stopStrafe();
         robotAngle+=84;
@@ -264,44 +280,17 @@ public class LeftBlockCenterParking extends LinearOpMode {
 		robotAngle-=84;
 		gyroRotate(robotAngle);
 
-//		if(skystonePlacement==2) {
-//            strafe(530, 0.5);
-//            sleep(100);
-//        }
-//		//move towards block
-//		move(300,300,0.4);
-//        sleep(100);
-//
-//		//grab block
-//		Erectus.setPosition(0.6);
-//		sleep(500);
-//		frontGrab.setPosition(0);
-//		sleep(250);
-//		//move back
-//		move(-275,-275,0.4);
-//		sleep(250);
-//        if(skystonePlacement==2) {
-//            strafe(-530, 0.5);
-//            sleep(100);
-//        }
-//
-//		stopStrafe();
-//
-//		//rotate towards the bridge
-//        move(-950,950,0.3);
-//        sleep(250);
-//
 		//depending on location of the skystone, move a certain distance under the bridge
         if(skystonePlacement == 1){
-            gyroStraight(robotAngle,3900,0.5);
+            gyroStraight(robotAngle,3600,0.5);
             sleep(250);
         }
         else if(skystonePlacement == 2){
-            gyroStraight(robotAngle,4100,0.5);
+            gyroStraight(robotAngle,3850,0.5);
             sleep(250);
         }
         else if(skystonePlacement == 3){
-            gyroStraight(robotAngle,4300,0.5);
+            gyroStraight(robotAngle,4250,0.5);
             sleep(250);
         }
 
@@ -312,8 +301,7 @@ public class LeftBlockCenterParking extends LinearOpMode {
         sleep(100);
 
         //park
-        gyroStraight(robotAngle, -1200, 0.4);
-        sleep(250);
+        gyroStraight(robotAngle, -1000, 0.4);
     }
 
     //detection pipeline

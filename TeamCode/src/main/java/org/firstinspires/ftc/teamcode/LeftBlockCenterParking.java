@@ -252,11 +252,11 @@ public class LeftBlockCenterParking extends LinearOpMode {
 			sleep(250);
 		}
 		if(skystonePlacement == 2){
-			gyroStraight(robotAngle,-4300,0.5);
+			gyroStraight(robotAngle,-4250,0.5);
 			sleep(250);
 		}
 		if(skystonePlacement == 3){
-			gyroStraight(robotAngle,-4400,0.5);
+			gyroStraight(robotAngle,-4650,0.5);
 			sleep(250);
 		}
 

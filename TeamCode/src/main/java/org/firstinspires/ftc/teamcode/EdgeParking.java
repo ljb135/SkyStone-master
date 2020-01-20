@@ -87,7 +87,7 @@ public class EdgeParking extends LinearOpMode {
         //sleep(25000);
 
         telemetry.addData("Stage 1", true); //move forward to park
-        move(-1000,-1000,0.3);
+        move(-1500,-1500,0.3);
         sleep(500);
     }
 

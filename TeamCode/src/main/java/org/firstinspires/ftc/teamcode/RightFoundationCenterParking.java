@@ -138,7 +138,7 @@ public class RightFoundationCenterParking extends LinearOpMode {
         gyroRotate(robotAngle);
 
         // Drive forward with foundation a little
-        gyroStraight(robotAngle,1000,0.3);
+        gyroStraight(robotAngle,1200,0.3);
         sleep(100);
 
         robotAngle -= 69;

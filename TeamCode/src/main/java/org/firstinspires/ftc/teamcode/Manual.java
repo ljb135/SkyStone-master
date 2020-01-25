@@ -71,9 +71,9 @@ public class Manual extends LinearOpMode {
     private double BL = 0;
     private double BR = 0;
     private double liftPower = 0;
-    private double erectusPosition = 0.6;
+    private double erectusPosition = 0.9;
     private double frontGrabPosition = 0.85;
-    private double foundationPosition = 0.45;
+    private double foundationPosition = 0.35;
     private double capstonePosition = 0.8;
     private boolean sensitiveMode = false;
     private boolean grabBlock = false;
@@ -172,8 +172,8 @@ public class Manual extends LinearOpMode {
 
 
             if (gamepad1.y) {
-                if(!isPressed1Y) {
-                    if(dropCapstone) {
+                if (!isPressed1Y) {
+                    if (dropCapstone) {
                         capstonePosition = 0.8;
                         dropCapstone = false;
                     } else {
@@ -187,9 +187,9 @@ public class Manual extends LinearOpMode {
             }
 
             if (gamepad1.x) {
-                if(!isPressed1X) {
-                    if(dragFoundation) {
-                        foundationPosition = 0.45;
+                if (!isPressed1X) {
+                    if (dragFoundation) {
+                        foundationPosition = 0.35;
                         dragFoundation = false;
                     } else {
                         foundationPosition = 1;
@@ -202,7 +202,7 @@ public class Manual extends LinearOpMode {
             }
 
             if (gamepad1.b) {
-                if(!isPressed1B) {
+                if (!isPressed1B) {
                     sensitiveMode = !sensitiveMode;
                     isPressed1B = true;
                 }
@@ -211,8 +211,8 @@ public class Manual extends LinearOpMode {
             }
 
             if (gamepad2.a) {
-                if(!isPressed2A) {
-                    if(grabBlock) {
+                if (!isPressed2A) {
+                    if (grabBlock) {
                         frontGrabPosition = 0.85;
                         grabBlock = false;
                     } else {
@@ -227,9 +227,9 @@ public class Manual extends LinearOpMode {
 
 
             if (gamepad2.y) {
-                if(!isPressed2Y) {
+                if (!isPressed2Y) {
                     frontGrabPosition = 0.85;
-                    erectusPosition = 0.6;
+                    erectusPosition = 0.9;
                     raiseArm = false;
                     while (lift.getCurrentPosition() > 80) {
                         lift.setPower(-1);
@@ -243,14 +243,14 @@ public class Manual extends LinearOpMode {
 
 
             if (gamepad2.x) {
-                if(!isPressed2X) {
-                    if(raiseArm) {
+                if (!isPressed2X) {
+                    if (raiseArm) {
                         frontGrabPosition = 0;
-                        erectusPosition = 1;
+                        erectusPosition = 0.25;
                         raiseArm = false;
                     } else {
                         frontGrabPosition = 0.85;
-                        erectusPosition = 0.6;
+                        erectusPosition = 0.9;
                         raiseArm = true;
                     }
                     isPressed2X = true;
@@ -258,6 +258,8 @@ public class Manual extends LinearOpMode {
             } else {
                 isPressed2X = false;
             }
+
+//            erectusPosition = abs(gamepad2.right_stick_y);
 
             FRDrive.setPower(FR);
             FLDrive.setPower(FL);
@@ -273,7 +275,7 @@ public class Manual extends LinearOpMode {
             telemetry.addData("Status", "Run Time: " + runtime.toString());
             telemetry.addData("Controller", "X1: (%.2f) Y1: (%.2f) X2: (%.2f)", gamepad1.left_stick_x, gamepad1.left_stick_y, gamepad1.right_stick_x);
             telemetry.addData("lift Value", lift.getCurrentPosition());
-            telemetry.addData("Position", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)FRDrive.getCurrentPosition(), (float)FLDrive.getCurrentPosition(), (float)BRDrive.getCurrentPosition(), (float)BLDrive.getCurrentPosition());
+            telemetry.addData("Position", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float) FRDrive.getCurrentPosition(), (float) FLDrive.getCurrentPosition(), (float) BRDrive.getCurrentPosition(), (float) BLDrive.getCurrentPosition());
             telemetry.update();
         }
     }

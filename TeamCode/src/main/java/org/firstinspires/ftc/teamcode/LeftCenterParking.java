@@ -111,9 +111,9 @@ public class LeftCenterParking extends LinearOpMode {
         capstone.setPosition(0.8);
         frontGrab.setPosition(1);
         sleep(100);
-        Erectus.setPosition(1);
+        Erectus.setPosition(.25);
         sleep(100);
-        foundation.setPosition(0.45);
+        foundation.setPosition(0.35);
         sleep(100);
 
         telemetry.addData("Position", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)FRDrive.getCurrentPosition(), (float)FLDrive.getCurrentPosition(), (float)BRDrive.getCurrentPosition(), (float)BLDrive.getCurrentPosition());
@@ -135,9 +135,8 @@ public class LeftCenterParking extends LinearOpMode {
 
 
         //drive forward and park
-        gyroStraight(robotAngle,-2000,0.3);
+        gyroStraight(robotAngle,-1850,0.3);
         sleep(500);
-        Erectus.setPosition(0.6);
     }
 
     private void move(int left, int right, double power){

@@ -75,9 +75,9 @@ public class EdgeParking extends LinearOpMode {
         capstone.setPosition(0.8);
         frontGrab.setPosition(0);
         sleep(100);
-        Erectus.setPosition(1);
+        Erectus.setPosition(0.25);
         sleep(100);
-        foundation.setPosition(0.45);
+        foundation.setPosition(0.35);
         sleep(100);
 
         telemetry.addData("Position", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)FRDrive.getCurrentPosition(), (float)FLDrive.getCurrentPosition(), (float)BRDrive.getCurrentPosition(), (float)BLDrive.getCurrentPosition());
@@ -87,7 +87,7 @@ public class EdgeParking extends LinearOpMode {
         //sleep(25000);
 
         telemetry.addData("Stage 1", true); //move forward to park
-        move(-1500,-1500,0.3);
+        move(-1750,-1750,0.3);
         sleep(500);
     }
 

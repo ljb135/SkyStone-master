@@ -24,6 +24,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 public class RightCenterParking extends LinearOpMode {
     private ModernRoboticsI2cGyro modernRoboticsI2cGyro;
     private int initialValue = 0;
+    private int robotAngle = 0;
     PIDController rotationPid;
     PIDController drivePid;
     private ElapsedTime runtime = new ElapsedTime();
@@ -110,15 +111,13 @@ public class RightCenterParking extends LinearOpMode {
         capstone.setPosition(0.8);
         frontGrab.setPosition(1);
         sleep(100);
-        Erectus.setPosition(1);
+        Erectus.setPosition(.25);
         sleep(100);
-        foundation.setPosition(0.45);
+        foundation.setPosition(0.35);
         sleep(100);
 
         telemetry.addData("Position", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)FRDrive.getCurrentPosition(), (float)FLDrive.getCurrentPosition(), (float)BRDrive.getCurrentPosition(), (float)BLDrive.getCurrentPosition());
         telemetry.update();
-
-        int robotAngle = 0;
 
         //sleep if team asks us to wait until the end to park
         //sleep(22000);
@@ -136,9 +135,8 @@ public class RightCenterParking extends LinearOpMode {
 
 
         //drive forward and park
-        gyroStraight(robotAngle,-2000,0.3);
+        gyroStraight(robotAngle,-1850,0.3);
         sleep(500);
-        Erectus.setPosition(0.6);
     }
 
     private void move(int left, int right, double power){
@@ -188,7 +186,6 @@ public class RightCenterParking extends LinearOpMode {
             BLDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             BRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
-
     }
     private void gyroRotate(int desiredAngle) {
         if(opModeIsActive()) {

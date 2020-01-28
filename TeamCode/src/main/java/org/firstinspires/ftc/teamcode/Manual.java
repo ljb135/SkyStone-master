@@ -71,7 +71,7 @@ public class Manual extends LinearOpMode {
     private double BL = 0;
     private double BR = 0;
     private double liftPower = 0;
-    private double erectusPosition = 0.9;
+    private double erectusPosition = 0.8;
     private double frontGrabPosition = 0.85;
     private double foundationPosition = 0.35;
     private double capstonePosition = 0.8;
@@ -86,8 +86,6 @@ public class Manual extends LinearOpMode {
     private boolean isPressed2A = false;
     private boolean isPressed2Y = false;
     private boolean isPressed2X = false;
-
-
 
     @Override
     public void runOpMode() {
@@ -214,9 +212,11 @@ public class Manual extends LinearOpMode {
                 if (!isPressed2A) {
                     if (grabBlock) {
                         frontGrabPosition = 0.85;
+                        erectusPosition = 0.8;
                         grabBlock = false;
                     } else {
                         frontGrabPosition = 0;
+                        erectusPosition = 0.9;
                         grabBlock = true;
                     }
                     isPressed2A = true;
@@ -229,7 +229,7 @@ public class Manual extends LinearOpMode {
             if (gamepad2.y) {
                 if (!isPressed2Y) {
                     frontGrabPosition = 0.85;
-                    erectusPosition = 0.9;
+                    erectusPosition = 0.8;
                     raiseArm = false;
                     while (lift.getCurrentPosition() > 80) {
                         lift.setPower(-1);
@@ -250,7 +250,7 @@ public class Manual extends LinearOpMode {
                         raiseArm = false;
                     } else {
                         frontGrabPosition = 0.85;
-                        erectusPosition = 0.9;
+                        erectusPosition = 0.8;
                         raiseArm = true;
                     }
                     isPressed2X = true;

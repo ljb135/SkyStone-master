@@ -102,9 +102,9 @@ public class LeftFoundationCenterParking extends LinearOpMode {
         runtime.reset();
 
         capstone.setPosition(0.8);
-        foundation.setPosition(0.45);
+        foundation.setPosition(0.35);
         frontGrab.setPosition(1);
-        Erectus.setPosition(1);
+        Erectus.setPosition(0.25);
 
         modernRoboticsI2cGyro.resetZAxisIntegrator();
 
@@ -121,46 +121,63 @@ public class LeftFoundationCenterParking extends LinearOpMode {
         sleep(100);
 
         // Back up into the foundation
-        gyroStraight(robotAngle,-1250,0.3);
+        gyroStraight(robotAngle,-1250,0.6);
         sleep(100);
 
         // Back up into the foundation
-        gyroStraight(robotAngle,-400,0.2);
-        sleep(100);
+        gyroStraight(robotAngle,-300,0.2);
+        sleep(150);
 
         // Clamp onto the foundation
         frontGrab.setPosition(0);
         sleep(100);
         foundation.setPosition(1);
-        sleep(100);
-
-        robotAngle += 15;
+        sleep(200);
+        robotAngle+=15;
         gyroRotate(robotAngle);
-
-        // Drive forward with foundation a little
-        gyroStraight(robotAngle,1200,0.3);
-        sleep(100);
-
-        robotAngle += 69;
-
-        // Rotate towards the bridge
-        gyroRotate(robotAngle);
-//        telemetry.addData("right before strafe sleep", 1);
-//        telemetry.update();
-//        sleep(4000);
-//
-//        strafe(150, 0.2);
-
         stopStrafe();
-
-        move(-300, -300, 0.3);
         sleep(100);
-
-        foundation.setPosition(0.45);
+        gyroStraight(robotAngle,900,0.5);
         sleep(100);
+        stopStrafe();
+        move(0,1800,0.5);
+        sleep(100);
+        robotAngle+=(84-15);
+        gyroRotate(robotAngle);
+        stopStrafe();
+        move(-400,-400,0.3);
+        sleep(100);
+        foundation.setPosition(0.35);
+        sleep(100);
+        gyroStraight(robotAngle,2400,0.5);
 
-        gyroStraight(robotAngle, 2500, 0.4);
-
+//        robotAngle += 15;
+//        gyroRotate(robotAngle);
+//
+//        // Drive forward with foundation a little
+//        gyroStraight(robotAngle,1200,0.3);
+//        sleep(100);
+//
+//        robotAngle += 69;
+//
+//        // Rotate towards the bridge
+//        gyroRotate(robotAngle);
+////        telemetry.addData("right before strafe sleep", 1);
+////        telemetry.update();
+////        sleep(4000);
+////
+////        strafe(150, 0.2);
+//
+//        stopStrafe();
+//
+//        move(-300, -300, 0.3);
+//        sleep(100);
+//
+//        foundation.setPosition(0.45);
+//        sleep(100);
+//
+//        gyroStraight(robotAngle, 2500, 0.4);
+//
 
 //        capstone.setPosition(0.8);
 //        foundation.setPosition(0.45);

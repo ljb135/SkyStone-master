@@ -134,11 +134,7 @@ public class LeftBlockCenterParking extends LinearOpMode {
         telemetry.log().clear();
         runtime.reset();
 
-        capstone.setPosition(0.8);
-        foundation.setPosition(0.2);
-        frontGrab.setPosition(1);
-        Erectus.setPosition(0.25);
-
+        initialPos();
 
         telemetry.addData("Values", valLeft+"   "+valMid+"   "+valRight);
         telemetry.addData("Height", rows);
@@ -187,9 +183,7 @@ public class LeftBlockCenterParking extends LinearOpMode {
         sleep(100);
 
         //grab block
-        Erectus.setPosition(0.9);
-        sleep(250);
-        frontGrab.setPosition(0);
+        grab();
         sleep(250);
 
         //move back
@@ -228,12 +222,7 @@ public class LeftBlockCenterParking extends LinearOpMode {
         sleep(100);
 
         //let go of block
-        frontGrab.setPosition(0.85);
-        sleep(100);
-
-        Erectus.setPosition(0.25);
-        sleep(100);
-        frontGrab.setPosition(0);
+        release();
         sleep(100);
 
         move(-200,-200, 0.3);
@@ -260,9 +249,6 @@ public class LeftBlockCenterParking extends LinearOpMode {
 			sleep(250);
 		}
 
-        frontGrab.setPosition(0.85);
-        sleep(100);
-
 		stopStrafe();
         robotAngle+=84;
 		//rotate towards block
@@ -273,9 +259,7 @@ public class LeftBlockCenterParking extends LinearOpMode {
         sleep(100);
 
 		//grab block
-		Erectus.setPosition(0.9);
-		sleep(250);
-		frontGrab.setPosition(0);
+		grab();
 		sleep(250);
 		//move back
 		move(-150,-150,0.4);
@@ -298,16 +282,11 @@ public class LeftBlockCenterParking extends LinearOpMode {
         }
 
         //let go of block
-        frontGrab.setPosition(0.85);
-        Erectus.setPosition(0.8);
+        release();
         sleep(100);
 
         //park
         gyroStraight(robotAngle, -800, 0.4);
-        sleep(100);
-        Erectus.setPosition(0.25);
-        sleep(100);
-        frontGrab.setPosition(0);
         sleep(100);
     }
 
@@ -446,6 +425,26 @@ public class LeftBlockCenterParking extends LinearOpMode {
             }
         }
 
+    }
+    private void initialPos(){
+        capstone.setPosition(0.8);
+        foundation.setPosition(0.2);
+        frontGrab.setPosition(1);
+        Erectus.setPosition(0.25);
+    }
+    private void grab(){
+        frontGrab.setPosition(0.85);
+        sleep(100);
+        Erectus.setPosition(0.9);
+        sleep(250);
+        frontGrab.setPosition(0);
+    }
+    private void release(){
+        frontGrab.setPosition(0.85);
+        sleep(100);
+        Erectus.setPosition(0.25);
+        sleep(100);
+        frontGrab.setPosition(0);
     }
     private void move(int left, int right, double power){
         if(opModeIsActive()){

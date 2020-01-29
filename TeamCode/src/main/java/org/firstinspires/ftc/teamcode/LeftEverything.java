@@ -134,10 +134,7 @@ public class LeftEverything extends LinearOpMode {
         telemetry.log().clear();
         runtime.reset();
 
-        capstone.setPosition(0.8);
-        foundation.setPosition(1);
-        frontGrab.setPosition(1);
-        erectus.setPosition(1);
+        initialPos();
 
 
         telemetry.addData("Values", valLeft+"   "+valMid+"   "+valRight);
@@ -157,13 +154,13 @@ public class LeftEverything extends LinearOpMode {
         telemetry.update();
         if(valLeft == 0){
             skystonePlacement = 1; // Skystone right
-            strafeDistance = 550;
+            strafeDistance = 275;
             telemetry.addData("strafingRight", 1);
             telemetry.update();
             strafe(strafeDistance , strafePower);
         } else if(valRight == 0){
             skystonePlacement = 3; // Skystone left
-            strafeDistance = -500;
+            strafeDistance = -650;
             telemetry.addData("strafingLeft", 1);
             telemetry.update();
             strafe(strafeDistance , strafePower);
@@ -171,6 +168,8 @@ public class LeftEverything extends LinearOpMode {
             telemetry.addData("strafingCenter", 1);
             telemetry.update();
             skystonePlacement = 2; // Skystone center
+            strafeDistance=-225;
+            strafe(strafeDistance,strafePower);
         }
 
         stopStrafe();
@@ -182,14 +181,10 @@ public class LeftEverything extends LinearOpMode {
         stopStrafe();
 
         //grab block
-        frontGrab.setPosition(0.85);
-        erectus.setPosition(0.6);
-        sleep(150);
-        frontGrab.setPosition(0);
-        sleep(150);
+        grab();
 
         //move back
-        move(-100,-100,0.3);
+        move(-200,-200,0.3);
 
         //rotate towards the bridge
         move(550,-550,0.2);
@@ -198,13 +193,13 @@ public class LeftEverything extends LinearOpMode {
 
         //depending on location of the skystone, move a certain distance under the bridge
         if(skystonePlacement == 1){
-            gyroStraight(robotAngle,4000,0.6);
+            gyroStraight(robotAngle,4500,0.6);
         }
         else if(skystonePlacement == 2){
-            gyroStraight(robotAngle,4450,0.6);
+            gyroStraight(robotAngle,4950,0.6);
         }
         else if(skystonePlacement == 3){
-            gyroStraight(robotAngle,4900,0.6);
+            gyroStraight(robotAngle,5400,0.6);
         }
 
         stopStrafe();
@@ -224,7 +219,7 @@ public class LeftEverything extends LinearOpMode {
 
         move(500,500, 0.3);
 
-        frontGrab.setPosition(0.85);
+        release();
 
         //back away from foundation
         move(-300,-300, 0.3);
@@ -254,41 +249,102 @@ public class LeftEverything extends LinearOpMode {
         //move towards foundation
         move(-600,-600,0.3);
         sleep(150);
-
+        frontGrab.setPosition(1);
+        erectus.setPosition(0.25);
+        sleep(100);
         // Clamp onto the foundation
-        frontGrab.setPosition(0);
+//        frontGrab.setPosition(0);
         foundation.setPosition(1);
         sleep(100);
-
-        robotAngle -= 15;
-        gyroRotate(robotAngle);
-
+        gyroStraight(robotAngle,2000,0.4);
         // Drive forward with foundation a little
-        gyroStraight(robotAngle,1200,0.4);
-        sleep(100);
-
-        robotAngle -= 69;
-
-        // Rotate towards the bridge
-        gyroRotate(robotAngle);
-//        telemetry.addData("right before strafe sleep", 1);
-//        telemetry.update();
-//        sleep(4000);
-//
-//        strafe(150, 0.2);
-
         stopStrafe();
-
-        //push foundation against the wall
-        move(-400, -400, 0.3);
+        foundation.setPosition(0.35);
+        strafe(1900,0.4);
         sleep(100);
+        gyroRotate(robotAngle);
+        sleep(100);
+        gyroStraight(robotAngle,-1250,0.4);
+        robotAngle-=84;
+        gyroRotate(robotAngle);
+        stopStrafe();
+        move(-500,-500,0.4);
+        sleep(100);
+        frontGrab.setPosition(0);
+        sleep(100);
+        if(skystonePlacement == 1){
+            gyroStraight(robotAngle,4600,0.5);
+            sleep(250);
+        }
+        if(skystonePlacement == 2){
+            gyroStraight(robotAngle,5100,0.5);
+            sleep(250);
+        }
+        if(skystonePlacement == 3){
+            gyroStraight(robotAngle,5500,0.5);
+            sleep(250);
+        }
+        robotAngle-=84;
+        gyroRotate(robotAngle);
+        stopStrafe();
+        move(200,200,0.4);
+        sleep(100);
+        grab();
+        sleep(100);
+        move(-200,-200,0.4);
+        robotAngle-=84;
+        gyroRotate(robotAngle);
+        if(skystonePlacement == 1){
+            gyroStraight(robotAngle,3600,0.5);
+            sleep(250);
+        }
+        else if(skystonePlacement == 2){
+            gyroStraight(robotAngle,4100,0.5);
+            sleep(250);
+        }
+        else if(skystonePlacement == 3){
+            gyroStraight(robotAngle,4250,0.5);
+            sleep(250);
+        }
 
-        //unclamp foundation
-        foundation.setPosition(0.45);
+        //let go of block
+        release();
         sleep(100);
 
         //park
-        gyroStraight(robotAngle, 2500, 0.4);
+        gyroStraight(robotAngle, -800, 0.4);
+        sleep(100);
+
+
+//        robotAngle -= 15;
+//        gyroRotate(robotAngle);
+//
+//        // Drive forward with foundation a little
+//        gyroStraight(robotAngle,1200,0.4);
+//        sleep(100);
+//
+//        robotAngle -= 69;
+//
+//        // Rotate towards the bridge
+//        gyroRotate(robotAngle);
+////        telemetry.addData("right before strafe sleep", 1);
+////        telemetry.update();
+////        sleep(4000);
+////
+////        strafe(150, 0.2);
+//
+//        stopStrafe();
+//
+//        //push foundation against the wall
+//        move(-400, -400, 0.3);
+//        sleep(100);
+//
+//        //unclamp foundation
+//        foundation.setPosition(0.45);
+//        sleep(100);
+//
+//        //park
+//        gyroStraight(robotAngle, 2500, 0.4);
     }
 
     //detection pipeline
@@ -426,6 +482,26 @@ public class LeftEverything extends LinearOpMode {
             }
         }
 
+    }
+    private void initialPos(){
+        capstone.setPosition(0.8);
+        foundation.setPosition(0.2);
+        frontGrab.setPosition(1);
+        erectus.setPosition(0.25);
+    }
+    private void grab(){
+        frontGrab.setPosition(0.85);
+        sleep(100);
+        erectus.setPosition(0.9);
+        sleep(250);
+        frontGrab.setPosition(0);
+    }
+    private void release(){
+        frontGrab.setPosition(0.85);
+        sleep(100);
+        erectus.setPosition(0.25);
+        sleep(100);
+        frontGrab.setPosition(0);
     }
     private void move(int left, int right, double power){
         if(opModeIsActive()){

@@ -102,9 +102,9 @@ public class RightFoundationCenterParking extends LinearOpMode {
         runtime.reset();
 
         capstone.setPosition(0.8);
-        foundation.setPosition(0.45);
+        foundation.setPosition(0.35);
         frontGrab.setPosition(1);
-        Erectus.setPosition(1);
+        Erectus.setPosition(0.25);
 
         modernRoboticsI2cGyro.resetZAxisIntegrator();
 
@@ -129,37 +129,38 @@ public class RightFoundationCenterParking extends LinearOpMode {
         sleep(100);
 
         // Clamp onto the foundation
-        frontGrab.setPosition(0);
-        sleep(100);
         foundation.setPosition(1);
         sleep(100);
 
-        robotAngle -= 15;
-        gyroRotate(robotAngle);
-
+        gyroStraight(robotAngle,1850,0.4);
         // Drive forward with foundation a little
-        gyroStraight(robotAngle,1200,0.3);
+        stopStrafe();
+        foundation.setPosition(0.35);
+        strafe(1900,0.4);
         sleep(100);
+        gyroRotate(robotAngle);
+        sleep(100);
+        gyroStraight(robotAngle,-1250,0.4);
+        robotAngle-=84;
+        gyroRotate(robotAngle);
+        stopStrafe();
+        move(-500,-500,0.4);
+        sleep(100);
+        frontGrab.setPosition(0);
+        sleep(100);
+        gyroStraight(robotAngle,1500,0.5);
 
-        robotAngle -= 69;
+
+
 
         // Rotate towards the bridge
-        gyroRotate(robotAngle);
+
 //        telemetry.addData("right before strafe sleep", 1);
 //        telemetry.update();
 //        sleep(4000);
 //
 //        strafe(150, 0.2);
 
-        stopStrafe();
-
-        move(-300, -300, 0.3);
-        sleep(100);
-
-        foundation.setPosition(0.45);
-        sleep(100);
-
-        gyroStraight(robotAngle, 2500, 0.4);
 
 
 //        capstone.setPosition(0.8);

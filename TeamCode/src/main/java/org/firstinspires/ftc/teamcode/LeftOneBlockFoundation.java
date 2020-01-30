@@ -24,9 +24,9 @@ import java.util.List;
 
 
 
-@Autonomous(name= "Left Block Center Parking", group="Linear Opmode")
+@Autonomous(name= "Left One BLock Foundation", group="Linear Opmode")
 //comment out this line before using
-public class LeftBlockCenterParking extends LinearOpMode {
+public class LeftOneBlockFoundation extends LinearOpMode {
     private ModernRoboticsI2cGyro modernRoboticsI2cGyro;
     private int initialValue = 0;
     private int robotAngle = 0;
@@ -37,8 +37,8 @@ public class LeftBlockCenterParking extends LinearOpMode {
     private DcMotor FLDrive = null;
     private DcMotor BRDrive = null;
     private DcMotor BLDrive = null;
-    private DcMotor Lift = null;
-    private Servo Erectus = null;
+    private DcMotor lift = null;
+    private Servo erectus = null;
     private Servo frontGrab = null;
     private Servo foundation = null;
     private double timeout = 5;
@@ -79,8 +79,8 @@ public class LeftBlockCenterParking extends LinearOpMode {
         FLDrive = hardwareMap.get(DcMotor.class, "front_left");
         BRDrive  = hardwareMap.get(DcMotor.class, "back_right");
         BLDrive  = hardwareMap.get(DcMotor.class, "back_left");
-        Lift  = hardwareMap.get(DcMotor.class, "lift");
-        Erectus = hardwareMap.get(Servo.class, "erectus");
+        lift = hardwareMap.get(DcMotor.class, "lift");
+        erectus = hardwareMap.get(Servo.class, "erectus");
         frontGrab = hardwareMap.get(Servo.class, "front_grab");
         foundation = hardwareMap.get(Servo.class, "foundation");
         capstone = hardwareMap.get(Servo.class, "capstone");
@@ -92,8 +92,8 @@ public class LeftBlockCenterParking extends LinearOpMode {
         FLDrive.setDirection(DcMotor.Direction.FORWARD);
         BRDrive.setDirection(DcMotor.Direction.REVERSE);
         BLDrive.setDirection(DcMotor.Direction.FORWARD);
-        Lift.setDirection(DcMotor.Direction.FORWARD);
-        Erectus.setDirection(Servo.Direction.FORWARD);
+        lift.setDirection(DcMotor.Direction.FORWARD);
+        erectus.setDirection(Servo.Direction.FORWARD);
         frontGrab.setDirection(Servo.Direction.FORWARD);
         foundation.setDirection(Servo.Direction.REVERSE);
         capstone.setDirection(Servo.Direction.FORWARD);
@@ -136,20 +136,19 @@ public class LeftBlockCenterParking extends LinearOpMode {
 
         initialPos();
 
+
         telemetry.addData("Values", valLeft+"   "+valMid+"   "+valRight);
         telemetry.addData("Height", rows);
         telemetry.addData("Width", cols);
 
         telemetry.update();
-        sleep(100);
 
         modernRoboticsI2cGyro.resetZAxisIntegrator();
 
         //move away from wall
         move(100,100,0.3);
-        sleep(100);
 
-        int strafeDistance;
+        int strafeDistance = 75;
         double strafePower = 0.3;
         telemetry.addData("valLeft", valLeft);
         telemetry.update();
@@ -158,126 +157,154 @@ public class LeftBlockCenterParking extends LinearOpMode {
             strafeDistance = 275;
             telemetry.addData("strafingRight", 1);
             telemetry.update();
+            strafe(strafeDistance , strafePower);
         } else if(valRight == 0){
             skystonePlacement = 3; // Skystone left
             strafeDistance = -650;
             telemetry.addData("strafingLeft", 1);
             telemetry.update();
+            strafe(strafeDistance , strafePower);
         } else{
-            skystonePlacement = 2; // Skystone center
             telemetry.addData("strafingCenter", 1);
             telemetry.update();
-            strafeDistance = -225;
+            skystonePlacement = 2; // Skystone center
+            strafeDistance=-225;
+            strafe(strafeDistance,strafePower);
         }
 
-        strafe(strafeDistance , strafePower);
-
         stopStrafe();
-        sleep(250);
         telemetry.addData("gyroRotate", 1);
         telemetry.update();
         gyroRotate(robotAngle);
         //move up to block
         gyroStraight(robotAngle, 1600,0.4);
         stopStrafe();
-        sleep(100);
 
         //grab block
         grab();
-        sleep(250);
 
         //move back
-        move(-175,-175,0.3);
-        sleep(250);
+        move(-200,-200,0.3);
 
         //rotate towards the bridge
+        move(550,-550,0.2);
         robotAngle -= 84;
         gyroRotate(robotAngle);
-        sleep(250);
 
-        //depending on location of the skystone, move a certain distance under the bridge towards foundation (1)
+        //depending on location of the skystone, move a certain distance under the bridge
         if(skystonePlacement == 1){
-            gyroStraight(robotAngle,2400,0.5);
-            sleep(250);
+            gyroStraight(robotAngle,4500,0.6);
         }
         else if(skystonePlacement == 2){
-            gyroStraight(robotAngle,3000,0.5);
-            sleep(250);
+            gyroStraight(robotAngle,4950,0.6);
         }
         else if(skystonePlacement == 3){
-            gyroStraight(robotAngle,3470,0.5);
-            sleep(250);
+            gyroStraight(robotAngle,5400,0.6);
         }
 
         stopStrafe();
 
-        //rotate before foundation and move forward to drop off block
+        //lift slide
+        while(opModeIsActive() && lift.getCurrentPosition() < 1000){
+            lift.setPower(0.7);
+        }
+        lift.setPower(0);
+
+        //rotate to foundation and move forward to drop off block
+        move(-550,550,0.2);
         robotAngle += 84;
         gyroRotate(robotAngle);
-        sleep(250);
 
         stopStrafe();
 
-        move(250,250, 0.3);
-        sleep(100);
+        move(500,500, 0.3);
 
-        //let go of block
         release();
+
+        //back away from foundation
+        move(-300,-300, 0.3);
+
+        //reset arm
+        erectus.setPosition(1);
+        frontGrab.setPosition(0);
         sleep(100);
 
-        move(-200,-200, 0.3);
-        sleep(100);
-
-        //rotate to go under bridge
+        //rotate 90
         robotAngle -= 84;
         gyroRotate(robotAngle);
-        sleep(100);
+
+        //rotate 90
+        robotAngle -= 84;
+        gyroRotate(robotAngle);
+
+        //reset slide
+        while(opModeIsActive() && lift.getCurrentPosition() > 80){
+            lift.setPower(-1.0);
+        }
+        lift.setPower(0);
+        foundation.setPosition(0.45);
 
         stopStrafe();
 
-        //depending on location of the skystone, move a certain distance under the bridge towards blocks
-		if(skystonePlacement == 1){
-			gyroStraight(robotAngle,-3650,0.5);
-			sleep(250);
-		}
-		if(skystonePlacement == 2){
-			gyroStraight(robotAngle,-4300,0.5);
-			sleep(250);
-		}
-		if(skystonePlacement == 3){
-			gyroStraight(robotAngle,-4350,0.5);
-			sleep(250);
-		}
-
-		stopStrafe();
-        robotAngle+=84;
-		//rotate towards block
-		gyroRotate(robotAngle);
-		sleep(100);
-        stopStrafe();
-		move(250,250,0.4);
+        //move towards foundation
+        move(-600,-600,0.3);
+        sleep(150);
+        frontGrab.setPosition(1);
+        erectus.setPosition(0.25);
         sleep(100);
-
-		//grab block
-		grab();
-		sleep(250);
-		//move back
-		move(-150,-150,0.4);
-		sleep(250);
-		robotAngle-=84;
-		gyroRotate(robotAngle);
-
-		//depending on location of the skystone, move a certain distance under the bridge towards foundation (2)
+        // Clamp onto the foundation
+//        frontGrab.setPosition(0);
+        foundation.setPosition(1);
+        sleep(100);
+        gyroStraight(robotAngle,2000,0.4);
+        // Drive forward with foundation a little
+        stopStrafe();
+        foundation.setPosition(0.35);
+        strafe(1900,0.4);
+        sleep(100);
+        gyroRotate(robotAngle);
+        sleep(100);
+        gyroStraight(robotAngle,-1250,0.4);
+        robotAngle-=84;
+        gyroRotate(robotAngle);
+        stopStrafe();
+        move(-500,-500,0.4);
+        sleep(100);
+        frontGrab.setPosition(0);
+        sleep(100);
+        erectus.setPosition(0.25);
         if(skystonePlacement == 1){
-            gyroStraight(robotAngle,3700,0.5);
+            gyroStraight(robotAngle,4600,0.5);
+            sleep(250);
+        }
+        if(skystonePlacement == 2){
+            gyroStraight(robotAngle,5100,0.5);
+            sleep(250);
+        }
+        if(skystonePlacement == 3){
+            gyroStraight(robotAngle,5500,0.5);
+            sleep(250);
+        }
+        robotAngle-=84;
+        gyroRotate(robotAngle);
+        stopStrafe();
+        move(200,200,0.4);
+        sleep(100);
+        grab();
+        sleep(100);
+        move(-200,-200,0.4);
+        robotAngle-=84;
+        gyroRotate(robotAngle);
+        if(skystonePlacement == 1){
+            gyroStraight(robotAngle,3600,0.5);
             sleep(250);
         }
         else if(skystonePlacement == 2){
-            gyroStraight(robotAngle,4200,0.5);
+            gyroStraight(robotAngle,4100,0.5);
             sleep(250);
         }
         else if(skystonePlacement == 3){
-            gyroStraight(robotAngle,4350,0.5);
+            gyroStraight(robotAngle,4250,0.5);
             sleep(250);
         }
 
@@ -288,6 +315,37 @@ public class LeftBlockCenterParking extends LinearOpMode {
         //park
         gyroStraight(robotAngle, -800, 0.4);
         sleep(100);
+
+
+//        robotAngle -= 15;
+//        gyroRotate(robotAngle);
+//
+//        // Drive forward with foundation a little
+//        gyroStraight(robotAngle,1200,0.4);
+//        sleep(100);
+//
+//        robotAngle -= 69;
+//
+//        // Rotate towards the bridge
+//        gyroRotate(robotAngle);
+////        telemetry.addData("right before strafe sleep", 1);
+////        telemetry.update();
+////        sleep(4000);
+////
+////        strafe(150, 0.2);
+//
+//        stopStrafe();
+//
+//        //push foundation against the wall
+//        move(-400, -400, 0.3);
+//        sleep(100);
+//
+//        //unclamp foundation
+//        foundation.setPosition(0.45);
+//        sleep(100);
+//
+//        //park
+//        gyroStraight(robotAngle, 2500, 0.4);
     }
 
     //detection pipeline
@@ -430,19 +488,19 @@ public class LeftBlockCenterParking extends LinearOpMode {
         capstone.setPosition(0.8);
         foundation.setPosition(0.2);
         frontGrab.setPosition(1);
-        Erectus.setPosition(0.25);
+        erectus.setPosition(0.25);
     }
     private void grab(){
         frontGrab.setPosition(0.85);
         sleep(100);
-        Erectus.setPosition(0.9);
+        erectus.setPosition(0.9);
         sleep(250);
         frontGrab.setPosition(0);
     }
     private void release(){
         frontGrab.setPosition(0.85);
         sleep(100);
-        Erectus.setPosition(0.25);
+        erectus.setPosition(0.25);
         sleep(100);
         frontGrab.setPosition(0);
     }

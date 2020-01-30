@@ -151,7 +151,7 @@ public class LeftEverything extends LinearOpMode {
         move(100,100,0.3);
 
         int strafeDistance = 75;
-        double strafePower = 0.3;
+        double strafePower = 0.6;
         telemetry.addData("valLeft", valLeft);
         telemetry.update();
         if(valLeft == 0){
@@ -189,31 +189,33 @@ public class LeftEverything extends LinearOpMode {
         move(-200,-200,0.3);
 
         //rotate towards the bridge
-        move(550,-550,0.3);
+        move(550,-550,0.6);
+        sleep(50);
         robotAngle -= 84;
         gyroRotate(robotAngle);
 
         //depending on location of the skystone, move a certain distance under the bridge
         if(skystonePlacement == 1){
-            gyroStraight(robotAngle,4500,0.7);
+            gyroStraight(robotAngle,4500,0.6);
         }
         else if(skystonePlacement == 2){
-            gyroStraight(robotAngle,4950,0.7);
+            gyroStraight(robotAngle,4950,0.6);
         }
         else if(skystonePlacement == 3){
-            gyroStraight(robotAngle,5400,0.7);
+            gyroStraight(robotAngle,5400,0.6);
         }
 
         stopStrafe();
 
         //lift slide
-        while(opModeIsActive() && lift.getCurrentPosition() < 1000){
+        while(opModeIsActive() && lift.getCurrentPosition() < 800){
             lift.setPower(0.7);
         }
         lift.setPower(0);
 
         //rotate to foundation and move forward to drop off block
-        move(-550,550,0.4);
+        move(-550,550,0.6);
+        sleep(50);
         robotAngle += 84;
         gyroRotate(robotAngle);
 
@@ -233,10 +235,11 @@ public class LeftEverything extends LinearOpMode {
 
         //rotate 90
         robotAngle -= 84;
-        gyroRotate(robotAngle);
 
         //rotate 90
         robotAngle -= 84;
+        move(1100,-1100,0.6);
+        sleep(50);
         gyroRotate(robotAngle);
 
         //reset slide
@@ -274,7 +277,11 @@ public class LeftEverything extends LinearOpMode {
 
         //push foundation into corner
         gyroStraight(robotAngle,-1300,0.5);
+        sleep(50);
+        stopStrafe();
         robotAngle-=84;
+        move(550,-550,0.6);
+        sleep(50);
         gyroRotate(robotAngle);
         stopStrafe();
         move(-500,-500,0.4);
@@ -285,23 +292,26 @@ public class LeftEverything extends LinearOpMode {
 
         //drive under skybridge
         if(skystonePlacement == 1){
-            gyroStraight(robotAngle,3700,0.7);
+            gyroStraight(robotAngle,3600,0.6);
             frontGrab.setPosition(1);
-            gyroStraight(robotAngle,1000, 0.7);
+            gyroStraight(robotAngle,1000, 0.6);
             sleep(250);
         }
         if(skystonePlacement == 2){
-            gyroStraight(robotAngle,4200,0.7);
+            gyroStraight(robotAngle,4100,0.6);
             frontGrab.setPosition(1);
-            gyroStraight(robotAngle,1000,0.7);
+            gyroStraight(robotAngle,1000,0.6);
             sleep(250);
         }
         if(skystonePlacement == 3){
-            gyroStraight(robotAngle,4200,0.7);
+            gyroStraight(robotAngle,4100,0.6);
             frontGrab.setPosition(1);
-            gyroStraight(robotAngle,1000,0.7);
+            gyroStraight(robotAngle,1000,0.6);
             sleep(250);
         }
+        stopStrafe();
+        move(550,-550,0.6);
+        sleep(50);
         robotAngle-=84;
         gyroRotate(robotAngle);
         stopStrafe();
@@ -310,18 +320,20 @@ public class LeftEverything extends LinearOpMode {
         grab();
         sleep(100);
         move(-200,-200,0.4);
+        move(550,-550,0.6);
+        sleep(50);
         robotAngle-=84;
         gyroRotate(robotAngle);
         if(skystonePlacement == 1){
-            gyroStraight(robotAngle,3600,0.7);
+            gyroStraight(robotAngle,3600,0.6);
             sleep(250);
         }
         else if(skystonePlacement == 2){
-            gyroStraight(robotAngle,4100,0.7);
+            gyroStraight(robotAngle,4100,0.6);
             sleep(250);
         }
         else if(skystonePlacement == 3){
-            gyroStraight(robotAngle,4250,0.7);
+            gyroStraight(robotAngle,4250,0.6);
             sleep(250);
         }
 

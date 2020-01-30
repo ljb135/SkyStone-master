@@ -269,15 +269,15 @@ public class RightBlockCenterParking extends LinearOpMode {
 
         //depending on location of the skystone, move a certain distance under the bridge towards foundation (2)
         if(skystonePlacement == 1){
-            gyroStraight(robotAngle,3600,0.5);
+            gyroStraight(robotAngle,3700,0.5);
             sleep(250);
         }
         else if(skystonePlacement == 2){
-            gyroStraight(robotAngle,4100,0.5);
+            gyroStraight(robotAngle,4200,0.5);
             sleep(250);
         }
         else if(skystonePlacement == 3){
-            gyroStraight(robotAngle,4250,0.5);
+            gyroStraight(robotAngle,4350,0.5);
             sleep(250);
         }
 

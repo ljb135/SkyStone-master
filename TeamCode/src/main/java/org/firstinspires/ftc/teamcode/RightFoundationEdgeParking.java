@@ -7,26 +7,21 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
-import org.opencv.core.Core;
-import org.opencv.core.Mat;
-import org.opencv.core.MatOfPoint;
-import org.opencv.core.Point;
-import org.opencv.core.Scalar;
-import org.opencv.imgproc.Imgproc;
-import org.openftc.easyopencv.OpenCvCamera;
-import org.openftc.easyopencv.OpenCvCameraFactory;
-import org.openftc.easyopencv.OpenCvCameraRotation;
-import org.openftc.easyopencv.OpenCvInternalCamera;
-import org.openftc.easyopencv.OpenCvPipeline;
+/**
+ * This file contains an minimal example of a Linear "OpMode". An OpMode is a 'program' that runs in either
+ * the autonomous or the teleop period of an FTC match. The names of OpModes appear on the menu
+ * of the FTC Driver Station. When an selection is made from the menu, the corresponding OpMode
+ * class is instantiated on the Robot Controller and executed.
+ *
+ * This particular OpMode just executes a basic Tank Drive Teleop for a two wheeled robot
+ * It includes all the skeletal structure that all linear OpModes contain.
+ *
+ * Use Android Studios to Copy this Class, and Paste it into your team's code folder with a new name.
+ * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
+ */
 
-import java.util.ArrayList;
-import java.util.List;
-
-
-
-@Autonomous(name= "Left Block Center Parking", group="Linear Opmode")
-//comment out this line before using
-public class LeftBlockCenterParking extends LinearOpMode {
+@Autonomous(name="Right Foundation Edge Parking", group="Linear Opmode")
+public class RightFoundationEdgeParking extends LinearOpMode {
     private ModernRoboticsI2cGyro modernRoboticsI2cGyro;
     private int initialValue = 0;
     private int robotAngle = 0;
@@ -47,33 +42,11 @@ public class LeftBlockCenterParking extends LinearOpMode {
     private int BLPosition = 0;
     private int BRPosition = 0;
     private Servo capstone = null;
-    private int distance = 0;
-    private int skystonePlacement = 0;
 
-    //0 means skystone, 1 means yellow stone
-    //-1 for debug, but we can keep it like this because if it works, it should change to either 0 or 255
-    private static int valMid = -1;
-    private static int valLeft = -1;
-    private static int valRight = -1;
+    public void runOpMode() {
+        telemetry.addData("Status", "Initialized");
+        telemetry.update();
 
-    private static float rectHeight = .6f/8f;
-    private static float rectWidth = 1.5f/8f;
-
-    private static float offsetX = 0f/8f;//changing this moves the three rects and the three circles left or right, range : (-2, 2) not inclusive
-    private static float offsetY = 0f/8f;//changing this moves the three rects and circles up or down, range: (-4, 4) not inclusive
-
-    private static float[] midPos = {4f/8f+offsetX, 4f/8f+offsetY};//0 = col, 1 = row
-    private static float[] leftPos = {2f/8f+offsetX, 4f/8f+offsetY};
-    private static float[] rightPos = {6f/8f+offsetX, 4f/8f+offsetY};
-    //moves all rectangles right or left by amount. units are in ratio to monitor
-
-    private final int rows = 640;
-    private final int cols = 480;
-
-    OpenCvCamera phoneCam;
-
-    @Override
-    public void runOpMode() throws InterruptedException {
         modernRoboticsI2cGyro = hardwareMap.get(ModernRoboticsI2cGyro.class, "gyro");
         FRDrive  = hardwareMap.get(DcMotor.class, "front_right");
         FLDrive = hardwareMap.get(DcMotor.class, "front_left");
@@ -97,13 +70,7 @@ public class LeftBlockCenterParking extends LinearOpMode {
         frontGrab.setDirection(Servo.Direction.FORWARD);
         foundation.setDirection(Servo.Direction.REVERSE);
         capstone.setDirection(Servo.Direction.FORWARD);
-        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
-        phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
-        phoneCam.openCameraDevice();//open camera
-        phoneCam.setPipeline(new StageSwitchingPipeline());//different stages
-        phoneCam.startStreaming(rows, cols, OpenCvCameraRotation.UPRIGHT);//display on RC
-        //width, height
-        //width = height in this case, because camera is in portrait mode.
+
 
         rotationPid = new PIDController(0.01, 0.00007, 0.05);
         drivePid = new PIDController(0.01, 0, 0);
@@ -134,318 +101,141 @@ public class LeftBlockCenterParking extends LinearOpMode {
         telemetry.log().clear();
         runtime.reset();
 
-        initialPos();
-
-        telemetry.addData("Values", valLeft+"   "+valMid+"   "+valRight);
-        telemetry.addData("Height", rows);
-        telemetry.addData("Width", cols);
-
-        telemetry.update();
-        sleep(100);
+        capstone.setPosition(0.8);
+        foundation.setPosition(0.35);
+        frontGrab.setPosition(1);
+        Erectus.setPosition(0.25);
 
         modernRoboticsI2cGyro.resetZAxisIntegrator();
 
-        //move away from wall
-        move(100,100,0.3);
+        robotAngle = 0;
+
+        move(-200, -200, 0.5);
         sleep(100);
 
-        int strafeDistance;
-        double strafePower = 0.3;
-        telemetry.addData("valLeft", valLeft);
-        telemetry.update();
-        if(valLeft == 0){
-            skystonePlacement = 1; // Skystone right
-            strafeDistance = 275;
-            telemetry.addData("strafingRight", 1);
-            telemetry.update();
-        } else if(valRight == 0){
-            skystonePlacement = 3; // Skystone left
-            strafeDistance = -650;
-            telemetry.addData("strafingLeft", 1);
-            telemetry.update();
-        } else{
-            skystonePlacement = 2; // Skystone center
-            telemetry.addData("strafingCenter", 1);
-            telemetry.update();
-            strafeDistance = -225;
-        }
-
-        strafe(strafeDistance , strafePower);
-
-        stopStrafe();
-        sleep(250);
-        telemetry.addData("gyroRotate", 1);
-        telemetry.update();
-        gyroRotate(robotAngle);
-        //move up to block
-        gyroStraight(robotAngle, 1600,0.4);
-        stopStrafe();
+        // Align with foundation
+        strafe(-800, 0.3);
         sleep(100);
 
-        //grab block
-        grab();
-        sleep(250);
-
-        //move back
-        move(-175,-175,0.3);
-        sleep(250);
-
-        //rotate towards the bridge
-        robotAngle -= 84;
-        gyroRotate(robotAngle);
-        sleep(250);
-
-        //depending on location of the skystone, move a certain distance under the bridge towards foundation (1)
-        if(skystonePlacement == 1){
-            gyroStraight(robotAngle,2400,0.5);
-            sleep(250);
-        }
-        else if(skystonePlacement == 2){
-            gyroStraight(robotAngle,3000,0.5);
-            sleep(250);
-        }
-        else if(skystonePlacement == 3){
-            gyroStraight(robotAngle,3470,0.5);
-            sleep(250);
-        }
-
-        stopStrafe();
-
-        //rotate before foundation and move forward to drop off block
-        robotAngle += 84;
-        gyroRotate(robotAngle);
-        sleep(250);
-
-        stopStrafe();
-
-        move(250,250, 0.3);
-        sleep(100);
-
-        //let go of block
-        release();
-        sleep(100);
-
-        move(-200,-200, 0.3);
-        sleep(100);
-
-        //rotate to go under bridge
-        robotAngle -= 84;
         gyroRotate(robotAngle);
         sleep(100);
 
+        // Back up into the foundation
+        gyroStraight(robotAngle,-1250,0.3);
+        sleep(100);
+
+        // Back up into the foundation
+        gyroStraight(robotAngle,-400,0.2);
+        sleep(100);
+
+        // Clamp onto the foundation
+        foundation.setPosition(1);
+        sleep(100);
+
+        gyroStraight(robotAngle,1850,0.4);
+        // Drive forward with foundation a little
         stopStrafe();
-
-        //depending on location of the skystone, move a certain distance under the bridge towards blocks
-		if(skystonePlacement == 1){
-			gyroStraight(robotAngle,-3650,0.5);
-			sleep(250);
-		}
-		if(skystonePlacement == 2){
-			gyroStraight(robotAngle,-4300,0.5);
-			sleep(250);
-		}
-		if(skystonePlacement == 3){
-			gyroStraight(robotAngle,-4350,0.5);
-			sleep(250);
-		}
-
-		stopStrafe();
+        foundation.setPosition(0.35);
+        strafe(1900,0.4);
+        sleep(100);
+        gyroRotate(robotAngle);
+        sleep(100);
+        gyroStraight(robotAngle,-1250,0.4);
+        robotAngle-=84;
+        gyroRotate(robotAngle);
+        stopStrafe();
+        move(-500,-500,0.4);
+        sleep(100);
+        frontGrab.setPosition(0);
+        sleep(100);
         robotAngle+=84;
-		//rotate towards block
-		gyroRotate(robotAngle);
-		sleep(100);
-        stopStrafe();
-		move(250,250,0.4);
-        sleep(100);
-
-		//grab block
-		grab();
-		sleep(250);
-		//move back
-		move(-150,-150,0.4);
-		sleep(250);
-		robotAngle-=84;
-		gyroRotate(robotAngle);
-
-		//depending on location of the skystone, move a certain distance under the bridge towards foundation (2)
-        if(skystonePlacement == 1){
-            gyroStraight(robotAngle,3700,0.5);
-            sleep(250);
-        }
-        else if(skystonePlacement == 2){
-            gyroStraight(robotAngle,4200,0.5);
-            sleep(250);
-        }
-        else if(skystonePlacement == 3){
-            gyroStraight(robotAngle,4350,0.5);
-            sleep(250);
-        }
-
-        //let go of block
-        release();
-        sleep(100);
-
-        //park
-        gyroStraight(robotAngle, -800, 0.4);
-        sleep(100);
-    }
-
-    //detection pipeline
-    static class StageSwitchingPipeline extends OpenCvPipeline
-    {
-        Mat yCbCrChan2Mat = new Mat();
-        Mat thresholdMat = new Mat();
-        Mat all = new Mat();
-        List<MatOfPoint> contoursList = new ArrayList<>();
-
-        enum Stage
-        {//color difference. greyscale
-            detection,//includes outlines
-            THRESHOLD,//b&w
-            RAW_IMAGE,//displays raw view
-        }
-
-        private Stage stageToRenderToViewport = Stage.detection;
-        private Stage[] stages = Stage.values();
-
-        @Override
-        public void onViewportTapped()
-        {
-            /*
-             * Note that this method is invoked from the UI thread
-             * so whatever we do here, we must do quickly.
-             */
-
-            int currentStageNum = stageToRenderToViewport.ordinal();
-
-            int nextStageNum = currentStageNum + 1;
-
-            if(nextStageNum >= stages.length)
-            {
-                nextStageNum = 0;
-            }
-
-            stageToRenderToViewport = stages[nextStageNum];
-        }
-
-        @Override
-        public Mat processFrame(Mat input)
-        {
-            contoursList.clear();
-            /*
-             * This pipeline finds the contours of yellow blobs such as the Gold Mineral
-             * from the Rover Ruckus game.
-             */
-
-            //color diff cb.
-            //lower cb = more blue = skystone = white
-            //higher cb = less blue = yellow stone = grey
-            Imgproc.cvtColor(input, yCbCrChan2Mat, Imgproc.COLOR_RGB2YCrCb);//converts rgb to ycrcb
-            Core.extractChannel(yCbCrChan2Mat, yCbCrChan2Mat, 2);//takes cb difference and stores
-
-            //b&w
-            Imgproc.threshold(yCbCrChan2Mat, thresholdMat, 102, 255, Imgproc.THRESH_BINARY_INV);
-
-            //outline/contour
-            Imgproc.findContours(thresholdMat, contoursList, new Mat(), Imgproc.RETR_LIST, Imgproc.CHAIN_APPROX_SIMPLE);
-            yCbCrChan2Mat.copyTo(all);//copies mat object
-            //Imgproc.drawContours(all, contoursList, -1, new Scalar(255, 0, 0), 3, 8);//draws blue contours
+        gyroRotate(robotAngle);
+        sleep(50);
+        gyroStraight(robotAngle,800,0.4);
+        robotAngle-=84;
+        gyroStraight(robotAngle,1500,0.5);
 
 
-            //get values from frame
-            double[] pixMid = thresholdMat.get((int)(input.rows()* midPos[1]), (int)(input.cols()* midPos[0]));//gets value at circle
-            valMid = (int)pixMid[0];
 
-            double[] pixLeft = thresholdMat.get((int)(input.rows()* leftPos[1]), (int)(input.cols()* leftPos[0]));//gets value at circle
-            valLeft = (int)pixLeft[0];
 
-            double[] pixRight = thresholdMat.get((int)(input.rows()* rightPos[1]), (int)(input.cols()* rightPos[0]));//gets value at circle
-            valRight = (int)pixRight[0];
+        // Rotate towards the bridge
 
-            //create three points
-            Point pointMid = new Point((int)(input.cols()* midPos[0]), (int)(input.rows()* midPos[1]));
-            Point pointLeft = new Point((int)(input.cols()* leftPos[0]), (int)(input.rows()* leftPos[1]));
-            Point pointRight = new Point((int)(input.cols()* rightPos[0]), (int)(input.rows()* rightPos[1]));
+//        telemetry.addData("right before strafe sleep", 1);
+//        telemetry.update();
+//        sleep(4000);
+//
+//        strafe(150, 0.2);
 
-            //draw circles on those points
-            Imgproc.circle(all, pointMid,5, new Scalar( 255, 0, 0 ),1 );//draws circle
-            Imgproc.circle(all, pointLeft,5, new Scalar( 255, 0, 0 ),1 );//draws circle
-            Imgproc.circle(all, pointRight,5, new Scalar( 255, 0, 0 ),1 );//draws circle
 
-            //draw 3 rectangles
-            Imgproc.rectangle(//1-3
-                    all,
-                    new Point(
-                            input.cols()*(leftPos[0]-rectWidth/2),
-                            input.rows()*(leftPos[1]-rectHeight/2)),
-                    new Point(
-                            input.cols()*(leftPos[0]+rectWidth/2),
-                            input.rows()*(leftPos[1]+rectHeight/2)),
-                    new Scalar(0, 255, 0), 3);
-            Imgproc.rectangle(//3-5
-                    all,
-                    new Point(
-                            input.cols()*(midPos[0]-rectWidth/2),
-                            input.rows()*(midPos[1]-rectHeight/2)),
-                    new Point(
-                            input.cols()*(midPos[0]+rectWidth/2),
-                            input.rows()*(midPos[1]+rectHeight/2)),
-                    new Scalar(0, 255, 0), 3);
-            Imgproc.rectangle(//5-7
-                    all,
-                    new Point(
-                            input.cols()*(rightPos[0]-rectWidth/2),
-                            input.rows()*(rightPos[1]-rectHeight/2)),
-                    new Point(
-                            input.cols()*(rightPos[0]+rectWidth/2),
-                            input.rows()*(rightPos[1]+rectHeight/2)),
-                    new Scalar(0, 255, 0), 3);
 
-            switch (stageToRenderToViewport)
-            {
-                case THRESHOLD:
-                {
-                    return thresholdMat;
-                }
-
-                case detection:
-                {
-                    return all;
-                }
-
-                case RAW_IMAGE:
-                {
-                    return input;
-                }
-
-                default:
-                {
-                    return input;
-                }
-            }
-        }
+//        capstone.setPosition(0.8);
+//        foundation.setPosition(0.45);
+//        frontGrab.setPosition(1);
+//        Erectus.setPosition(1);
+//
+//        //move away from wall
+//        move(-200, -200, 0.3);
+//        sleep(250);
+//
+//        //strafe so robot is in the middle of the foundation
+//        telemetry.addData("Stage 0", true); //strafe right
+//        strafe(-900, 0.3);
+//        sleep(250);
+//
+//        //back up into foundation
+//        telemetry.addData("Stage 1", true);
+//        move(-1900, -1900, 0.3);
+//        sleep(250);
+//        move(-50, -50, 0.1);
+//        sleep(250);
+//
+//        //close grabber and clamp onto foundation
+//        frontGrab.setPosition(0);
+//        foundation.setPosition(0.8);
+//        sleep(250);
+//
+//        /*
+//
+//        //drive foundation forward
+//        telemetry.addData("Stage 2", true);
+//        move(1600,1600,0.3);
+//        sleep(250);
+//
+//        //rotate foundation into the corner
+//        move(500,-500,0.3);
+//        sleep(250);
+//        move(200,200,0.3);
+//        sleep(250);
+//        move(2200, -2200, 0.3);
+//        sleep(250);
+//        move(-600,-600,0.2);
+//        sleep(250);
+//
+//        stopStrafe();
+//
+//        //unclamp foundation and move away
+//        foundation.setPosition(0.45);
+//        sleep(250);
+//        move(400,400,0.3);
+//        sleep(250);
+//
+//        //park
+//        move(950, -950, 0.3);
+//        sleep(100);
+//        move(750, 750, 0.3);
+//        sleep(100);
+//        move(950, -950, 0.3);
+//        sleep(250);
+//        move(-2000,-2000,0.3);
+//        frontGrab.setPosition(0.85);
+//        Erectus.setPosition(0.6);
+//
+//         */
+//
+//        //new foundation testing
 
     }
-    private void initialPos(){
-        capstone.setPosition(0.8);
-        foundation.setPosition(0.2);
-        frontGrab.setPosition(1);
-        Erectus.setPosition(0.25);
-    }
-    private void grab(){
-        frontGrab.setPosition(0.85);
-        sleep(100);
-        Erectus.setPosition(0.9);
-        sleep(250);
-        frontGrab.setPosition(0);
-    }
-    private void release(){
-        frontGrab.setPosition(0.85);
-        sleep(100);
-        Erectus.setPosition(0.25);
-        sleep(100);
-        frontGrab.setPosition(0);
-    }
+
     private void move(int left, int right, double power){
         if(opModeIsActive()){
             FLPosition += left;

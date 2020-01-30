@@ -177,7 +177,7 @@ public class LeftEverything extends LinearOpMode {
         telemetry.update();
         gyroRotate(robotAngle);
         //move up to block
-        gyroStraight(robotAngle, 1600,0.4);
+        gyroStraight(robotAngle, 1600,0.45);
         stopStrafe();
 
         //grab block
@@ -187,19 +187,19 @@ public class LeftEverything extends LinearOpMode {
         move(-200,-200,0.3);
 
         //rotate towards the bridge
-        move(550,-550,0.2);
+        move(550,-550,0.3);
         robotAngle -= 84;
         gyroRotate(robotAngle);
 
         //depending on location of the skystone, move a certain distance under the bridge
         if(skystonePlacement == 1){
-            gyroStraight(robotAngle,4500,0.6);
+            gyroStraight(robotAngle,4500,0.7);
         }
         else if(skystonePlacement == 2){
-            gyroStraight(robotAngle,4950,0.6);
+            gyroStraight(robotAngle,4950,0.7);
         }
         else if(skystonePlacement == 3){
-            gyroStraight(robotAngle,5400,0.6);
+            gyroStraight(robotAngle,5400,0.7);
         }
 
         stopStrafe();
@@ -211,7 +211,7 @@ public class LeftEverything extends LinearOpMode {
         lift.setPower(0);
 
         //rotate to foundation and move forward to drop off block
-        move(-550,550,0.2);
+        move(-550,550,0.4);
         robotAngle += 84;
         gyroRotate(robotAngle);
 
@@ -221,12 +221,12 @@ public class LeftEverything extends LinearOpMode {
 
         release();
 
-        //back away from foundation
-        move(-300,-300, 0.3);
+//        //back away from foundation
+//        move(-300,-300, 0.3);
 
         //reset arm
-        erectus.setPosition(1);
-        frontGrab.setPosition(0);
+        erectus.setPosition(0.25);
+        frontGrab.setPosition(1);
         sleep(100);
 
         //rotate 90
@@ -238,50 +238,66 @@ public class LeftEverything extends LinearOpMode {
         gyroRotate(robotAngle);
 
         //reset slide
-        while(opModeIsActive() && lift.getCurrentPosition() > 80){
+        while(opModeIsActive() && lift.getCurrentPosition() > 100){
             lift.setPower(-1.0);
         }
         lift.setPower(0);
-        foundation.setPosition(0.45);
+        foundation.setPosition(0.35);
 
         stopStrafe();
 
         //move towards foundation
-        move(-600,-600,0.3);
+        move(-300,-300,0.3); //changed from 600
         sleep(150);
-        frontGrab.setPosition(1);
-        erectus.setPosition(0.25);
-        sleep(100);
+//        frontGrab.setPosition(1);
+//        erectus.setPosition(0.25);
+//        sleep(100);
+
         // Clamp onto the foundation
 //        frontGrab.setPosition(0);
         foundation.setPosition(1);
         sleep(100);
-        gyroStraight(robotAngle,2000,0.4);
-        // Drive forward with foundation a little
+        gyroStraight(robotAngle,1800,0.6);
+        // Drive forward with foundation
         stopStrafe();
-        foundation.setPosition(0.35);
+        foundation.setPosition(0.25);
+        sleep(150);
+        stopStrafe();
+        move(75,75,0.3);
+        //strafe out of foundation
         strafe(1900,0.4);
         sleep(100);
         gyroRotate(robotAngle);
-        sleep(100);
-        gyroStraight(robotAngle,-1250,0.4);
+//        sleep(100);
+
+        //push foundation into corner
+        gyroStraight(robotAngle,-1300,0.5);
         robotAngle-=84;
         gyroRotate(robotAngle);
         stopStrafe();
         move(-500,-500,0.4);
         sleep(100);
+        gyroRotate(robotAngle);
         frontGrab.setPosition(0);
         sleep(100);
+
+        //drive under skybridge
         if(skystonePlacement == 1){
-            gyroStraight(robotAngle,4600,0.5);
+            gyroStraight(robotAngle,3700,0.7);
+            frontGrab.setPosition(1);
+            gyroStraight(robotAngle,1000, 0.7);
             sleep(250);
         }
         if(skystonePlacement == 2){
-            gyroStraight(robotAngle,5100,0.5);
+            gyroStraight(robotAngle,4200,0.7);
+            frontGrab.setPosition(1);
+            gyroStraight(robotAngle,1000,0.7);
             sleep(250);
         }
         if(skystonePlacement == 3){
-            gyroStraight(robotAngle,5500,0.5);
+            gyroStraight(robotAngle,4200,0.7);
+            frontGrab.setPosition(1);
+            gyroStraight(robotAngle,1000,0.7);
             sleep(250);
         }
         robotAngle-=84;
@@ -295,15 +311,15 @@ public class LeftEverything extends LinearOpMode {
         robotAngle-=84;
         gyroRotate(robotAngle);
         if(skystonePlacement == 1){
-            gyroStraight(robotAngle,3600,0.5);
+            gyroStraight(robotAngle,3600,0.7);
             sleep(250);
         }
         else if(skystonePlacement == 2){
-            gyroStraight(robotAngle,4100,0.5);
+            gyroStraight(robotAngle,4100,0.7);
             sleep(250);
         }
         else if(skystonePlacement == 3){
-            gyroStraight(robotAngle,4250,0.5);
+            gyroStraight(robotAngle,4250,0.7);
             sleep(250);
         }
 

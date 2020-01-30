@@ -32,6 +32,7 @@ public class LeftEverything extends LinearOpMode {
     private int robotAngle = 0;
     PIDController rotationPid;
     PIDController drivePid;
+    PIDController fdrivePid;
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor FRDrive = null;
     private DcMotor FLDrive = null;
@@ -107,6 +108,7 @@ public class LeftEverything extends LinearOpMode {
 
         rotationPid = new PIDController(0.01, 0.00007, 0.05);
         drivePid = new PIDController(0.01, 0, 0);
+        fdrivePid = new PIDController(0.05,0,0);
 
 
         telemetry.log().add("Gyro Calibrating. Do Not Move!");
@@ -691,7 +693,7 @@ public class LeftEverything extends LinearOpMode {
         }
     }
     private void gyroStraight(int desiredAngle, int targetPosition, double power) {
-        if(opModeIsActive()) {
+        if(opModeIsActive() && power <= 0.6) {
             drivePid.reset();
             drivePid.setSetpoint(desiredAngle);
             drivePid.setInputRange(-359, 359);
@@ -742,6 +744,88 @@ public class LeftEverything extends LinearOpMode {
             while (opModeIsActive() && (runtime.seconds() < timeout) && (FLDrive.isBusy() && FRDrive.isBusy() && BLDrive.isBusy() && BRDrive.isBusy())) {
                 robotAngle = modernRoboticsI2cGyro.getIntegratedZValue();
                 correction = drivePid.performPID(robotAngle);
+
+                if(targetPosition > 0) {
+                    leftPower = power - correction;
+                    rightPower = power + correction;
+                }  else {
+                    leftPower = power + correction;
+                    rightPower = power - correction;
+                }
+
+                FLDrive.setPower(leftPower);
+                BLDrive.setPower(leftPower);
+                FRDrive.setPower(rightPower);
+                BRDrive.setPower(rightPower);
+
+                telemetry.addData("runtime", runtime.seconds());
+                telemetry.addData("in loop", 1);
+                telemetry.addData("correction", correction);
+                telemetry.addData("leftPower", leftPower);
+                telemetry.addData("rightPower", rightPower);
+                telemetry.addData("Position", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)FRDrive.getCurrentPosition(), (float)FLDrive.getCurrentPosition(), (float)BRDrive.getCurrentPosition(), (float)BLDrive.getCurrentPosition());
+                telemetry.addData("Target Position", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)FRDrive.getTargetPosition(), (float)FLDrive.getTargetPosition(), (float)BRDrive.getTargetPosition(), (float)BLDrive.getTargetPosition());
+                telemetry.addData("Power", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)FRDrive.getPower(), (float)FLDrive.getPower(), (float)BRDrive.getPower(), (float)BLDrive.getPower());
+                telemetry.update();
+            }
+
+            FRDrive.setPower(0);
+            FLDrive.setPower(0);
+            BLDrive.setPower(0);
+            BRDrive.setPower(0);
+
+        }
+        else if(opModeIsActive()) {
+            fdrivePid.reset();
+            fdrivePid.setSetpoint(desiredAngle);
+            fdrivePid.setInputRange(-359, 359);
+            fdrivePid.setTolerance(1);
+
+//            rotationPid.setOutputRange(-maxPower, maxPower);
+            fdrivePid.enable();
+
+
+            FLDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            FRDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            BLDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            BRDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+
+
+            FLDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            FRDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            BLDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+            BRDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+            FRDrive.setTargetPosition(targetPosition);
+            BRDrive.setTargetPosition(targetPosition);
+            FLDrive.setTargetPosition(targetPosition);
+            BLDrive.setTargetPosition(targetPosition);
+
+            int robotAngle = modernRoboticsI2cGyro.getIntegratedZValue();
+            double correction = fdrivePid.performPID(robotAngle);
+            double leftPower = power + correction;
+            double rightPower = power - correction;
+
+            if(targetPosition > 0) {
+                leftPower = power - correction;
+                rightPower = power + correction;
+            }  else {
+                leftPower = power + correction;
+                rightPower = power - correction;
+            }
+
+            runtime.reset();
+
+            FLDrive.setPower(leftPower);
+            BLDrive.setPower(leftPower);
+            FRDrive.setPower(rightPower);
+            BRDrive.setPower(rightPower);
+
+
+
+            while (opModeIsActive() && (runtime.seconds() < timeout) && (FLDrive.isBusy() && FRDrive.isBusy() && BLDrive.isBusy() && BRDrive.isBusy())) {
+                robotAngle = modernRoboticsI2cGyro.getIntegratedZValue();
+                correction = fdrivePid.performPID(robotAngle);
 
                 if(targetPosition > 0) {
                     leftPower = power - correction;

@@ -136,6 +136,8 @@ public class LeftFoundationEdgeParking extends LinearOpMode {
         // Drive forward with foundation a little
         stopStrafe();
         foundation.setPosition(0.35);
+        sleep(50);
+        move(70,70,0.3);
         strafe(-1900,0.4);
         sleep(100);
         gyroRotate(robotAngle);

@@ -24,7 +24,7 @@ import java.util.List;
 
 
 
-@Autonomous(name= "Left One BLock Foundation", group="Linear Opmode")
+@Autonomous(name= "Left One Block Foundation", group="Linear Opmode")
 //comment out this line before using
 public class LeftOneBlockFoundation extends LinearOpMode {
     private ModernRoboticsI2cGyro modernRoboticsI2cGyro;
@@ -148,8 +148,8 @@ public class LeftOneBlockFoundation extends LinearOpMode {
         //move away from wall
         move(100,100,0.3);
 
-        int strafeDistance = 75;
-        double strafePower = 0.3;
+        int strafeDistance;
+        double strafePower = 0.5;
         telemetry.addData("valLeft", valLeft);
         telemetry.update();
         if(valLeft == 0){
@@ -168,7 +168,7 @@ public class LeftOneBlockFoundation extends LinearOpMode {
             telemetry.addData("strafingCenter", 1);
             telemetry.update();
             skystonePlacement = 2; // Skystone center
-            strafeDistance=-225;
+            strafeDistance= -225;
             strafe(strafeDistance,strafePower);
         }
 
@@ -184,10 +184,10 @@ public class LeftOneBlockFoundation extends LinearOpMode {
         grab();
 
         //move back
-        move(-200,-200,0.3);
+        move(-200,-200,0.5);
 
         //rotate towards the bridge
-        move(550,-550,0.2);
+        move(550,-550,0.4);
         robotAngle -= 84;
         gyroRotate(robotAngle);
 
@@ -205,13 +205,13 @@ public class LeftOneBlockFoundation extends LinearOpMode {
         stopStrafe();
 
         //lift slide
-        while(opModeIsActive() && lift.getCurrentPosition() < 1000){
+        while(opModeIsActive() && lift.getCurrentPosition() < 700){
             lift.setPower(0.7);
         }
         lift.setPower(0);
 
         //rotate to foundation and move forward to drop off block
-        move(-550,550,0.2);
+        move(-550,550,0.4);
         robotAngle += 84;
         gyroRotate(robotAngle);
 
@@ -222,45 +222,48 @@ public class LeftOneBlockFoundation extends LinearOpMode {
         release();
 
         //back away from foundation
-        move(-300,-300, 0.3);
+        move(-400,-400, 0.5);
 
         //reset arm
-        erectus.setPosition(1);
-        frontGrab.setPosition(0);
+        erectus.setPosition(0.25);
+        frontGrab.setPosition(1);
         sleep(100);
 
         //rotate 90
         robotAngle -= 84;
-        gyroRotate(robotAngle);
+
 
         //rotate 90
         robotAngle -= 84;
+        move(900,-900,0.5);
         gyroRotate(robotAngle);
 
         //reset slide
-        while(opModeIsActive() && lift.getCurrentPosition() > 80){
+        while(opModeIsActive() && lift.getCurrentPosition() > 100){
             lift.setPower(-1.0);
         }
         lift.setPower(0);
-        foundation.setPosition(0.45);
+        foundation.setPosition(0.35);
+        sleep(100);
 
         stopStrafe();
 
         //move towards foundation
-        move(-600,-600,0.3);
+        move(-700,-700,0.3);
         sleep(150);
-        frontGrab.setPosition(1);
-        erectus.setPosition(0.25);
-        sleep(100);
+//        frontGrab.setPosition(1);
+//        erectus.setPosition(0.25);
+//        sleep(100);
         // Clamp onto the foundation
 //        frontGrab.setPosition(0);
         foundation.setPosition(1);
         sleep(100);
-        gyroStraight(robotAngle,2000,0.4);
+        gyroStraight(robotAngle,1700,0.4);
         // Drive forward with foundation a little
         stopStrafe();
         foundation.setPosition(0.35);
-        strafe(1900,0.4);
+        sleep(200);
+        strafe(2000,0.4);
         sleep(100);
         gyroRotate(robotAngle);
         sleep(100);
@@ -269,51 +272,51 @@ public class LeftOneBlockFoundation extends LinearOpMode {
         gyroRotate(robotAngle);
         stopStrafe();
         move(-500,-500,0.4);
+        gyroRotate(robotAngle);
         sleep(100);
         frontGrab.setPosition(0);
         sleep(100);
-        erectus.setPosition(0.25);
-        if(skystonePlacement == 1){
-            gyroStraight(robotAngle,4600,0.5);
-            sleep(250);
-        }
-        if(skystonePlacement == 2){
-            gyroStraight(robotAngle,5100,0.5);
-            sleep(250);
-        }
-        if(skystonePlacement == 3){
-            gyroStraight(robotAngle,5500,0.5);
-            sleep(250);
-        }
-        robotAngle-=84;
-        gyroRotate(robotAngle);
-        stopStrafe();
-        move(200,200,0.4);
-        sleep(100);
-        grab();
-        sleep(100);
-        move(-200,-200,0.4);
-        robotAngle-=84;
-        gyroRotate(robotAngle);
-        if(skystonePlacement == 1){
-            gyroStraight(robotAngle,3600,0.5);
-            sleep(250);
-        }
-        else if(skystonePlacement == 2){
-            gyroStraight(robotAngle,4100,0.5);
-            sleep(250);
-        }
-        else if(skystonePlacement == 3){
-            gyroStraight(robotAngle,4250,0.5);
-            sleep(250);
-        }
-
-        //let go of block
-        release();
-        sleep(100);
+//        if(skystonePlacement == 1){
+//            gyroStraight(robotAngle,4600,0.5);
+//            sleep(250);
+//        }
+//        if(skystonePlacement == 2){
+//            gyroStraight(robotAngle,5100,0.5);
+//            sleep(250);
+//        }
+//        if(skystonePlacement == 3){
+//            gyroStraight(robotAngle,5500,0.5);
+//            sleep(250);
+//        }
+//        robotAngle-=84;
+//        gyroRotate(robotAngle);
+//        stopStrafe();
+//        move(200,200,0.4);
+//        sleep(100);
+//        grab();
+//        sleep(100);
+//        move(-200,-200,0.4);
+//        robotAngle-=84;
+//        gyroRotate(robotAngle);
+//        if(skystonePlacement == 1){
+//            gyroStraight(robotAngle,3600,0.5);
+//            sleep(250);
+//        }
+//        else if(skystonePlacement == 2){
+//            gyroStraight(robotAngle,4100,0.5);
+//            sleep(250);
+//        }
+//        else if(skystonePlacement == 3){
+//            gyroStraight(robotAngle,4250,0.5);
+//            sleep(250);
+//        }
+//
+//        //let go of block
+//        release();
+//        sleep(100);
 
         //park
-        gyroStraight(robotAngle, -800, 0.4);
+        gyroStraight(robotAngle, 1400, 0.5);
         sleep(100);
 
 

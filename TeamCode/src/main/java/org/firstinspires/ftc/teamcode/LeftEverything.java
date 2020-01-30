@@ -265,7 +265,7 @@ public class LeftEverything extends LinearOpMode {
         gyroStraight(robotAngle,1800,0.6);
         // Drive forward with foundation
         stopStrafe();
-        foundation.setPosition(0.25);
+        foundation.setPosition(0.35);
         sleep(150);
         stopStrafe();
         move(75,75,0.3);
@@ -289,60 +289,60 @@ public class LeftEverything extends LinearOpMode {
         gyroRotate(robotAngle);
         frontGrab.setPosition(0);
         sleep(100);
-
-        //drive under skybridge
-        if(skystonePlacement == 1){
-            gyroStraight(robotAngle,3600,0.6);
-            frontGrab.setPosition(1);
-            gyroStraight(robotAngle,1000, 0.6);
-            sleep(250);
-        }
-        if(skystonePlacement == 2){
-            gyroStraight(robotAngle,4100,0.6);
-            frontGrab.setPosition(1);
-            gyroStraight(robotAngle,1000,0.6);
-            sleep(250);
-        }
-        if(skystonePlacement == 3){
-            gyroStraight(robotAngle,4100,0.6);
-            frontGrab.setPosition(1);
-            gyroStraight(robotAngle,1000,0.6);
-            sleep(250);
-        }
-        stopStrafe();
-        move(550,-550,0.6);
-        sleep(50);
-        robotAngle-=84;
-        gyroRotate(robotAngle);
-        stopStrafe();
-        move(200,200,0.4);
-        sleep(100);
-        grab();
-        sleep(100);
-        move(-200,-200,0.4);
-        move(550,-550,0.6);
-        sleep(50);
-        robotAngle-=84;
-        gyroRotate(robotAngle);
-        if(skystonePlacement == 1){
-            gyroStraight(robotAngle,3600,0.6);
-            sleep(250);
-        }
-        else if(skystonePlacement == 2){
-            gyroStraight(robotAngle,4100,0.6);
-            sleep(250);
-        }
-        else if(skystonePlacement == 3){
-            gyroStraight(robotAngle,4250,0.6);
-            sleep(250);
-        }
-
-        //let go of block
-        release();
-        sleep(100);
-
+//
+//        //drive under skybridge
+//        if(skystonePlacement == 1){
+//            gyroStraight(robotAngle,3600,0.6);
+//            frontGrab.setPosition(1);
+//            gyroStraight(robotAngle,1000, 0.6);
+//            sleep(250);
+//        }
+//        if(skystonePlacement == 2){
+//            gyroStraight(robotAngle,4100,0.6);
+//            frontGrab.setPosition(1);
+//            gyroStraight(robotAngle,1000,0.6);
+//            sleep(250);
+//        }
+//        if(skystonePlacement == 3){
+//            gyroStraight(robotAngle,4100,0.6);
+//            frontGrab.setPosition(1);
+//            gyroStraight(robotAngle,1000,0.6);
+//            sleep(250);
+//        }
+//        stopStrafe();
+//        move(550,-550,0.6);
+//        sleep(50);
+//        robotAngle-=84;
+//        gyroRotate(robotAngle);
+//        stopStrafe();
+//        move(200,200,0.4);
+//        sleep(100);
+//        grab();
+//        sleep(100);
+//        move(-200,-200,0.4);
+//        move(550,-550,0.6);
+//        sleep(50);
+//        robotAngle-=84;
+//        gyroRotate(robotAngle);
+//        if(skystonePlacement == 1){
+//            gyroStraight(robotAngle,3600,0.6);
+//            sleep(250);
+//
+//        else if(skystonePlacement == 2){
+//            gyroStraight(robotAngle,4100,0.6);
+//            sleep(250);
+//        }
+//        else if(skystonePlacement == 3){
+//            gyroStraight(robotAngle,4250,0.6);
+//            sleep(250);
+//        }
+//
+//        //let go of block
+//        release();
+//        sleep(100);
+//
         //park
-        gyroStraight(robotAngle, -800, 0.4);
+        gyroStraight(robotAngle, 1500, 0.4);
         sleep(100);
 
 

@@ -155,27 +155,28 @@ public class RightBlockEdgeParking extends LinearOpMode {
         move(100,100,0.3);
         sleep(100);
 
-        int strafeDistance = 75;
+        int strafeDistance;
         double strafePower = 0.3;
         telemetry.addData("valLeft", valLeft);
         telemetry.update();
         if(valLeft == 0){
             skystonePlacement = 3; // Skystone right
-            strafeDistance = 525;
+            strafeDistance = 275;
             telemetry.addData("strafingRight", 1);
             telemetry.update();
-            strafe(strafeDistance , strafePower);
         } else if(valRight == 0){
             skystonePlacement = 1; // Skystone left
-            strafeDistance = -500;
+            strafeDistance = -650;
             telemetry.addData("strafingLeft", 1);
             telemetry.update();
-            strafe(strafeDistance , strafePower);
         } else{
+            skystonePlacement = 2; // Skystone center
             telemetry.addData("strafingCenter", 1);
             telemetry.update();
-            skystonePlacement = 2; // Skystone center
+            strafeDistance = -225;
         }
+
+        strafe(strafeDistance , strafePower);
 
         stopStrafe();
         sleep(250);
@@ -188,14 +189,11 @@ public class RightBlockEdgeParking extends LinearOpMode {
         sleep(100);
 
         //grab block
-        frontGrab.setPosition(0.85);
-        Erectus.setPosition(0.6);
-        sleep(250);
-        frontGrab.setPosition(0);
+        grab();
         sleep(250);
 
         //move back
-        move(-100,-100,0.3);
+        move(-175,-175,0.3);
         sleep(250);
 
         //rotate towards the bridge
@@ -203,17 +201,17 @@ public class RightBlockEdgeParking extends LinearOpMode {
         gyroRotate(robotAngle);
         sleep(250);
 
-        //depending on location of the skystone, move a certain distance under the bridge
+        //depending on location of the skystone, move a certain distance under the bridge towards foundation (1)
         if(skystonePlacement == 1){
-            gyroStraight(robotAngle,2500,0.5);
+            gyroStraight(robotAngle,2400,0.5);
             sleep(250);
         }
         else if(skystonePlacement == 2){
-            gyroStraight(robotAngle,3050,0.5);
+            gyroStraight(robotAngle,3000,0.5);
             sleep(250);
         }
         else if(skystonePlacement == 3){
-            gyroStraight(robotAngle,3500,0.5);
+            gyroStraight(robotAngle,3470,0.5);
             sleep(250);
         }
 
@@ -226,13 +224,11 @@ public class RightBlockEdgeParking extends LinearOpMode {
 
         stopStrafe();
 
-        move(200,200, 0.3);
+        move(250,250, 0.3);
         sleep(100);
 
         //let go of block
-        frontGrab.setPosition(0.85);
-        sleep(100);
-        Erectus.setPosition(0.6);
+        release();
         sleep(100);
 
         move(-200,-200, 0.3);
@@ -243,69 +239,81 @@ public class RightBlockEdgeParking extends LinearOpMode {
         gyroRotate(robotAngle);
         sleep(100);
 
-        frontGrab.setPosition(0);
-        sleep(100);
-
         stopStrafe();
 
-        //depending on location of the skystone, move a certain distance under the bridge
+        //depending on location of the skystone, move a certain distance under the bridge towards blocks
         if(skystonePlacement == 1){
-            gyroStraight(robotAngle,-3800,0.5);
+            gyroStraight(robotAngle,-3650,0.5);
             sleep(250);
         }
         if(skystonePlacement == 2){
-            gyroStraight(robotAngle,-4250,0.5);
+            gyroStraight(robotAngle,-4300,0.5);
             sleep(250);
         }
         if(skystonePlacement == 3){
-            gyroStraight(robotAngle,-4350,0.5);
+            gyroStraight(robotAngle,-4300,0.5);
             sleep(250);
         }
 
-        frontGrab.setPosition(0.85);
-
         stopStrafe();
-        robotAngle-=84;
-        //rotate towards block
-        gyroRotate(robotAngle);
-        sleep(100);
-        stopStrafe();
-        move(300,300,0.4);
-        sleep(100);
 
         //grab block
-        Erectus.setPosition(0.6);
-        sleep(250);
-        frontGrab.setPosition(0);
-        sleep(250);
+        if(skystonePlacement == 1 || skystonePlacement == 2) {
+            robotAngle-=84;
+            //rotate towards block
+            gyroRotate(robotAngle);
+            sleep(100);
+            stopStrafe();
+            move(250,250,0.4);
+            sleep(100);
+            grab();
+            sleep(250);
+            move(-1350,-1350,0.4);
+        }
+        else{
+            rightGrab.setPosition(0);
+            robotAngle-=84;
+            //rotate towards block
+            gyroRotate(robotAngle);
+            sleep(100);
+            stopStrafe();
+            move(400,400,0.2);
+            sleep(100);
+            rightGrab.setPosition(1);
+            sleep(250);
+            move(-1650,-1650,0.4);
+        }
         //move back
-        move(-1600,-1600,0.4);
         sleep(250);
         robotAngle+=84;
         gyroRotate(robotAngle);
 
-        //depending on location of the skystone, move a certain distance under the bridge
+        //depending on location of the skystone, move a certain distance under the bridge towards foundation (2)
         if(skystonePlacement == 1){
-            gyroStraight(robotAngle,3900,0.5);
+            gyroStraight(robotAngle,3700,0.5);
             sleep(250);
         }
         else if(skystonePlacement == 2){
-            gyroStraight(robotAngle,4150,0.5);
+            gyroStraight(robotAngle,4200,0.5);
             sleep(250);
         }
         else if(skystonePlacement == 3){
-            gyroStraight(robotAngle,4550,0.5);
+            gyroStraight(robotAngle,4350,0.5);
             sleep(250);
         }
 
         //let go of block
-        frontGrab.setPosition(0.85);
-        sleep(250);
-        Erectus.setPosition(0.6);
+        if(skystonePlacement == 1 || skystonePlacement == 2){
+            release();
+        }
+        else{
+            rightGrab.setPosition(0);
+        }
         sleep(100);
 
         //park
-        gyroStraight(robotAngle, -1000, 0.4);
+        gyroStraight(robotAngle, -800, 0.4);
+        sleep(100);
     }
 
     //detection pipeline

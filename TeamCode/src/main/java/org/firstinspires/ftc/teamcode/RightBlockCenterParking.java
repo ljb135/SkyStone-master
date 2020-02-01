@@ -251,21 +251,18 @@ public class RightBlockCenterParking extends LinearOpMode {
             sleep(250);
         }
         if(skystonePlacement == 3){
-            gyroStraight(robotAngle,-4300,0.5);
+            gyroStraight(robotAngle,-4285,0.5);
             sleep(250);
         }
 
         stopStrafe();
-        robotAngle-=84;
-        //rotate towards block
-        gyroRotate(robotAngle);
-        sleep(100);
-        stopStrafe();
-        move(250,250,0.4);
-        sleep(100);
 
-        //grab block
         if(skystonePlacement == 1 || skystonePlacement == 2) {
+            robotAngle-=84;
+            //rotate towards block
+            gyroRotate(robotAngle);
+            sleep(100);
+            stopStrafe();
             move(250,250,0.4);
             sleep(100);
             grab();
@@ -273,10 +270,15 @@ public class RightBlockCenterParking extends LinearOpMode {
             move(-150,-150,0.4);
         }
         else{
-            leftGrab.setPosition(0);
+            rightGrab.setPosition(0);
+            robotAngle-=84;
+            //rotate towards block
+            gyroRotate(robotAngle);
+            sleep(100);
+            stopStrafe();
             move(400,400,0.2);
             sleep(100);
-            leftGrab.setPosition(1);
+            rightGrab.setPosition(1);
             sleep(250);
             move(-450,-450,0.4);
         }
@@ -304,7 +306,7 @@ public class RightBlockCenterParking extends LinearOpMode {
             release();
         }
         else{
-            leftGrab.setPosition(0);
+            rightGrab.setPosition(0);
         }
         sleep(100);
 

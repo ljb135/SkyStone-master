@@ -35,6 +35,8 @@ public class RightCenterParking extends LinearOpMode {
     private DcMotor Lift = null;
     private Servo Erectus = null;
     private Servo frontGrab = null;
+    private Servo rightGrab = null;
+    private Servo leftGrab = null;
     private Servo foundation = null;
     private Servo capstone = null;
     private double timeout = 5;
@@ -58,6 +60,8 @@ public class RightCenterParking extends LinearOpMode {
         Lift  = hardwareMap.get(DcMotor.class, "lift");
         Erectus = hardwareMap.get(Servo.class, "erectus");
         frontGrab = hardwareMap.get(Servo.class, "front_grab");
+        rightGrab = hardwareMap.get(Servo.class, "right_grab");
+        leftGrab = hardwareMap.get(Servo.class, "left_grab");
         foundation = hardwareMap.get(Servo.class, "foundation");
         capstone = hardwareMap.get(Servo.class, "capstone");
 
@@ -71,6 +75,8 @@ public class RightCenterParking extends LinearOpMode {
         Lift.setDirection(DcMotor.Direction.REVERSE);
         Erectus.setDirection(Servo.Direction.FORWARD);
         frontGrab.setDirection(Servo.Direction.FORWARD);
+        rightGrab.setDirection(Servo.Direction.FORWARD);
+        leftGrab.setDirection(Servo.Direction.REVERSE);
         foundation.setDirection(Servo.Direction.REVERSE);
         capstone.setDirection(Servo.Direction.FORWARD);
 
@@ -108,13 +114,7 @@ public class RightCenterParking extends LinearOpMode {
         capstone.setPosition(1);
 
         //move servos into position
-        capstone.setPosition(1);
-        frontGrab.setPosition(1);
-        sleep(100);
-        Erectus.setPosition(.25);
-        sleep(100);
-        foundation.setPosition(0.35);
-        sleep(100);
+        initialPos();
 
         telemetry.addData("Position", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)FRDrive.getCurrentPosition(), (float)FLDrive.getCurrentPosition(), (float)BRDrive.getCurrentPosition(), (float)BLDrive.getCurrentPosition());
         telemetry.update();
@@ -139,6 +139,28 @@ public class RightCenterParking extends LinearOpMode {
         sleep(500);
     }
 
+    private void initialPos(){
+        rightGrab.setPosition(1);
+        leftGrab.setPosition(1);
+        capstone.setPosition(1);
+        foundation.setPosition(0.2);
+        frontGrab.setPosition(1);
+        Erectus.setPosition(0.25);
+    }
+    private void grab(){
+        frontGrab.setPosition(0.85);
+        sleep(100);
+        Erectus.setPosition(0.9);
+        sleep(250);
+        frontGrab.setPosition(0);
+    }
+    private void release(){
+        frontGrab.setPosition(0.85);
+        sleep(100);
+        Erectus.setPosition(0.25);
+        sleep(100);
+        frontGrab.setPosition(0);
+    }
     private void move(int left, int right, double power){
         if(opModeIsActive()){
             FLPosition += left;

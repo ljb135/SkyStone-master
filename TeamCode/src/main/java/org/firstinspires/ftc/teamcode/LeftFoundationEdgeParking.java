@@ -35,18 +35,23 @@ public class LeftFoundationEdgeParking extends LinearOpMode {
     private DcMotor Lift = null;
     private Servo Erectus = null;
     private Servo frontGrab = null;
+    private Servo rightGrab = null;
+    private Servo leftGrab = null;
     private Servo foundation = null;
+    private Servo capstone = null;
     private double timeout = 5;
     private int FLPosition = 0;
     private int FRPosition = 0;
     private int BLPosition = 0;
     private int BRPosition = 0;
-    private Servo capstone = null;
 
     public void runOpMode() {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 
+        // Initialize the hardware variables. Note that the strings used here as parameters
+        // to 'get' must correspond to the names assigned during the robot configuration
+        // step (using the FTC Robot Controller app on the phone).
         modernRoboticsI2cGyro = hardwareMap.get(ModernRoboticsI2cGyro.class, "gyro");
         FRDrive  = hardwareMap.get(DcMotor.class, "front_right");
         FLDrive = hardwareMap.get(DcMotor.class, "front_left");
@@ -55,6 +60,8 @@ public class LeftFoundationEdgeParking extends LinearOpMode {
         Lift  = hardwareMap.get(DcMotor.class, "lift");
         Erectus = hardwareMap.get(Servo.class, "erectus");
         frontGrab = hardwareMap.get(Servo.class, "front_grab");
+        rightGrab = hardwareMap.get(Servo.class, "right_grab");
+        leftGrab = hardwareMap.get(Servo.class, "left_grab");
         foundation = hardwareMap.get(Servo.class, "foundation");
         capstone = hardwareMap.get(Servo.class, "capstone");
 
@@ -65,9 +72,11 @@ public class LeftFoundationEdgeParking extends LinearOpMode {
         FLDrive.setDirection(DcMotor.Direction.FORWARD);
         BRDrive.setDirection(DcMotor.Direction.REVERSE);
         BLDrive.setDirection(DcMotor.Direction.FORWARD);
-        Lift.setDirection(DcMotor.Direction.FORWARD);
+        Lift.setDirection(DcMotor.Direction.REVERSE);
         Erectus.setDirection(Servo.Direction.FORWARD);
         frontGrab.setDirection(Servo.Direction.FORWARD);
+        rightGrab.setDirection(Servo.Direction.FORWARD);
+        leftGrab.setDirection(Servo.Direction.REVERSE);
         foundation.setDirection(Servo.Direction.REVERSE);
         capstone.setDirection(Servo.Direction.FORWARD);
 
@@ -101,10 +110,7 @@ public class LeftFoundationEdgeParking extends LinearOpMode {
         telemetry.log().clear();
         runtime.reset();
 
-        capstone.setPosition(1);
-        foundation.setPosition(0.35);
-        frontGrab.setPosition(1);
-        Erectus.setPosition(0.25);
+        initialPos();
 
         modernRoboticsI2cGyro.resetZAxisIntegrator();
 
@@ -136,8 +142,6 @@ public class LeftFoundationEdgeParking extends LinearOpMode {
         // Drive forward with foundation a little
         stopStrafe();
         foundation.setPosition(0.35);
-        sleep(50);
-        move(70,70,0.3);
         strafe(-1900,0.4);
         sleep(100);
         gyroRotate(robotAngle);
@@ -145,17 +149,21 @@ public class LeftFoundationEdgeParking extends LinearOpMode {
         gyroStraight(robotAngle,-1250,0.4);
         robotAngle+=84;
         gyroRotate(robotAngle);
+        sleep(100);
         stopStrafe();
         move(-500,-500,0.4);
+        move(100,100,0.4);
         sleep(100);
         frontGrab.setPosition(0);
         sleep(100);
         robotAngle-=84;
         gyroRotate(robotAngle);
-        sleep(50);
-        gyroStraight(robotAngle,800,0.4);
+        gyroStraight(robotAngle,1250,0.4);
+        sleep(100);
         robotAngle+=84;
-        gyroStraight(robotAngle,1500,0.5);
+        gyroRotate(robotAngle);
+        stopStrafe();
+        gyroStraight(robotAngle,1400,0.5);
 
 
 
@@ -238,6 +246,28 @@ public class LeftFoundationEdgeParking extends LinearOpMode {
 
     }
 
+    private void initialPos(){
+        rightGrab.setPosition(1);
+        leftGrab.setPosition(1);
+        capstone.setPosition(1);
+        foundation.setPosition(0.2);
+        frontGrab.setPosition(1);
+        Erectus.setPosition(0.25);
+    }
+    private void grab(){
+        frontGrab.setPosition(0.85);
+        sleep(100);
+        Erectus.setPosition(0.9);
+        sleep(250);
+        frontGrab.setPosition(0);
+    }
+    private void release(){
+        frontGrab.setPosition(0.85);
+        sleep(100);
+        Erectus.setPosition(0.25);
+        sleep(100);
+        frontGrab.setPosition(0);
+    }
     private void move(int left, int right, double power){
         if(opModeIsActive()){
             FLPosition += left;

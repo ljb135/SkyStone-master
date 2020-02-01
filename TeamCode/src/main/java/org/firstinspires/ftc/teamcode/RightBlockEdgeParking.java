@@ -39,6 +39,8 @@ public class RightBlockEdgeParking extends LinearOpMode {
     private DcMotor Lift = null;
     private Servo Erectus = null;
     private Servo frontGrab = null;
+    private Servo rightGrab = null;
+    private Servo leftGrab = null;
     private Servo foundation = null;
     private double timeout = 5;
     private int FLPosition = 0;
@@ -81,6 +83,8 @@ public class RightBlockEdgeParking extends LinearOpMode {
         Lift  = hardwareMap.get(DcMotor.class, "lift");
         Erectus = hardwareMap.get(Servo.class, "erectus");
         frontGrab = hardwareMap.get(Servo.class, "front_grab");
+        rightGrab = hardwareMap.get(Servo.class, "right_grab");
+        leftGrab = hardwareMap.get(Servo.class, "left_grab");
         foundation = hardwareMap.get(Servo.class, "foundation");
         capstone = hardwareMap.get(Servo.class, "capstone");
 
@@ -94,6 +98,8 @@ public class RightBlockEdgeParking extends LinearOpMode {
         Lift.setDirection(DcMotor.Direction.FORWARD);
         Erectus.setDirection(Servo.Direction.FORWARD);
         frontGrab.setDirection(Servo.Direction.FORWARD);
+        rightGrab.setDirection(Servo.Direction.FORWARD);
+        leftGrab.setDirection(Servo.Direction.REVERSE);
         foundation.setDirection(Servo.Direction.REVERSE);
         capstone.setDirection(Servo.Direction.FORWARD);
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -133,10 +139,7 @@ public class RightBlockEdgeParking extends LinearOpMode {
         telemetry.log().clear();
         runtime.reset();
 
-        capstone.setPosition(1);
-        foundation.setPosition(1);
-        frontGrab.setPosition(1);
-        Erectus.setPosition(1);
+        initialPos();
 
 
         telemetry.addData("Values", valLeft+"   "+valMid+"   "+valRight);
@@ -440,6 +443,28 @@ public class RightBlockEdgeParking extends LinearOpMode {
             }
         }
 
+    }
+    private void initialPos(){
+        rightGrab.setPosition(1);
+        leftGrab.setPosition(1);
+        capstone.setPosition(1);
+        foundation.setPosition(0.2);
+        frontGrab.setPosition(1);
+        Erectus.setPosition(0.25);
+    }
+    private void grab(){
+        frontGrab.setPosition(0.85);
+        sleep(100);
+        Erectus.setPosition(0.9);
+        sleep(250);
+        frontGrab.setPosition(0);
+    }
+    private void release(){
+        frontGrab.setPosition(0.85);
+        sleep(100);
+        Erectus.setPosition(0.25);
+        sleep(100);
+        frontGrab.setPosition(0);
     }
     private void move(int left, int right, double power){
         if(opModeIsActive()){

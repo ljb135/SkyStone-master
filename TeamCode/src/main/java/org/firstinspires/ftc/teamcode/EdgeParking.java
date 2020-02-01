@@ -72,7 +72,7 @@ public class EdgeParking extends LinearOpMode {
         runtime.reset();
 
         //move servos into position
-        capstone.setPosition(0.8);
+        capstone.setPosition(1);
         frontGrab.setPosition(0);
         sleep(100);
         Erectus.setPosition(0.25);

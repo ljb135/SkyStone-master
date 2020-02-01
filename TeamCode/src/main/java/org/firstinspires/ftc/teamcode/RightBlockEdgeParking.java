@@ -133,7 +133,7 @@ public class RightBlockEdgeParking extends LinearOpMode {
         telemetry.log().clear();
         runtime.reset();
 
-        capstone.setPosition(0.8);
+        capstone.setPosition(1);
         foundation.setPosition(1);
         frontGrab.setPosition(1);
         Erectus.setPosition(1);

@@ -105,10 +105,10 @@ public class RightCenterParking extends LinearOpMode {
 
         modernRoboticsI2cGyro.resetZAxisIntegrator();
 
-        capstone.setPosition(0.8);
+        capstone.setPosition(1);
 
         //move servos into position
-        capstone.setPosition(0.8);
+        capstone.setPosition(1);
         frontGrab.setPosition(1);
         sleep(100);
         Erectus.setPosition(.25);

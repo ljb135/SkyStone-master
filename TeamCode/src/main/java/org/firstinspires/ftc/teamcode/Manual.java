@@ -64,6 +64,8 @@ public class Manual extends LinearOpMode {
     private DcMotor lift = null;
     private Servo erectus = null;
     private Servo frontGrab = null;
+    private Servo rightGrab = null;
+    private Servo leftGrab = null;
     private Servo foundation = null;
     private Servo capstone = null;
     private double FL = 0;
@@ -74,18 +76,24 @@ public class Manual extends LinearOpMode {
     private double erectusPosition = 0.8;
     private double frontGrabPosition = 0.85;
     private double foundationPosition = 0.35;
-    private double capstonePosition = 0.8;
+    private double capstonePosition = 1;
+    private double rightGrabPosition = 1;
+    private double leftGrabPosition = 1;
     private boolean sensitiveMode = false;
     private boolean grabBlock = false;
     private boolean dragFoundation = false;
     private boolean raiseArm = false;
     private boolean dropCapstone = false;
+    private boolean grabRightBlock = true;
+    private boolean grabLeftBlock = true;
     private boolean isPressed1X = false;
     private boolean isPressed1Y = false;
     private boolean isPressed1B = false;
     private boolean isPressed2A = false;
     private boolean isPressed2Y = false;
     private boolean isPressed2X = false;
+    private boolean isPressed1R = false;
+    private boolean isPressed1L = false;
 
     @Override
     public void runOpMode() {
@@ -102,6 +110,8 @@ public class Manual extends LinearOpMode {
         lift = hardwareMap.get(DcMotor.class, "lift");
         erectus = hardwareMap.get(Servo.class, "erectus");
         frontGrab = hardwareMap.get(Servo.class, "front_grab");
+        rightGrab = hardwareMap.get(Servo.class, "right_grab");
+        leftGrab = hardwareMap.get(Servo.class, "left_grab");
         foundation = hardwareMap.get(Servo.class, "foundation");
         capstone = hardwareMap.get(Servo.class, "capstone");
 
@@ -115,6 +125,8 @@ public class Manual extends LinearOpMode {
         lift.setDirection(DcMotor.Direction.FORWARD);
         erectus.setDirection(Servo.Direction.FORWARD);
         frontGrab.setDirection(Servo.Direction.FORWARD);
+        rightGrab.setDirection(Servo.Direction.FORWARD);
+        leftGrab.setDirection(Servo.Direction.REVERSE);
         foundation.setDirection(Servo.Direction.REVERSE);
         capstone.setDirection(Servo.Direction.FORWARD);
 
@@ -126,6 +138,8 @@ public class Manual extends LinearOpMode {
         frontGrab.setPosition(frontGrabPosition);
         erectus.setPosition(erectusPosition);
         foundation.setPosition(foundationPosition);
+        rightGrab.setPosition(rightGrabPosition);
+        leftGrab.setPosition(leftGrabPosition);
         sleep(100);
 
         // run until the end of the match (driver presses STOP)
@@ -172,7 +186,7 @@ public class Manual extends LinearOpMode {
             if (gamepad1.y) {
                 if (!isPressed1Y) {
                     if (dropCapstone) {
-                        capstonePosition = 0.8;
+                        capstonePosition = 1;
                         dropCapstone = false;
                     } else {
                         capstonePosition = 0;
@@ -241,16 +255,45 @@ public class Manual extends LinearOpMode {
                 isPressed2Y = false;
             }
 
+            if (gamepad1.dpad_left) {
+                if (!isPressed1L) {
+                    if (grabLeftBlock) {
+                        leftGrabPosition = 0;
+                        grabLeftBlock = false;
+                    } else {
+                        leftGrabPosition = 1;
+                        grabLeftBlock = true;
+                    }
+                    isPressed1L = true;
+                }
+            } else {
+                isPressed1L = false;
+            }
+
+            if (gamepad1.dpad_right) {
+                if (!isPressed1R) {
+                    if (grabRightBlock) {
+                        rightGrabPosition = 0;
+                        grabRightBlock = false;
+                    } else {
+                        rightGrabPosition = 1;
+                        grabRightBlock = true;
+                    }
+                    isPressed1R = true;
+                }
+            } else {
+                isPressed1R = false;
+            }
 
             if (gamepad2.x) {
                 if (!isPressed2X) {
                     if (raiseArm) {
-                        frontGrabPosition = 0;
-                        erectusPosition = 0.25;
-                        raiseArm = false;
-                    } else {
                         frontGrabPosition = 0.85;
                         erectusPosition = 0.8;
+                        raiseArm = false;
+                    } else {
+                        frontGrabPosition = 0;
+                        erectusPosition = 0.25;
                         raiseArm = true;
                     }
                     isPressed2X = true;
@@ -268,6 +311,8 @@ public class Manual extends LinearOpMode {
             lift.setPower(liftPower);
             erectus.setPosition(erectusPosition);
             frontGrab.setPosition(frontGrabPosition);
+            rightGrab.setPosition(rightGrabPosition);
+            leftGrab.setPosition(leftGrabPosition);
             capstone.setPosition(capstonePosition);
             foundation.setPosition(foundationPosition);
 

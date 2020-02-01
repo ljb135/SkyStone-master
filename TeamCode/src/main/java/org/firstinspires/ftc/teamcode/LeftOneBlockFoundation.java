@@ -485,7 +485,7 @@ public class LeftOneBlockFoundation extends LinearOpMode {
 
     }
     private void initialPos(){
-        capstone.setPosition(0.8);
+        capstone.setPosition(1);
         foundation.setPosition(0.2);
         frontGrab.setPosition(1);
         erectus.setPosition(0.25);

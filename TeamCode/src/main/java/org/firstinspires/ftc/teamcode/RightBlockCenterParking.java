@@ -40,6 +40,8 @@ public class RightBlockCenterParking extends LinearOpMode {
     private DcMotor Lift = null;
     private Servo Erectus = null;
     private Servo frontGrab = null;
+    private Servo rightGrab = null;
+    private Servo leftGrab = null;
     private Servo foundation = null;
     private double timeout = 5;
     private int FLPosition = 0;
@@ -82,6 +84,8 @@ public class RightBlockCenterParking extends LinearOpMode {
         Lift  = hardwareMap.get(DcMotor.class, "lift");
         Erectus = hardwareMap.get(Servo.class, "erectus");
         frontGrab = hardwareMap.get(Servo.class, "front_grab");
+        rightGrab = hardwareMap.get(Servo.class, "right_grab");
+        leftGrab = hardwareMap.get(Servo.class, "left_grab");
         foundation = hardwareMap.get(Servo.class, "foundation");
         capstone = hardwareMap.get(Servo.class, "capstone");
 
@@ -95,6 +99,8 @@ public class RightBlockCenterParking extends LinearOpMode {
         Lift.setDirection(DcMotor.Direction.FORWARD);
         Erectus.setDirection(Servo.Direction.FORWARD);
         frontGrab.setDirection(Servo.Direction.FORWARD);
+        rightGrab.setDirection(Servo.Direction.FORWARD);
+        leftGrab.setDirection(Servo.Direction.REVERSE);
         foundation.setDirection(Servo.Direction.REVERSE);
         capstone.setDirection(Servo.Direction.FORWARD);
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -241,11 +247,11 @@ public class RightBlockCenterParking extends LinearOpMode {
             sleep(250);
         }
         if(skystonePlacement == 2){
-            gyroStraight(robotAngle,-4350,0.5);
+            gyroStraight(robotAngle,-4300,0.5);
             sleep(250);
         }
         if(skystonePlacement == 3){
-            gyroStraight(robotAngle,-4350,0.5);
+            gyroStraight(robotAngle,-4300,0.5);
             sleep(250);
         }
 
@@ -259,10 +265,22 @@ public class RightBlockCenterParking extends LinearOpMode {
         sleep(100);
 
         //grab block
-        grab();
-        sleep(250);
+        if(skystonePlacement == 1 || skystonePlacement == 2) {
+            move(250,250,0.4);
+            sleep(100);
+            grab();
+            sleep(250);
+            move(-150,-150,0.4);
+        }
+        else{
+            leftGrab.setPosition(0);
+            move(400,400,0.2);
+            sleep(100);
+            leftGrab.setPosition(1);
+            sleep(250);
+            move(-450,-450,0.4);
+        }
         //move back
-        move(-150,-150,0.4);
         sleep(250);
         robotAngle+=84;
         gyroRotate(robotAngle);
@@ -282,7 +300,12 @@ public class RightBlockCenterParking extends LinearOpMode {
         }
 
         //let go of block
-        release();
+        if(skystonePlacement == 1 || skystonePlacement == 2){
+            release();
+        }
+        else{
+            leftGrab.setPosition(0);
+        }
         sleep(100);
 
         //park
@@ -427,7 +450,9 @@ public class RightBlockCenterParking extends LinearOpMode {
 
     }
     private void initialPos(){
-        capstone.setPosition(0.8);
+        rightGrab.setPosition(1);
+        leftGrab.setPosition(1);
+        capstone.setPosition(1);
         foundation.setPosition(0.2);
         frontGrab.setPosition(1);
         Erectus.setPosition(0.25);

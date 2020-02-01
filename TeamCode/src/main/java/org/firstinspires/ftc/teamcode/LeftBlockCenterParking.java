@@ -166,7 +166,7 @@ public class LeftBlockCenterParking extends LinearOpMode {
             telemetry.update();
         } else if(valRight == 0){
             skystonePlacement = 3; // Skystone left
-            strafeDistance = -650;
+            strafeDistance = -750;
             telemetry.addData("strafingLeft", 1);
             telemetry.update();
         } else{
@@ -251,7 +251,7 @@ public class LeftBlockCenterParking extends LinearOpMode {
 			sleep(250);
 		}
 		if(skystonePlacement == 3){
-			gyroStraight(robotAngle,-4300,0.5);
+			gyroStraight(robotAngle,-4450,0.5);
 			sleep(250);
 		}
 
@@ -277,11 +277,11 @@ public class LeftBlockCenterParking extends LinearOpMode {
             gyroRotate(robotAngle);
             sleep(100);
             stopStrafe();
-		    move(400,400,0.2);
+		    move(500,500,0.2);
             sleep(100);
 		    leftGrab.setPosition(1);
             sleep(250);
-		    move(-450,-450,0.4);
+		    move(-550,-550,0.4);
         }
 		//move back
 		sleep(250);

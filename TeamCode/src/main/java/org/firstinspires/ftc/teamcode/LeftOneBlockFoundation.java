@@ -38,8 +38,10 @@ public class LeftOneBlockFoundation extends LinearOpMode {
     private DcMotor BRDrive = null;
     private DcMotor BLDrive = null;
     private DcMotor lift = null;
-    private Servo erectus = null;
+    private Servo Erectus = null;
     private Servo frontGrab = null;
+    private Servo rightGrab = null;
+    private Servo leftGrab = null;
     private Servo foundation = null;
     private double timeout = 5;
     private int FLPosition = 0;
@@ -80,8 +82,10 @@ public class LeftOneBlockFoundation extends LinearOpMode {
         BRDrive  = hardwareMap.get(DcMotor.class, "back_right");
         BLDrive  = hardwareMap.get(DcMotor.class, "back_left");
         lift = hardwareMap.get(DcMotor.class, "lift");
-        erectus = hardwareMap.get(Servo.class, "erectus");
+        Erectus = hardwareMap.get(Servo.class, "erectus");
         frontGrab = hardwareMap.get(Servo.class, "front_grab");
+        rightGrab = hardwareMap.get(Servo.class, "right_grab");
+        leftGrab = hardwareMap.get(Servo.class, "left_grab");
         foundation = hardwareMap.get(Servo.class, "foundation");
         capstone = hardwareMap.get(Servo.class, "capstone");
 
@@ -93,8 +97,10 @@ public class LeftOneBlockFoundation extends LinearOpMode {
         BRDrive.setDirection(DcMotor.Direction.REVERSE);
         BLDrive.setDirection(DcMotor.Direction.FORWARD);
         lift.setDirection(DcMotor.Direction.FORWARD);
-        erectus.setDirection(Servo.Direction.FORWARD);
+        Erectus.setDirection(Servo.Direction.FORWARD);
         frontGrab.setDirection(Servo.Direction.FORWARD);
+        rightGrab.setDirection(Servo.Direction.FORWARD);
+        leftGrab.setDirection(Servo.Direction.REVERSE);
         foundation.setDirection(Servo.Direction.REVERSE);
         capstone.setDirection(Servo.Direction.FORWARD);
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -160,7 +166,7 @@ public class LeftOneBlockFoundation extends LinearOpMode {
             strafe(strafeDistance , strafePower);
         } else if(valRight == 0){
             skystonePlacement = 3; // Skystone left
-            strafeDistance = -650;
+            strafeDistance = -800;
             telemetry.addData("strafingLeft", 1);
             telemetry.update();
             strafe(strafeDistance , strafePower);
@@ -225,7 +231,7 @@ public class LeftOneBlockFoundation extends LinearOpMode {
 //        move(-300,-300, 0.5);
 
         //reset arm
-        erectus.setPosition(0.25);
+        Erectus.setPosition(0.25);
         frontGrab.setPosition(1);
         sleep(100);
 
@@ -247,7 +253,7 @@ public class LeftOneBlockFoundation extends LinearOpMode {
         stopStrafe();
 
         //move towards foundation
-        move(-300,-300,0.4);
+        move(-300,-300,0.3);
         sleep(150);
 //        frontGrab.setPosition(1);
 //        erectus.setPosition(0.25);
@@ -262,14 +268,15 @@ public class LeftOneBlockFoundation extends LinearOpMode {
         foundation.setPosition(0.35);
         sleep(200);
         gyroStraight(robotAngle,100,0.5);
+        move(50,-50,0.4);
         strafe(2000,0.4);
         sleep(100);
         gyroRotate(robotAngle);
-        gyroStraight(robotAngle,-1250,0.5);
+        gyroStraight(robotAngle,-1200,0.5);
         robotAngle-=84;
         gyroRotate(robotAngle);
         stopStrafe();
-        move(-550,-550,0.5);
+        move(-600,-600,0.5);
         gyroRotate(robotAngle);
         frontGrab.setPosition(0);
         sleep(100);
@@ -485,22 +492,24 @@ public class LeftOneBlockFoundation extends LinearOpMode {
 
     }
     private void initialPos(){
+        rightGrab.setPosition(1);
+        leftGrab.setPosition(1);
         capstone.setPosition(1);
         foundation.setPosition(0.2);
         frontGrab.setPosition(1);
-        erectus.setPosition(0.25);
+        Erectus.setPosition(0.25);
     }
     private void grab(){
         frontGrab.setPosition(0.85);
         sleep(100);
-        erectus.setPosition(0.9);
+        Erectus.setPosition(0.9);
         sleep(250);
         frontGrab.setPosition(0);
     }
     private void release(){
         frontGrab.setPosition(0.85);
         sleep(100);
-        erectus.setPosition(0.25);
+        Erectus.setPosition(0.25);
         sleep(100);
         frontGrab.setPosition(0);
     }

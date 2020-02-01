@@ -37,8 +37,10 @@ public class RightOneBlockFoundation extends LinearOpMode {
     private DcMotor BRDrive = null;
     private DcMotor BLDrive = null;
     private DcMotor lift = null;
-    private Servo erectus = null;
+    private Servo Erectus = null;
     private Servo frontGrab = null;
+    private Servo rightGrab = null;
+    private Servo leftGrab = null;
     private Servo foundation = null;
     private double timeout = 5;
     private int FLPosition = 0;
@@ -79,8 +81,10 @@ public class RightOneBlockFoundation extends LinearOpMode {
         BRDrive  = hardwareMap.get(DcMotor.class, "back_right");
         BLDrive  = hardwareMap.get(DcMotor.class, "back_left");
         lift = hardwareMap.get(DcMotor.class, "lift");
-        erectus = hardwareMap.get(Servo.class, "erectus");
+        Erectus = hardwareMap.get(Servo.class, "erectus");
         frontGrab = hardwareMap.get(Servo.class, "front_grab");
+        rightGrab = hardwareMap.get(Servo.class, "right_grab");
+        leftGrab = hardwareMap.get(Servo.class, "left_grab");
         foundation = hardwareMap.get(Servo.class, "foundation");
         capstone = hardwareMap.get(Servo.class, "capstone");
 
@@ -92,8 +96,10 @@ public class RightOneBlockFoundation extends LinearOpMode {
         BRDrive.setDirection(DcMotor.Direction.REVERSE);
         BLDrive.setDirection(DcMotor.Direction.FORWARD);
         lift.setDirection(DcMotor.Direction.FORWARD);
-        erectus.setDirection(Servo.Direction.FORWARD);
+        Erectus.setDirection(Servo.Direction.FORWARD);
         frontGrab.setDirection(Servo.Direction.FORWARD);
+        rightGrab.setDirection(Servo.Direction.FORWARD);
+        leftGrab.setDirection(Servo.Direction.REVERSE);
         foundation.setDirection(Servo.Direction.REVERSE);
         capstone.setDirection(Servo.Direction.FORWARD);
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
@@ -224,7 +230,7 @@ public class RightOneBlockFoundation extends LinearOpMode {
 //        move(-300,-300, 0.5);
 
         //reset arm
-        erectus.setPosition(0.25);
+        Erectus.setPosition(0.25);
         frontGrab.setPosition(1);
         sleep(100);
 
@@ -484,22 +490,24 @@ public class RightOneBlockFoundation extends LinearOpMode {
 
     }
     private void initialPos(){
+        rightGrab.setPosition(1);
+        leftGrab.setPosition(1);
         capstone.setPosition(1);
         foundation.setPosition(0.2);
         frontGrab.setPosition(1);
-        erectus.setPosition(0.25);
+        Erectus.setPosition(0.25);
     }
     private void grab(){
         frontGrab.setPosition(0.85);
         sleep(100);
-        erectus.setPosition(0.9);
+        Erectus.setPosition(0.9);
         sleep(250);
         frontGrab.setPosition(0);
     }
     private void release(){
         frontGrab.setPosition(0.85);
         sleep(100);
-        erectus.setPosition(0.25);
+        Erectus.setPosition(0.25);
         sleep(100);
         frontGrab.setPosition(0);
     }

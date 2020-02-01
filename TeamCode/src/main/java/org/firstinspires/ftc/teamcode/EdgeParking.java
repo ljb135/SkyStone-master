@@ -96,7 +96,7 @@ public class EdgeParking extends LinearOpMode {
         leftGrab.setPosition(1);
         capstone.setPosition(1);
         foundation.setPosition(0.2);
-        frontGrab.setPosition(1);
+        frontGrab.setPosition(0);
         Erectus.setPosition(0.25);
     }
     private void grab(){

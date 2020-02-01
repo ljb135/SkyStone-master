@@ -146,10 +146,10 @@ public class LeftOneBlockFoundation extends LinearOpMode {
         modernRoboticsI2cGyro.resetZAxisIntegrator();
 
         //move away from wall
-        move(100,100,0.3);
+        move(100,100,0.5);
 
         int strafeDistance;
-        double strafePower = 0.5;
+        double strafePower = 0.4;
         telemetry.addData("valLeft", valLeft);
         telemetry.update();
         if(valLeft == 0){
@@ -187,7 +187,7 @@ public class LeftOneBlockFoundation extends LinearOpMode {
         move(-200,-200,0.5);
 
         //rotate towards the bridge
-        move(550,-550,0.4);
+//        move(550,-550,0.4);
         robotAngle -= 84;
         gyroRotate(robotAngle);
 
@@ -205,24 +205,24 @@ public class LeftOneBlockFoundation extends LinearOpMode {
         stopStrafe();
 
         //lift slide
-        while(opModeIsActive() && lift.getCurrentPosition() < 700){
+        while(opModeIsActive() && lift.getCurrentPosition() < 800){
             lift.setPower(0.7);
         }
         lift.setPower(0);
 
         //rotate to foundation and move forward to drop off block
-        move(-550,550,0.4);
+//        move(-550,550,0.4);
         robotAngle += 84;
         gyroRotate(robotAngle);
 
         stopStrafe();
 
-        move(500,500, 0.3);
+        move(500,500, 0.5);
 
         release();
 
         //back away from foundation
-        move(-400,-400, 0.5);
+//        move(-300,-300, 0.5);
 
         //reset arm
         erectus.setPosition(0.25);
@@ -231,15 +231,13 @@ public class LeftOneBlockFoundation extends LinearOpMode {
 
         //rotate 90
         robotAngle -= 84;
-
-
         //rotate 90
         robotAngle -= 84;
         move(900,-900,0.5);
         gyroRotate(robotAngle);
 
         //reset slide
-        while(opModeIsActive() && lift.getCurrentPosition() > 100){
+        while(opModeIsActive() && lift.getCurrentPosition() > 110){
             lift.setPower(-1.0);
         }
         lift.setPower(0);
@@ -249,7 +247,7 @@ public class LeftOneBlockFoundation extends LinearOpMode {
         stopStrafe();
 
         //move towards foundation
-        move(-700,-700,0.3);
+        move(-300,-300,0.4);
         sleep(150);
 //        frontGrab.setPosition(1);
 //        erectus.setPosition(0.25);
@@ -258,22 +256,21 @@ public class LeftOneBlockFoundation extends LinearOpMode {
 //        frontGrab.setPosition(0);
         foundation.setPosition(1);
         sleep(100);
-        gyroStraight(robotAngle,1700,0.4);
+        gyroStraight(robotAngle,1900,0.5);
         // Drive forward with foundation a little
         stopStrafe();
         foundation.setPosition(0.35);
         sleep(200);
+        gyroStraight(robotAngle,100,0.5);
         strafe(2000,0.4);
         sleep(100);
         gyroRotate(robotAngle);
-        sleep(100);
-        gyroStraight(robotAngle,-1250,0.4);
+        gyroStraight(robotAngle,-1250,0.5);
         robotAngle-=84;
         gyroRotate(robotAngle);
         stopStrafe();
-        move(-500,-500,0.4);
+        move(-550,-550,0.5);
         gyroRotate(robotAngle);
-        sleep(100);
         frontGrab.setPosition(0);
         sleep(100);
 //        if(skystonePlacement == 1){
@@ -637,7 +634,7 @@ public class LeftOneBlockFoundation extends LinearOpMode {
             rotationPid.reset();
             rotationPid.setSetpoint(desiredAngle);
             rotationPid.setInputRange(-359, 359);
-            rotationPid.setTolerance(5);
+            rotationPid.setTolerance(7);
             rotationPid.enable();
             boolean onTarget = false;
             double motorPower = 0;

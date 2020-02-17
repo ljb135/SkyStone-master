@@ -47,9 +47,12 @@ public class Acceleration extends LinearOpMode {
 
 
         double propAccel = 0.2;
-        double propDecel = 0.5;
+        double propDecel = 0.7;
         double accelTarget = targetPosition * propAccel;
         double decelTarget = targetPosition - (targetPosition * propDecel);
+        telemetry.addData("Accel Target", accelTarget);
+        telemetry.addData("Decel Target", decelTarget);
+        telemetry.update();
 
         waitForStart();
 
@@ -64,7 +67,9 @@ public class Acceleration extends LinearOpMode {
             BRDrive.setPower(1.1 - motorPower);
             BLDrive.setPower(1.1 - motorPower);
             remainingDist = (accelTarget - FRDrive.getCurrentPosition()) / accelTarget;
-            telemetry.addData("accelerating", 1.1 - motorPower);
+            telemetry.addData("Position", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)FRDrive.getCurrentPosition(), (float)FLDrive.getCurrentPosition(), (float)BRDrive.getCurrentPosition(), (float)BLDrive.getCurrentPosition());
+            telemetry.addData("Power", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)FRDrive.getPower(), (float)FLDrive.getPower(), (float)BRDrive.getPower(), (float)BLDrive.getPower());
+            telemetry.update();
             telemetry.update();
         }
 
@@ -74,7 +79,9 @@ public class Acceleration extends LinearOpMode {
             FLDrive.setPower(1.1 - motorPower);
             BRDrive.setPower(1.1 - motorPower);
             BLDrive.setPower(1.1 - motorPower);
-            telemetry.addData("constant vel", 1.1 - motorPower);
+            telemetry.addData("Position", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)FRDrive.getCurrentPosition(), (float)FLDrive.getCurrentPosition(), (float)BRDrive.getCurrentPosition(), (float)BLDrive.getCurrentPosition());
+            telemetry.addData("Power", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)FRDrive.getPower(), (float)FLDrive.getPower(), (float)BRDrive.getPower(), (float)BLDrive.getPower());
+            telemetry.update();
             telemetry.update();
         }
 
@@ -83,14 +90,16 @@ public class Acceleration extends LinearOpMode {
         telemetry.update();
 
         // Deceleration
-        while(opModeIsActive() && remainingDist > 0) {
-            motorPower = Range.clip(Math.pow(remainingDist, 2), 0.1, 1.0);
+        while(opModeIsActive() && ((FLDrive.isBusy() && FRDrive.isBusy() && BLDrive.isBusy() && BRDrive.isBusy()) || remainingDist > 0)) {
+            motorPower = Range.clip(Math.pow(remainingDist, 1.3), 0.15, 1.0);
             FRDrive.setPower(motorPower);
             FLDrive.setPower(motorPower);
             BRDrive.setPower(motorPower);
             BLDrive.setPower(motorPower);
             remainingDist = (targetPosition - FRDrive.getCurrentPosition()) / (targetPosition - decelTarget);
-            telemetry.addData("decelerating", motorPower);
+
+            telemetry.addData("Position", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)FRDrive.getCurrentPosition(), (float)FLDrive.getCurrentPosition(), (float)BRDrive.getCurrentPosition(), (float)BLDrive.getCurrentPosition());
+            telemetry.addData("Power", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)FRDrive.getPower(), (float)FLDrive.getPower(), (float)BRDrive.getPower(), (float)BLDrive.getPower());
             telemetry.update();
         }
 
@@ -98,6 +107,11 @@ public class Acceleration extends LinearOpMode {
         FLDrive.setPower(0);
         BRDrive.setPower(0);
         BLDrive.setPower(0);
+
+        FRDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        FLDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BLDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        BRDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
 }

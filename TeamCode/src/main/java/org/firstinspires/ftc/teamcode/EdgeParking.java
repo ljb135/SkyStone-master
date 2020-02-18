@@ -90,7 +90,6 @@ public class EdgeParking extends LinearOpMode {
         move(-1750,-1750,0.3);
         sleep(500);
     }
-
     private void initialPos(){
         rightGrab.setPosition(1);
         leftGrab.setPosition(1);
@@ -98,20 +97,6 @@ public class EdgeParking extends LinearOpMode {
         foundation.setPosition(0.2);
         frontGrab.setPosition(0);
         Erectus.setPosition(0.25);
-    }
-    private void grab(){
-        frontGrab.setPosition(0.85);
-        sleep(100);
-        Erectus.setPosition(0.9);
-        sleep(250);
-        frontGrab.setPosition(0);
-    }
-    private void release(){
-        frontGrab.setPosition(0.85);
-        sleep(100);
-        Erectus.setPosition(0.25);
-        sleep(100);
-        frontGrab.setPosition(0);
     }
     private void move(int left, int right, double power){
         if(opModeIsActive()){

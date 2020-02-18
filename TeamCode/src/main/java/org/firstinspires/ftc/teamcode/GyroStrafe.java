@@ -81,7 +81,7 @@ public class GyroStrafe extends LinearOpMode {
         capstone.setDirection(Servo.Direction.FORWARD);
 
         rotationPid = new PIDController(0.01, 0.00007, 0.05);
-        drivePid = new PIDController(0.01, 0, 0);
+        drivePid = new PIDController(0.005, 0, 0);
 
 
         telemetry.log().add("Gyro Calibrating. Do Not Move!");
@@ -114,9 +114,9 @@ public class GyroStrafe extends LinearOpMode {
         modernRoboticsI2cGyro.resetZAxisIntegrator();
 
         robotAngle = 0;
-
-        gyroStrafe(robotAngle,5000,0.3);
-
+        while(opModeIsActive()) {
+            gyroStrafe(robotAngle, -5000, 0.5);
+        }
     }
 
     private void initialPos(){
@@ -345,11 +345,11 @@ public class GyroStrafe extends LinearOpMode {
             double backPower = 0;
 
             if(targetPosition > 0) {
-                frontPower = power - correction;
-                backPower = power + correction;
-            }  else {
                 frontPower = power + correction;
                 backPower = power - correction;
+            }  else {
+                frontPower = power - correction;
+                backPower = power + correction;
             }
 
             runtime.reset();

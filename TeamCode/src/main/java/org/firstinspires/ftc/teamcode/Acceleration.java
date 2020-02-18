@@ -17,7 +17,6 @@ public class Acceleration extends LinearOpMode {
     private DcMotor FLDrive = null;
     private DcMotor BRDrive = null;
     private DcMotor BLDrive = null;
-    private int initialValue = 0;
     PIDController drivePid;
     private ModernRoboticsI2cGyro modernRoboticsI2cGyro;
 

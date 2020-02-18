@@ -341,23 +341,23 @@ public class GyroStrafe extends LinearOpMode {
 
             int robotAngle = modernRoboticsI2cGyro.getIntegratedZValue();
             double correction = drivePid.performPID(robotAngle);
-            double leftPower = power + correction;
-            double rightPower = power - correction;
+            double frontPower = 0;
+            double backPower = 0;
 
             if(targetPosition > 0) {
-                leftPower = power - correction;
-                rightPower = power + correction;
+                frontPower = power - correction;
+                backPower = power + correction;
             }  else {
-                leftPower = power + correction;
-                rightPower = power - correction;
+                frontPower = power + correction;
+                backPower = power - correction;
             }
 
             runtime.reset();
 
-            FLDrive.setPower(leftPower);
-            BLDrive.setPower(leftPower);
-            FRDrive.setPower(rightPower);
-            BRDrive.setPower(rightPower);
+            FLDrive.setPower(frontPower);
+            BLDrive.setPower(backPower);
+            FRDrive.setPower(frontPower);
+            BRDrive.setPower(backPower);
 
 
 
@@ -366,23 +366,23 @@ public class GyroStrafe extends LinearOpMode {
                 correction = drivePid.performPID(robotAngle);
 
                 if(targetPosition > 0) {
-                    leftPower = power - correction;
-                    rightPower = power + correction;
+                    frontPower = power + correction;
+                    backPower = power - correction;
                 }  else {
-                    leftPower = power + correction;
-                    rightPower = power - correction;
+                    frontPower = power - correction;
+                    backPower = power + correction;
                 }
 
-                FLDrive.setPower(leftPower);
-                BLDrive.setPower(leftPower);
-                FRDrive.setPower(rightPower);
-                BRDrive.setPower(rightPower);
+                FLDrive.setPower(frontPower);
+                BLDrive.setPower(backPower);
+                FRDrive.setPower(frontPower);
+                BRDrive.setPower(backPower);
 
                 telemetry.addData("runtime", runtime.seconds());
                 telemetry.addData("in loop", 1);
                 telemetry.addData("correction", correction);
-                telemetry.addData("leftPower", leftPower);
-                telemetry.addData("rightPower", rightPower);
+                telemetry.addData("frontPower", frontPower);
+                telemetry.addData("backPower", backPower);
                 telemetry.addData("Position", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)FRDrive.getCurrentPosition(), (float)FLDrive.getCurrentPosition(), (float)BRDrive.getCurrentPosition(), (float)BLDrive.getCurrentPosition());
                 telemetry.addData("Target Position", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)FRDrive.getTargetPosition(), (float)FLDrive.getTargetPosition(), (float)BRDrive.getTargetPosition(), (float)BLDrive.getTargetPosition());
                 telemetry.addData("Power", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)FRDrive.getPower(), (float)FLDrive.getPower(), (float)BRDrive.getPower(), (float)BLDrive.getPower());

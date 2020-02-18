@@ -77,8 +77,6 @@ public class RobotClass {
 
             opMode.telemetry.addData("Position", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)frontRight.getTargetPosition(), (float)frontLeft.getTargetPosition(), (float)backRight.getTargetPosition(), (float)backLeft.getTargetPosition());
 
-            runtime.reset();
-
             while(opMode.opModeIsActive() && (frontRight.getPower() != power || frontLeft.getPower() != power || backLeft.getPower() != power || backRight.getPower() != power)) {
                 opMode.telemetry.addData("updating power,", 1);
                 opMode.telemetry.update();

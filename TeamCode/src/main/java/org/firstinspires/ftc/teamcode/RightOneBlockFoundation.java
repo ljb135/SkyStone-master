@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-@Autonomous(name= "Right One Block Foundation", group="Linear Opmode")
+@Autonomous(name= "Right One Block Foundation", group="Final")
 //comment out this line before using
 public class RightOneBlockFoundation extends LinearOpMode {
     private ModernRoboticsI2cGyro modernRoboticsI2cGyro;

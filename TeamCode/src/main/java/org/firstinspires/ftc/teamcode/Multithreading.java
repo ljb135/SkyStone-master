@@ -6,7 +6,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
-@Autonomous(name= "Multithreading", group="Linear Opmode")
+@Autonomous(name= "Multithreading", group="Testing")
 //comment out this line before using
 public class Multithreading extends LinearOpMode {
 

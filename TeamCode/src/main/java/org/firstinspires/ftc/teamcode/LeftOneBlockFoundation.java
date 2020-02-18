@@ -24,7 +24,7 @@ import java.util.List;
 
 
 
-@Autonomous(name= "Left One Block Foundation", group="Linear Opmode")
+@Autonomous(name= "Left One Block Foundation", group="Final")
 //comment out this line before using
 public class LeftOneBlockFoundation extends LinearOpMode {
     private ModernRoboticsI2cGyro modernRoboticsI2cGyro;

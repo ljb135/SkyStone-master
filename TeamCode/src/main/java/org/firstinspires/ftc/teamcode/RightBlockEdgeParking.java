@@ -23,7 +23,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-@Autonomous(name= "Right Block Edge Parking", group="Linear Opmode")
+@Autonomous(name= "Right Block Edge Parking", group="Final")
 //comment out this line before using
 public class RightBlockEdgeParking extends LinearOpMode {
     private ModernRoboticsI2cGyro modernRoboticsI2cGyro;

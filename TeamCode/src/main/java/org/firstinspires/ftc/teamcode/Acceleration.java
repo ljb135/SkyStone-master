@@ -8,7 +8,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 
 
-@Autonomous(name= "Acceleration", group="Linear Opmode")
+@Autonomous(name= "Acceleration", group="Testing")
 //comment out this line before using
 public class Acceleration extends LinearOpMode {
 
@@ -81,7 +81,6 @@ public class Acceleration extends LinearOpMode {
         accelMove(robotAngle,targetPosition, propAccel, propDecel, accelPow, decelPow);
 
     }
-
     void accelMove(int desiredAngle, int targetPosition, double propAccel, double propDecel, double accelPow, double decelPow) {
         drivePid.reset();
         drivePid.setSetpoint(desiredAngle);

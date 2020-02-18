@@ -20,7 +20,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  * Remove or comment out the @Disabled line to add this opmode to the Driver Station OpMode list
  */
 
-@Autonomous(name="Right Foundation Edge Parking", group="Linear Opmode")
+@Autonomous(name="Right Foundation Edge Parking", group="Final")
 public class RightFoundationEdgeParking extends LinearOpMode {
     private ModernRoboticsI2cGyro modernRoboticsI2cGyro;
     private int initialValue = 0;

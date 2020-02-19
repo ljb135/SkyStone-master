@@ -65,6 +65,28 @@ public class RobotClass {
         strafePid = new PIDController(0.005, 0, 0);
     }
 
+    public void homeServos(){
+        rightGrab.setPosition(1);
+        leftGrab.setPosition(1);
+        capstone.setPosition(1);
+        foundation.setPosition(0.2);
+        frontGrab.setPosition(0);
+        erectus.setPosition(0.25);
+    }
+    public void grab(){
+        frontGrab.setPosition(0.85);
+        opMode.sleep(100);
+        erectus.setPosition(0.9);
+        opMode.sleep(250);
+        frontGrab.setPosition(0);
+    }
+    public void release(){
+        frontGrab.setPosition(0.85);
+        opMode.sleep(100);
+        erectus.setPosition(0.25);
+        opMode.sleep(100);
+        frontGrab.setPosition(0);
+    }
     public void move(int left, int right, double power){
         if(opMode.opModeIsActive()){
             FLPosition += left;
@@ -115,29 +137,7 @@ public class RobotClass {
             backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
             backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         }
-    }
-    public void homeServos(){
-        rightGrab.setPosition(1);
-        leftGrab.setPosition(1);
-        capstone.setPosition(1);
-        foundation.setPosition(0.2);
-        frontGrab.setPosition(0);
-        erectus.setPosition(0.25);
-    }
-    public void grab(){
-        frontGrab.setPosition(0.85);
-        opMode.sleep(100);
-        erectus.setPosition(0.9);
-        opMode.sleep(250);
-        frontGrab.setPosition(0);
-    }
-    public void release(){
-        frontGrab.setPosition(0.85);
-        opMode.sleep(100);
-        erectus.setPosition(0.25);
-        opMode.sleep(100);
-        frontGrab.setPosition(0);
-    }
+    } //probably delete when drivePID is tuned
     public void gyroRotate(int desiredAngle) {
         if(opMode.opModeIsActive()) {
 

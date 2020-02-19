@@ -49,8 +49,8 @@ public class RightBlockEdgeParking extends LinearOpMode {
     private int BRPosition = 0;
     private Servo capstone = null;
     private int distance = 0;
-    private int skystonePlacement = 0;
 
+    private int skystonePlacement = 0;
     //0 means skystone, 1 means yellow stone
     //-1 for debug, but we can keep it like this because if it works, it should change to either 0 or 255
     private static int valMid = -1;
@@ -102,8 +102,11 @@ public class RightBlockEdgeParking extends LinearOpMode {
         leftGrab.setDirection(Servo.Direction.REVERSE);
         foundation.setDirection(Servo.Direction.REVERSE);
         capstone.setDirection(Servo.Direction.FORWARD);
+
+
         int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
         phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, cameraMonitorViewId);
+
         phoneCam.openCameraDevice();//open camera
         phoneCam.setPipeline(new StageSwitchingPipeline());//different stages
         phoneCam.startStreaming(rows, cols, OpenCvCameraRotation.UPRIGHT);//display on RC

@@ -73,7 +73,8 @@ public class RobotClass {
 
     OpenCvCamera phoneCam;
 
-    private RobotClass(LinearOpMode OP_MODE, ElapsedTime RUNTIME, int MONITOR_ID, ModernRoboticsI2cGyro ROBOT_GYRO, DcMotor FRONT_RIGHT, DcMotor FRONT_LEFT, DcMotor BACK_RIGHT, DcMotor BACK_LEFT, DcMotor LIFT,
+    public RobotClass(LinearOpMode OP_MODE, ElapsedTime RUNTIME, int MONITOR_ID, ModernRoboticsI2cGyro ROBOT_GYRO,
+                      DcMotor FRONT_RIGHT, DcMotor FRONT_LEFT, DcMotor BACK_RIGHT, DcMotor BACK_LEFT, DcMotor LIFT,
                       Servo CAPSTONE, Servo FRONT_GRAB, Servo ERECTUS,
                       Servo FOUNDATION, Servo RIGHT_GRAB, Servo LEFT_GRAB) {
 
@@ -131,26 +132,38 @@ public class RobotClass {
     }
 
 
-    public void homeServos(){
-        rightGrab.setPosition(1);
-        leftGrab.setPosition(1);
-        capstone.setPosition(1);
-        foundation.setPosition(0.2);
-        frontGrab.setPosition(0);
-        erectus.setPosition(0.25);
+    public void homeServos() {
+        if(opMode.opModeIsActive()) {
+            rightGrab.setPosition(1);
+            leftGrab.setPosition(1);
+            capstone.setPosition(1);
+            foundation.setPosition(0.2);
+            frontGrab.setPosition(0);
+            erectus.setPosition(0.25);
+        }
     }
+
     public void clampFoundation() {
-        foundation.setPosition(1);
+        if(opMode.opModeIsActive()) {
+            foundation.setPosition(1);
+        }
     }
+
     public void releaseFoundation() {
-        foundation.setPosition(0.35);
+        if(opMode.opModeIsActive()) {
+            foundation.setPosition(0.35);
+        }
+
     }
-    public void grab(){
-        frontGrab.setPosition(0.85);
-        opMode.sleep(100);
-        erectus.setPosition(0.9);
-        opMode.sleep(250);
-        frontGrab.setPosition(0);
+
+    public void grab() {
+        if(opMode.opModeIsActive()) {
+            frontGrab.setPosition(0.85);
+            opMode.sleep(100);
+            erectus.setPosition(0.9);
+            opMode.sleep(250);
+            frontGrab.setPosition(0);
+        }
     }
     public void release(){
         frontGrab.setPosition(0.85);
@@ -337,7 +350,7 @@ public class RobotClass {
 
         }
     }
-    private void gyroStrafe(int desiredAngle, int targetPosition, double power){
+    public void gyroStrafe(int desiredAngle, int targetPosition, double power){
         if(opMode.opModeIsActive()) {
             strafePid.reset();
             strafePid.setSetpoint(desiredAngle);
@@ -421,7 +434,7 @@ public class RobotClass {
 
         }
     }
-    private void stopStrafe(){
+    public void stopStrafe(){
         FLPosition = 0;
         FRPosition = 0;
         BLPosition = 0;
@@ -440,7 +453,27 @@ public class RobotClass {
         backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
     }
 
+    public void calibrateGyro() {
+        opMode.telemetry.log().add("Gyro Calibrating. Do Not Move!");
+        robotGyro.calibrate();
 
+        // Wait until the gyro calibration is complete
+        runtime.reset();
+        while (!opMode.isStopRequested() && robotGyro.isCalibrating())  {
+            opMode.telemetry.addData("calibrating", "%s", Math.round(runtime.seconds()) % 2 == 0 ? "|.." : "..|");
+            opMode.telemetry.update();
+            opMode.sleep(50);
+        }
+
+        opMode.telemetry.log().clear();
+        opMode.telemetry.log().add("Gyro Calibrated. Press Start.");
+        opMode.telemetry.clear();
+        opMode.telemetry.update();
+
+        // Wait for the start button to be pressed
+        opMode.telemetry.log().clear();
+        runtime.reset();
+    }
 
     //detection pipeline
     static class StageSwitchingPipeline extends OpenCvPipeline

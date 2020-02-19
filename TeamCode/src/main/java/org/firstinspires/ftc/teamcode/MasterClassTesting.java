@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -24,6 +25,8 @@ public class MasterClassTesting extends LinearOpMode {
     private Servo foundation = null;
     private Servo capstone = null;
 
+    private ModernRoboticsI2cGyro robotGyro;
+
     @Override
     public void runOpMode() throws InterruptedException {
         FRDrive = hardwareMap.get(DcMotor.class, "front_right");
@@ -31,11 +34,13 @@ public class MasterClassTesting extends LinearOpMode {
         BRDrive = hardwareMap.get(DcMotor.class, "back_right");
         BLDrive = hardwareMap.get(DcMotor.class, "back_left");
         lift = hardwareMap.get(DcMotor.class, "lift");
-//        Erectus = hardwareMap.get(Servo.class, "erectus");
-//        frontGrab = hardwareMap.get(Servo.class, "front_grab");
-//        rightGrab = hardwareMap.get(Servo.class, "right_grab");
-//        leftGrab = hardwareMap.get(Servo.class, "left_grab");
-//        foundation = hardwareMap.get(Servo.class, "foundation");
+        Erectus = hardwareMap.get(Servo.class, "erectus");
+        frontGrab = hardwareMap.get(Servo.class, "front_grab");
+        rightGrab = hardwareMap.get(Servo.class, "right_grab");
+        leftGrab = hardwareMap.get(Servo.class, "left_grab");
+        foundation = hardwareMap.get(Servo.class, "foundation");
+        robotGyro = hardwareMap.get(ModernRoboticsI2cGyro.class, "gyro");
+
 
         // Most robots need the motor on one side to be reversed to drive forward
         // Reverse the motor that runs backwards when connected directly to the battery
@@ -44,14 +49,19 @@ public class MasterClassTesting extends LinearOpMode {
         BRDrive.setDirection(DcMotor.Direction.REVERSE);
         BLDrive.setDirection(DcMotor.Direction.FORWARD);
         lift.setDirection(DcMotor.Direction.FORWARD);
-//        Erectus.setDirection(Servo.Direction.FORWARD);
-//        frontGrab.setDirection(Servo.Direction.FORWARD);
-//        rightGrab.setDirection(Servo.Direction.FORWARD);
-//        leftGrab.setDirection(Servo.Direction.REVERSE);
-//        foundation.setDirection(Servo.Direction.REVERSE);
-//        capstone.setDirection(Servo.Direction.FORWARD);
+        Erectus.setDirection(Servo.Direction.FORWARD);
+        frontGrab.setDirection(Servo.Direction.FORWARD);
+        rightGrab.setDirection(Servo.Direction.FORWARD);
+        leftGrab.setDirection(Servo.Direction.REVERSE);
+        foundation.setDirection(Servo.Direction.REVERSE);
+        capstone.setDirection(Servo.Direction.FORWARD);
 
-        RobotClass masterClass = new RobotClass(this, runtime, FRDrive, FLDrive, BRDrive, BLDrive, lift, capstone, frontGrab, Erectus, foundation, rightGrab, leftGrab);
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+
+        RobotClass masterClass = new RobotClass(this, runtime, cameraMonitorViewId, robotGyro,
+                                                    FRDrive, FLDrive, BRDrive, BLDrive, lift,
+                                                    capstone, frontGrab, Erectus,
+                                                    foundation, rightGrab, leftGrab);
         waitForStart();
         masterClass.move(2000, 2000, 0.5);
 

@@ -131,7 +131,6 @@ public class LeftBlockEdgeParking extends LinearOpMode {
         telemetry.clear();
         telemetry.update();
 
-        initialValue = modernRoboticsI2cGyro.getIntegratedZValue();
         telemetry.addData("initial value", initialValue);
         telemetry.update();
 

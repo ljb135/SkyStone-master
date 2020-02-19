@@ -165,12 +165,14 @@ public class RobotClass {
             frontGrab.setPosition(0);
         }
     }
-    public void release(){
-        frontGrab.setPosition(0.85);
-        opMode.sleep(100);
-        erectus.setPosition(0.25);
-        opMode.sleep(100);
-        frontGrab.setPosition(0);
+    public void release() {
+        if(opMode.opModeIsActive()) {
+            frontGrab.setPosition(0.85);
+            opMode.sleep(100);
+            erectus.setPosition(0.25);
+            opMode.sleep(100);
+            frontGrab.setPosition(0);
+        }
     }
     //probably delete when drivePID is tuned
     public void move(int left, int right, double power){
@@ -435,22 +437,24 @@ public class RobotClass {
         }
     }
     public void stopStrafe(){
-        FLPosition = 0;
-        FRPosition = 0;
-        BLPosition = 0;
-        BRPosition = 0;
-        frontRight.setPower(0);
-        frontLeft.setPower(0);
-        backLeft.setPower(0);
-        backRight.setPower(0);
-        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
-        frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        if(opMode.opModeIsActive()) {
+            FLPosition = 0;
+            FRPosition = 0;
+            BLPosition = 0;
+            BRPosition = 0;
+            frontRight.setPower(0);
+            frontLeft.setPower(0);
+            backLeft.setPower(0);
+            backRight.setPower(0);
+            frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+            frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            backLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+            backRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
+        }
     }
 
     public void calibrateGyro() {

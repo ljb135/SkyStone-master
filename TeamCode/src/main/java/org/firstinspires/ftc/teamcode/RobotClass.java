@@ -436,6 +436,13 @@ public class RobotClass {
 
         }
     }
+
+    public void resetGyro() {
+        robotGyro.resetZAxisIntegrator();
+        opMode.telemetry.addLine("Gyro Reset");
+        opMode.telemetry.update();
+    }
+
     public void stopStrafe(){
         if(opMode.opModeIsActive()) {
             FLPosition = 0;

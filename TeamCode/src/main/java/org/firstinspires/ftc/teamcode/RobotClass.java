@@ -470,7 +470,7 @@ public class RobotClass {
 
         // Wait until the gyro calibration is complete
         runtime.reset();
-        while (!opMode.isStopRequested() && robotGyro.isCalibrating())  {
+        while (!opMode.isStopRequested() && robotGyro.isCalibrating()) {
             opMode.telemetry.addData("calibrating", "%s", Math.round(runtime.seconds()) % 2 == 0 ? "|.." : "..|");
             opMode.telemetry.update();
             opMode.sleep(50);
@@ -480,9 +480,6 @@ public class RobotClass {
         opMode.telemetry.log().add("Gyro Calibrated. Press Start.");
         opMode.telemetry.clear();
         opMode.telemetry.update();
-
-        opMode.telemetry.log().clear();
-        runtime.reset();
     }
 
     //detection pipeline

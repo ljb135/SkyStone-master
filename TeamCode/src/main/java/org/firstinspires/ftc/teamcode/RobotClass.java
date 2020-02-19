@@ -481,7 +481,6 @@ public class RobotClass {
         opMode.telemetry.clear();
         opMode.telemetry.update();
 
-        // Wait for the start button to be pressed
         opMode.telemetry.log().clear();
         runtime.reset();
     }

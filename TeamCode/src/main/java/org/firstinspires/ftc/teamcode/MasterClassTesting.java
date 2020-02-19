@@ -24,6 +24,7 @@ public class MasterClassTesting extends LinearOpMode {
     private Servo leftGrab = null;
     private Servo foundation = null;
     private Servo capstone = null;
+    private int robotAngle = 0;
 
     private ModernRoboticsI2cGyro robotGyro;
 
@@ -62,8 +63,25 @@ public class MasterClassTesting extends LinearOpMode {
                                                     FRDrive, FLDrive, BRDrive, BLDrive, lift,
                                                     capstone, frontGrab, Erectus,
                                                     foundation, rightGrab, leftGrab);
+        masterClass.calibrateGyro();
+
         waitForStart();
-        masterClass.move(2000, 2000, 0.5);
+
+        masterClass.resetGyro();
+
+        masterClass.homeServos();
+
+        masterClass.stopStrafe();
+        masterClass.move(500, 500, 0.5);
+        robotAngle-=84;
+        masterClass.gyroRotate(robotAngle);
+        masterClass.grab();
+        masterClass.release();
+        masterClass.clampFoundation();
+        masterClass.releaseFoundation();
+        masterClass.gyroStraight(robotAngle,2000,0.5);
+        masterClass.gyroStrafe(robotAngle,-1000,0.3);
+
 
         FLDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
         FRDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

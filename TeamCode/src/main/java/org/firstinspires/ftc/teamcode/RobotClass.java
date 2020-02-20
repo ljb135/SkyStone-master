@@ -438,6 +438,8 @@ public class RobotClass {
     }
 
     public void resetGyro() {
+        opMode.telemetry.log().clear();
+        runtime.reset();
         robotGyro.resetZAxisIntegrator();
         opMode.telemetry.addLine("Gyro Reset");
         opMode.telemetry.update();

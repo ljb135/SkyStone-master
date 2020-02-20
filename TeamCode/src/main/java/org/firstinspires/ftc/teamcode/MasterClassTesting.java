@@ -59,19 +59,19 @@ public class MasterClassTesting extends LinearOpMode {
         masterRobot.homeServos();
 
         masterRobot.stopStrafe();
-        masterRobot.move(500, 500, 0.5);
-        sleep(250);
+        masterRobot.move(500, 500, 0.2);
+        sleep(1000);
         robotAngle-=84;
         masterRobot.gyroRotate(robotAngle);
-        sleep(250);
+        sleep(1000);
         masterRobot.grab();
         masterRobot.release();
-        sleep(250);
+        sleep(1000);
         masterRobot.clampFoundation();
         masterRobot.releaseFoundation();
-        sleep(250);
-        masterRobot.gyroStraight(robotAngle,2000,0.5);
-        sleep(250);
+        sleep(1000);
+        masterRobot.gyroStraight(robotAngle,2000,0.2);
+        sleep(1000);
         masterRobot.gyroStrafe(robotAngle,-1000,0.3);
 
 

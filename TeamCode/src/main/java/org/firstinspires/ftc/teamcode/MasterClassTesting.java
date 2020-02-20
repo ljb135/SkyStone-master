@@ -51,6 +51,7 @@ public class MasterClassTesting extends LinearOpMode {
                 FRDrive, FLDrive, BRDrive, BLDrive, lift,
                                                     capstone, frontGrab, erectus,
                 foundation, rightGrab, leftGrab);
+
         masterRobot.calibrateGyro();
 
         waitForStart();

@@ -300,32 +300,44 @@ public class RobotClass {
             backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
             backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
 
-            frontLeft.setTargetPosition(targetPosition);
             frontRight.setTargetPosition(targetPosition);
-            backLeft.setTargetPosition(targetPosition);
             backRight.setTargetPosition(targetPosition);
+            frontLeft.setTargetPosition(targetPosition);
+            backLeft.setTargetPosition(targetPosition);
 
             int robotAngle = robotGyro.getIntegratedZValue();
             double correction = drivePid.performPID(robotAngle);
-            double leftPower = power + correction;
-            double rightPower = power - correction;
+            double leftPower;
+            double rightPower;
 
-
+            if(targetPosition > 0) {
+                leftPower = power - correction;
+                rightPower = power + correction;
+            }  else {
+                leftPower = power + correction;
+                rightPower = power - correction;
+            }
 
             runtime.reset();
 
             frontLeft.setPower(leftPower);
-            frontRight.setPower(rightPower);
             backLeft.setPower(leftPower);
+            frontRight.setPower(rightPower);
             backRight.setPower(rightPower);
 
 
-            // Removed timeout
+
             while (opMode.opModeIsActive() && (frontLeft.isBusy() && frontRight.isBusy() && backLeft.isBusy() && backRight.isBusy())) {
                 robotAngle = robotGyro.getIntegratedZValue();
                 correction = drivePid.performPID(robotAngle);
-                leftPower = power + correction;
-                rightPower = power - correction;
+
+                if(targetPosition > 0) {
+                    leftPower = power - correction;
+                    rightPower = power + correction;
+                }  else {
+                    leftPower = power + correction;
+                    rightPower = power - correction;
+                }
 
                 frontLeft.setPower(leftPower);
                 backLeft.setPower(leftPower);
@@ -337,11 +349,9 @@ public class RobotClass {
                 opMode.telemetry.addData("correction", correction);
                 opMode.telemetry.addData("leftPower", leftPower);
                 opMode.telemetry.addData("rightPower", rightPower);
-                opMode.telemetry.addData("integrated Z", robotAngle);
-                opMode.telemetry.addData("error", drivePid.getError());
-                opMode.telemetry.addData("p term", drivePid.getError() * drivePid.getP());
-                opMode.telemetry.addData("total error", drivePid.getM_totalError());
-                opMode.telemetry.addData("i term", drivePid.getM_totalError() * drivePid.getI());
+                opMode.telemetry.addData("Position", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)frontRight.getCurrentPosition(), (float)frontLeft.getCurrentPosition(), (float)backRight.getCurrentPosition(), (float)backLeft.getCurrentPosition());
+                opMode.telemetry.addData("Target Position", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)frontRight.getTargetPosition(), (float)frontLeft.getTargetPosition(), (float)backRight.getTargetPosition(), (float)backLeft.getTargetPosition());
+                opMode.telemetry.addData("Power", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)frontRight.getPower(), (float)frontLeft.getPower(), (float)backRight.getPower(), (float)backLeft.getPower());
                 opMode.telemetry.update();
             }
 

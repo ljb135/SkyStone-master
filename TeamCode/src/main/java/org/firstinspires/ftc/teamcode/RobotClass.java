@@ -5,6 +5,7 @@ import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
+import com.qualcomm.robotcore.util.Range;
 
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -100,9 +101,9 @@ public class RobotClass {
 
         runtime = RUNTIME;
 
-        rotationPid = new PIDController(0.01, 0.00007, 0.05);
-        drivePid = new PIDController(0.01, 0, 0);
-        strafePid = new PIDController(0.005, 0, 0);
+        rotationPid = new PIDController(0.01, 0.0001, 0.05);
+        drivePid = new PIDController(0.05, 0, 0);
+        strafePid = new PIDController(0.06, 0, 0);
 
         phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, MONITOR_ID);
 
@@ -138,8 +139,8 @@ public class RobotClass {
             leftGrab.setPosition(1);
             capstone.setPosition(1);
             foundation.setPosition(0.2);
-            frontGrab.setPosition(0);
-            erectus.setPosition(0.25);
+            frontGrab.setPosition(0.85);
+            erectus.setPosition(0.2);
         }
     }
 
@@ -153,7 +154,6 @@ public class RobotClass {
         if(opMode.opModeIsActive()) {
             foundation.setPosition(0.35);
         }
-
     }
 
     public void grab() {
@@ -244,7 +244,7 @@ public class RobotClass {
 //            .abs(rotationPid.getError()) > 5
             while (opMode.opModeIsActive() && !onTarget) {
                 motorPower = rotationPid.performPID(robotGyro.getIntegratedZValue());
-                onTarget = Math.abs(rotationPid.getError()) < 2;
+                onTarget = Math.abs(rotationPid.getError()) < 5;
 
                 frontLeft.setPower(-motorPower);
                 frontRight.setPower(motorPower);
@@ -445,6 +445,90 @@ public class RobotClass {
             backRight.setPower(0);
 
         }
+    }
+    public void gyroAccelStraight(int desiredAngle, int targetPosition, double propAccel, double propDecel, double accelPow, double decelPow) {
+        drivePid.reset();
+        drivePid.setSetpoint(desiredAngle);
+        drivePid.setInputRange(-359, 359);
+        drivePid.setTolerance(1);
+
+        drivePid.enable();
+
+        double accelTarget = targetPosition * propAccel;
+        double decelTarget = targetPosition - (targetPosition * propDecel);
+
+
+        double remainingDist = (accelTarget - frontRight.getCurrentPosition()) / accelTarget;
+        double motorPower = 0;
+        double leftPower = 0;
+        double rightPower = 0;
+
+        int robotAngle = robotGyro.getIntegratedZValue();
+        double correction = drivePid.performPID(robotAngle);
+
+
+        // Acceleration
+        while(opMode.opModeIsActive() && remainingDist > 0) {
+            motorPower = Range.clip(Math.pow(remainingDist, accelPow), 0.1, 1.0);
+            if(targetPosition > 0) {
+                leftPower = motorPower + correction;
+                rightPower = motorPower - correction;
+            }  else {
+                leftPower = motorPower - correction;
+                rightPower = motorPower + correction;
+            }
+
+            frontRight.setPower(1.1 - rightPower);
+            frontLeft.setPower(1.1 - leftPower);
+            backRight.setPower(1.1 - rightPower);
+            backLeft.setPower(1.1 - leftPower);
+            remainingDist = (accelTarget - frontRight.getCurrentPosition()) / accelTarget;
+            opMode.telemetry.addLine("Status: Accelerating");
+            opMode.telemetry.addData("Position", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)frontRight.getCurrentPosition(), (float)frontLeft.getCurrentPosition(), (float)backRight.getCurrentPosition(), (float)backLeft.getCurrentPosition());
+            opMode.telemetry.addData("Power", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)frontRight.getPower(), (float)frontLeft.getPower(), (float)backRight.getPower(), (float)backLeft.getPower());
+            opMode.telemetry.update();
+        }
+
+        // Constant Velocity
+        while(opMode.opModeIsActive() && frontRight.getCurrentPosition() < decelTarget) {
+            frontRight.setPower(1.1 - motorPower);
+            frontLeft.setPower(1.1 - motorPower);
+            backRight.setPower(1.1 - motorPower);
+            backLeft.setPower(1.1 - motorPower);
+            opMode.telemetry.addLine("Status: Constant Vel");
+            opMode.telemetry.addData("Position", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)frontRight.getCurrentPosition(), (float)frontLeft.getCurrentPosition(), (float)backRight.getCurrentPosition(), (float)backLeft.getCurrentPosition());
+            opMode.telemetry.addData("Power", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)frontRight.getPower(), (float)frontLeft.getPower(), (float)backRight.getPower(), (float)backLeft.getPower());
+            opMode.telemetry.update();
+        }
+
+        remainingDist = (targetPosition - frontRight.getCurrentPosition()) / (targetPosition - decelTarget);
+        opMode.telemetry.addData("remainingDist", remainingDist);
+        opMode.telemetry.update();
+
+        // Deceleration
+        while(opMode.opModeIsActive() && remainingDist > 0) {
+            motorPower = Range.clip(Math.pow(remainingDist, decelPow), 0.2, 1.0);
+            frontRight.setPower(motorPower);
+            frontLeft.setPower(motorPower);
+            backRight.setPower(motorPower);
+            backLeft.setPower(motorPower);
+            remainingDist = (targetPosition - frontRight.getCurrentPosition()) / (targetPosition - decelTarget);
+            opMode.telemetry.addLine("Status: Decelerating");
+            opMode.telemetry.addData("Position", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)frontRight.getCurrentPosition(), (float)frontLeft.getCurrentPosition(), (float)backRight.getCurrentPosition(), (float)backLeft.getCurrentPosition());
+            opMode.telemetry.addData("Power", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)frontRight.getPower(), (float)frontLeft.getPower(), (float)backRight.getPower(), (float)backLeft.getPower());
+            opMode.telemetry.update();
+        }
+
+        opMode.telemetry.addLine("Status: Move Complete");
+        frontRight.setPower(0);
+        frontLeft.setPower(0);
+        backRight.setPower(0);
+        backLeft.setPower(0);
+
+        frontRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        frontLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backLeft.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
+        backRight.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);
     }
 
     public void resetGyro() {

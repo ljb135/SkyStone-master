@@ -4,6 +4,7 @@ import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
+import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
@@ -48,32 +49,49 @@ public class MasterClassTesting extends LinearOpMode {
         int robotAngle = 0;
 
         RobotClass masterRobot = new RobotClass(this, runtime, cameraMonitorViewId, robotGyro,
-                FRDrive, FLDrive, BRDrive, BLDrive, lift,
-                                                    capstone, frontGrab, erectus,
-                foundation, rightGrab, leftGrab);
+                                                        FRDrive, FLDrive, BRDrive, BLDrive, lift,
+                                                        capstone, frontGrab, erectus,
+                                                        foundation, rightGrab, leftGrab);
 
         masterRobot.calibrateGyro();
+        masterRobot.detectSkystone();
 
         waitForStart();
 
         masterRobot.resetGyro();
         masterRobot.homeServos();
+        sleep(500);
 
-        masterRobot.stopStrafe();
-        masterRobot.move(500, 500, 0.2);
-        sleep(1000);
-        robotAngle-=84;
+        masterRobot.gyroAccelStraight(robotAngle, 3000, 0.2, 0.5, 2, 1.3);
+        sleep(500);
+        robotAngle -= 84;
         masterRobot.gyroRotate(robotAngle);
-        sleep(1000);
-        masterRobot.grab();
-        masterRobot.release();
-        sleep(1000);
-        masterRobot.clampFoundation();
-        masterRobot.releaseFoundation();
-        sleep(1000);
-        masterRobot.gyroStraight(robotAngle,2000,0.2);
-        sleep(1000);
-        masterRobot.gyroStrafe(robotAngle,-1000,0.3);
+        sleep(500);
+        masterRobot.gyroStrafe(robotAngle, 2000, 0.7);
+        sleep(500);
+        robotAngle += 84;
+        masterRobot.gyroRotate(robotAngle);
+        sleep(500);
+        masterRobot.gyroStraight(robotAngle, 2000,0.7);
+
+
+//        masterRobot.homeServos();
+//
+//        masterRobot.stopStrafe();
+//        masterRobot.move(500, 500, 0.2);
+//        sleep(1000);
+//        robotAngle-=84;
+//        masterRobot.gyroRotate(robotAngle);
+//        sleep(1000);
+//        masterRobot.grab();
+//        masterRobot.release();
+//        sleep(1000);
+//        masterRobot.clampFoundation();
+//        masterRobot.releaseFoundation();
+//        sleep(1000);
+//        masterRobot.gyroStraight(robotAngle,2000,0.2);
+//        sleep(1000);
+//        masterRobot.gyroStrafe(robotAngle,-1000,0.3);
 
 
         FLDrive.setMode(DcMotor.RunMode.STOP_AND_RESET_ENCODER);

@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
@@ -26,8 +27,8 @@ public class EdgeParking extends LinearOpMode {
     private DcMotor FLDrive = null;
     private DcMotor BRDrive = null;
     private DcMotor BLDrive = null;
-    private DcMotor Lift = null;
-    private Servo Erectus = null;
+    private DcMotor lift = null;
+    private Servo erectus = null;
     private Servo frontGrab = null;
     private Servo rightGrab = null;
     private Servo leftGrab = null;
@@ -50,8 +51,8 @@ public class EdgeParking extends LinearOpMode {
         FLDrive = hardwareMap.get(DcMotor.class, "front_left");
         BRDrive  = hardwareMap.get(DcMotor.class, "back_right");
         BLDrive  = hardwareMap.get(DcMotor.class, "back_left");
-        Lift  = hardwareMap.get(DcMotor.class, "lift");
-        Erectus = hardwareMap.get(Servo.class, "erectus");
+        lift = hardwareMap.get(DcMotor.class, "lift");
+        erectus = hardwareMap.get(Servo.class, "erectus");
         frontGrab = hardwareMap.get(Servo.class, "front_grab");
         rightGrab = hardwareMap.get(Servo.class, "right_grab");
         leftGrab = hardwareMap.get(Servo.class, "left_grab");
@@ -65,85 +66,36 @@ public class EdgeParking extends LinearOpMode {
         FLDrive.setDirection(DcMotor.Direction.FORWARD);
         BRDrive.setDirection(DcMotor.Direction.REVERSE);
         BLDrive.setDirection(DcMotor.Direction.FORWARD);
-        Lift.setDirection(DcMotor.Direction.REVERSE);
-        Erectus.setDirection(Servo.Direction.FORWARD);
+        lift.setDirection(DcMotor.Direction.REVERSE);
+        erectus.setDirection(Servo.Direction.FORWARD);
         frontGrab.setDirection(Servo.Direction.FORWARD);
         rightGrab.setDirection(Servo.Direction.FORWARD);
         leftGrab.setDirection(Servo.Direction.REVERSE);
         foundation.setDirection(Servo.Direction.REVERSE);
         capstone.setDirection(Servo.Direction.FORWARD);
 
-        // Wait for the game to start (driver presses PLAY)
+        ModernRoboticsI2cGyro robotGyro = hardwareMap.get(ModernRoboticsI2cGyro.class, "gyro");
+
+        int cameraMonitorViewId = hardwareMap.appContext.getResources().getIdentifier("cameraMonitorViewId", "id", hardwareMap.appContext.getPackageName());
+        int robotAngle = 0;
+
+        RobotClass masterRobot = new RobotClass(this, runtime, cameraMonitorViewId, robotGyro,
+                                                FRDrive, FLDrive, BRDrive, BLDrive, lift,
+                                                capstone, frontGrab, erectus,
+                                                foundation, rightGrab, leftGrab);
+
+        masterRobot.calibrateGyro();
         waitForStart();
-        runtime.reset();
-
-        //move servos into position
-        initialPos();
-
-        telemetry.addData("Position", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)FRDrive.getCurrentPosition(), (float)FLDrive.getCurrentPosition(), (float)BRDrive.getCurrentPosition(), (float)BLDrive.getCurrentPosition());
-        telemetry.update();
+        masterRobot.resetGyro();
+        masterRobot.homeServos();
 
         //sleep if team asks us to wait until the end to park
         //sleep(25000);
 
-        telemetry.addData("Stage 1", true); //move forward to park
-        move(-1750,-1750,0.3);
+        frontGrab.setPosition(0); //idk if this is the right value *****check grab/release methods
+        sleep(250);
+
+        masterRobot.gyroStraight(robotAngle,-1750,0.3);
         sleep(500);
-    }
-    private void initialPos(){
-        rightGrab.setPosition(1);
-        leftGrab.setPosition(1);
-        capstone.setPosition(1);
-        foundation.setPosition(0.2);
-        frontGrab.setPosition(0);
-        Erectus.setPosition(0.25);
-    }
-    private void move(int left, int right, double power){
-        if(opModeIsActive()){
-            FLPosition += left;
-            FRPosition += right;
-            BLPosition += left;
-            BRPosition += right;
-            FLDrive.setTargetPosition(FLPosition);
-            FRDrive.setTargetPosition(FRPosition);
-            BLDrive.setTargetPosition(BLPosition);
-            BRDrive.setTargetPosition(BRPosition);
-
-            FLDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            FRDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            BLDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-            BRDrive.setMode(DcMotor.RunMode.RUN_TO_POSITION);
-
-            FLDrive.setTargetPosition(FLPosition);
-            FRDrive.setTargetPosition(FRPosition);
-            BLDrive.setTargetPosition(BLPosition);
-            BRDrive.setTargetPosition(BRPosition);
-
-            runtime.reset();
-
-            while(FRDrive.getPower() != power || FLDrive.getPower() != power || BLDrive.getPower() != power || BRDrive.getPower() != power){
-                FLDrive.setPower(power);
-                FRDrive.setPower(power);
-                BLDrive.setPower(power);
-                BRDrive.setPower(power);
-            }
-
-            while (opModeIsActive() && (runtime.seconds() < timeout) && (FLDrive.isBusy() && FRDrive.isBusy() && BLDrive.isBusy() && BRDrive.isBusy())) {
-                telemetry.addData("Position", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)FRDrive.getCurrentPosition(), (float)FLDrive.getCurrentPosition(), (float)BRDrive.getCurrentPosition(), (float)BLDrive.getCurrentPosition());
-                telemetry.addData("Target Position", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)FRDrive.getTargetPosition(), (float)FLDrive.getTargetPosition(), (float)BRDrive.getTargetPosition(), (float)BLDrive.getTargetPosition());
-                telemetry.addData("Power", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)FRDrive.getPower(), (float)FLDrive.getPower(), (float)BRDrive.getPower(), (float)BLDrive.getPower());
-                telemetry.update();
-            }
-
-            FRDrive.setPower(0);
-            FLDrive.setPower(0);
-            BLDrive.setPower(0);
-            BRDrive.setPower(0);
-
-            FLDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            FRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            BLDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-            BRDrive.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
-        }
     }
 }

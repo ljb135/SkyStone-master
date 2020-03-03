@@ -71,13 +71,13 @@ public class Acceleration extends LinearOpMode {
 
         double propAccel = 0.2;
         double propDecel = 0.5;
-        double accelPow = 2;
-        double decelPow = 1.3;
+        double accelExp = 2;
+        double decelExp = 1.3;
 
         waitForStart();
         modernRoboticsI2cGyro.resetZAxisIntegrator();
 
-        accelMove(robotAngle,targetPosition, propAccel, propDecel, accelPow, decelPow);
+        accelMove(robotAngle,targetPosition, propAccel, propDecel, accelExp, decelExp);
 
     }
     void accelMove(int desiredAngle, int targetPosition, double propAccel, double propDecel, double accelPow, double decelPow) {

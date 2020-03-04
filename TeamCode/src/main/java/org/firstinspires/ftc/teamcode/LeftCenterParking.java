@@ -40,7 +40,7 @@ public class LeftCenterParking extends LinearOpMode {
     private int BLPosition = 0;
     private int BRPosition = 0;
 
-    public void runOpMode() {
+    public void runOpMode() throws InterruptedException {
         telemetry.addData("Status", "Initialized");
         telemetry.update();
 

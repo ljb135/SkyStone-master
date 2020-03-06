@@ -4,14 +4,13 @@ import com.qualcomm.hardware.modernrobotics.ModernRoboticsI2cGyro;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.Servo;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 
 
 @Autonomous(name= "MasterClassTesting", group="Testing")
-//comment out this line bxefore using
+//comment out this line before using
 public class MasterClassTesting extends LinearOpMode {
     private ElapsedTime runtime = new ElapsedTime();
 
@@ -62,17 +61,17 @@ public class MasterClassTesting extends LinearOpMode {
         masterRobot.homeServos();
         sleep(500);
 
-        masterRobot.gyroAccelStraight(robotAngle, 3000, 0.2, 0.5, 2, 1.3);
-        sleep(500);
-        robotAngle -= 84;
-        masterRobot.gyroRotate(robotAngle);
-        sleep(500);
-        masterRobot.gyroStrafe(robotAngle, 2000, 0.7);
-        sleep(500);
-        robotAngle += 84;
-        masterRobot.gyroRotate(robotAngle);
-        sleep(500);
-        masterRobot.gyroStraight(robotAngle, 2000,0.7);
+        masterRobot.gyroStraight(robotAngle, 5000, 0.7);
+//        sleep(500);
+//        robotAngle -= 84;
+//        masterRobot.gyroRotate(robotAngle);
+//        sleep(500);
+//        masterRobot.gyroStrafe(robotAngle, 2000, 0.7);
+//        sleep(500);
+//        robotAngle += 84;
+//        masterRobot.gyroRotate(robotAngle);
+//        sleep(500);
+//        masterRobot.gyroStraight(robotAngle, 2000,0.7);
 
 
 //        masterRobot.homeServos();

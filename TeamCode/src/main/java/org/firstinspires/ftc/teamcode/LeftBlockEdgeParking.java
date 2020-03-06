@@ -134,13 +134,13 @@ public class LeftBlockEdgeParking extends LinearOpMode {
 
         //depending on location of the FIRST skystone, move a certain distance under skybridge towards foundation
         if (skystonePlacement == 1) {
-            masterRobot.gyroAccelStraight(robotAngle, 2400, 0.2, 0.5, 2, 1.3);
+            masterRobot.gyroStraight(robotAngle, 2400, 0.7);
             sleep(100);
         } else if (skystonePlacement == 2) {
-            masterRobot.gyroAccelStraight(robotAngle, 3000, 0.2, 0.5, 2, 1.3);
+            masterRobot.gyroStraight(robotAngle, 3000, 0.7);
             sleep(100);
         } else if (skystonePlacement == 3) {
-            masterRobot.gyroAccelStraight(robotAngle, 3470, 0.2, 0.5, 2, 1.3);
+            masterRobot.gyroStraight(robotAngle, 3470, 0.7);
             sleep(100);
         }
 
@@ -162,15 +162,15 @@ public class LeftBlockEdgeParking extends LinearOpMode {
 
         //move a certain distance under the bridge towards stones to get SECOND skystone
         if (skystonePlacement == 1) {
-            masterRobot.gyroAccelStraight(robotAngle, -3650, 0.2, 0.5, 2, 1.3);
+            masterRobot.gyroStraight(robotAngle, -3650, 0.7);
             sleep(100);
         }
         if (skystonePlacement == 2) {
-            masterRobot.gyroAccelStraight(robotAngle, -4300, 0.2, 0.5, 2, 1.3);
+            masterRobot.gyroStraight(robotAngle, -4300, 0.7);
             sleep(100);
         }
         if (skystonePlacement == 3) {
-            masterRobot.gyroAccelStraight(robotAngle, -4285, 0.2, 0.5, 2, 1.3);
+            masterRobot.gyroStraight(robotAngle, -4285, 0.7);
             sleep(100);
         }
 
@@ -185,14 +185,14 @@ public class LeftBlockEdgeParking extends LinearOpMode {
             sleep(100);
             masterRobot.grab();
             sleep(100);
-            masterRobot.gyroAccelStraight(robotAngle, -1350, 0.2, 0.5, 2, 1.3);
+            masterRobot.gyroStraight(robotAngle, -1350, 0.7);
         } else {
             leftGrab.setPosition(0);
             masterRobot.gyroStraight(robotAngle, 500, 0.2);
             sleep(100);
             leftGrab.setPosition(1);
             sleep(100);
-            masterRobot.gyroAccelStraight(robotAngle, -1650, 0.2, 0.5, 2, 1.3);
+            masterRobot.gyroStraight(robotAngle, -1650, 0.7);
         }
         sleep(100);
 
@@ -203,13 +203,13 @@ public class LeftBlockEdgeParking extends LinearOpMode {
 
         //depending on location of the SECOND skystone, move a certain distance under skybridge towards foundation
         if (skystonePlacement == 1) {
-            masterRobot.gyroAccelStraight(robotAngle, 3700, 0.2, 0.5, 2, 1.3);
+            masterRobot.gyroStraight(robotAngle, 3700, 0.7);
             sleep(250);
         } else if (skystonePlacement == 2) {
-            masterRobot.gyroAccelStraight(robotAngle, 4200, 0.2, 0.5, 2, 1.3);
+            masterRobot.gyroStraight(robotAngle, 4200, 0.7);
             sleep(250);
         } else if (skystonePlacement == 3) {
-            masterRobot.gyroAccelStraight(robotAngle, 4350, 0.2, 0.5, 2, 1.3);
+            masterRobot.gyroStraight(robotAngle, 4350, 0.7);
             sleep(250);
         }
 

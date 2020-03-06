@@ -102,8 +102,8 @@ public class RobotClass {
         runtime = RUNTIME;
 
         rotationPid = new PIDController(0.01, 0.0001, 0.05);
-        drivePid = new PIDController(0.05, 0, 0);
-        strafePid = new PIDController(0.06, 0, 0);
+        drivePid = new PIDController(0.01, 0, 0);
+        strafePid = new PIDController(0.07, 0, 0);
 
         phoneCam = OpenCvCameraFactory.getInstance().createInternalCamera(OpenCvInternalCamera.CameraDirection.BACK, MONITOR_ID);
 
@@ -244,7 +244,7 @@ public class RobotClass {
 //            .abs(rotationPid.getError()) > 5
             while (opMode.opModeIsActive() && !onTarget) {
                 motorPower = rotationPid.performPID(robotGyro.getIntegratedZValue());
-                onTarget = Math.abs(rotationPid.getError()) < 5;
+                onTarget = Math.abs(rotationPid.getError()) < 2;
 
                 frontLeft.setPower(-motorPower);
                 frontRight.setPower(motorPower);
@@ -454,6 +454,16 @@ public class RobotClass {
 
         drivePid.enable();
 
+        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+        frontRight.setTargetPosition(targetPosition);
+        frontLeft.setTargetPosition(targetPosition);
+        backRight.setTargetPosition(targetPosition);
+        backLeft.setTargetPosition(targetPosition);
+
         double accelTarget = targetPosition * propAccel;
         double decelTarget = targetPosition - (targetPosition * propDecel);
 
@@ -470,6 +480,8 @@ public class RobotClass {
         // Acceleration
         while(opMode.opModeIsActive() && remainingDist > 0) {
             motorPower = Range.clip(Math.pow(remainingDist, accelPow), 0.1, 1.0);
+            robotAngle = robotGyro.getIntegratedZValue();
+            correction = drivePid.performPID(robotAngle);
             if(targetPosition > 0) {
                 leftPower = motorPower + correction;
                 rightPower = motorPower - correction;
@@ -484,6 +496,7 @@ public class RobotClass {
             backLeft.setPower(1.1 - leftPower);
             remainingDist = (accelTarget - frontRight.getCurrentPosition()) / accelTarget;
             opMode.telemetry.addLine("Status: Accelerating");
+            opMode.telemetry.addData("correction", correction);
             opMode.telemetry.addData("Position", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)frontRight.getCurrentPosition(), (float)frontLeft.getCurrentPosition(), (float)backRight.getCurrentPosition(), (float)backLeft.getCurrentPosition());
             opMode.telemetry.addData("Power", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)frontRight.getPower(), (float)frontLeft.getPower(), (float)backRight.getPower(), (float)backLeft.getPower());
             opMode.telemetry.update();
@@ -491,11 +504,21 @@ public class RobotClass {
 
         // Constant Velocity
         while(opMode.opModeIsActive() && frontRight.getCurrentPosition() < decelTarget) {
-            frontRight.setPower(1.1 - motorPower);
-            frontLeft.setPower(1.1 - motorPower);
-            backRight.setPower(1.1 - motorPower);
-            backLeft.setPower(1.1 - motorPower);
+            robotAngle = robotGyro.getIntegratedZValue();
+            correction = drivePid.performPID(robotAngle);
+            if(targetPosition > 0) {
+                leftPower = motorPower + correction;
+                rightPower = motorPower - correction;
+            }  else {
+                leftPower = motorPower - correction;
+                rightPower = motorPower + correction;
+            }
+            frontRight.setPower(1.1 - rightPower);
+            frontLeft.setPower(1.1 - leftPower);
+            backRight.setPower(1.1 - rightPower);
+            backLeft.setPower(1.1 - leftPower);
             opMode.telemetry.addLine("Status: Constant Vel");
+            opMode.telemetry.addData("correction", correction);
             opMode.telemetry.addData("Position", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)frontRight.getCurrentPosition(), (float)frontLeft.getCurrentPosition(), (float)backRight.getCurrentPosition(), (float)backLeft.getCurrentPosition());
             opMode.telemetry.addData("Power", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)frontRight.getPower(), (float)frontLeft.getPower(), (float)backRight.getPower(), (float)backLeft.getPower());
             opMode.telemetry.update();
@@ -508,12 +531,22 @@ public class RobotClass {
         // Deceleration
         while(opMode.opModeIsActive() && remainingDist > 0) {
             motorPower = Range.clip(Math.pow(remainingDist, decelPow), 0.2, 1.0);
-            frontRight.setPower(motorPower);
-            frontLeft.setPower(motorPower);
-            backRight.setPower(motorPower);
-            backLeft.setPower(motorPower);
+            robotAngle = robotGyro.getIntegratedZValue();
+            correction = drivePid.performPID(robotAngle);
+            if(targetPosition > 0) {
+                leftPower = motorPower - correction;
+                rightPower = motorPower + correction;
+            }  else {
+                leftPower = motorPower +correction;
+                rightPower = motorPower - correction;
+            }
+            frontRight.setPower(rightPower);
+            frontLeft.setPower(leftPower);
+            backRight.setPower(rightPower);
+            backLeft.setPower(leftPower);
             remainingDist = (targetPosition - frontRight.getCurrentPosition()) / (targetPosition - decelTarget);
             opMode.telemetry.addLine("Status: Decelerating");
+            opMode.telemetry.addData("correction", correction);
             opMode.telemetry.addData("Position", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)frontRight.getCurrentPosition(), (float)frontLeft.getCurrentPosition(), (float)backRight.getCurrentPosition(), (float)backLeft.getCurrentPosition());
             opMode.telemetry.addData("Power", "FR: (%.2f) FL: (%.2f) BR: (%.2f) BL: (%.2f)", (float)frontRight.getPower(), (float)frontLeft.getPower(), (float)backRight.getPower(), (float)backLeft.getPower());
             opMode.telemetry.update();
@@ -593,8 +626,8 @@ public class RobotClass {
             RAW_IMAGE,//displays raw view
         }
 
-        private RightBlockEdgeParking.StageSwitchingPipeline.Stage stageToRenderToViewport = RightBlockEdgeParking.StageSwitchingPipeline.Stage.detection;
-        private RightBlockEdgeParking.StageSwitchingPipeline.Stage[] stages = RightBlockEdgeParking.StageSwitchingPipeline.Stage.values();
+        private Stage stageToRenderToViewport = Stage.detection;
+        private Stage[] stages = Stage.values();
 
         @Override
         public void onViewportTapped()
